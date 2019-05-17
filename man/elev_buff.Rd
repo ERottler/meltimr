@@ -9,7 +9,7 @@ elev_buff(point_in, radius = 2500, dem_in)
 \arguments{
 \item{point_in}{Spatial point}
 
-\item{radius}{Set length side of square buffer}
+\item{radius}{Set length side of square buffer by defining radius, length point to side, is half total square size}
 
 \item{dem_in}{DEM}
 }
