@@ -1,11 +1,10 @@
 Package: meltimr
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Snow melt timing and snow melt contribution to river runoff.
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: person("Erwin", "Rottler", email = "rottler@protonmail.com",role = c("aut", "cre"))
+Maintainer: The package maintainer <rottler@protonmail.com>
+Description: R package to investigate changes in snow melt timing and snow melt contribution to river runoff.
+License: CC BY 4.0
 Encoding: UTF-8
 LazyData: true
