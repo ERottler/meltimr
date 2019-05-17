@@ -32,13 +32,12 @@ ord_day <- function(data_in, date, start_y, end_y){
   days <- format(days,"%m-%d")
 
   #Order data by day
-  data_day <-  matrix(NA, nrow = length(start_y:end_y), ncol = 366)
-  colnames(data_day) <- c("year", days)
-  data_day[ ,1] <- start_y:end_y
+  data_day <-  matrix(NA, nrow = length(start_y:end_y), ncol = 365)
+  colnames(data_day) <- c(days)
 
   for(i in 0:(length(start_y:end_y)-1)) {
 
-    data_day[i+1, 2:366] <- input_data$values[(i*365+1):((i+1)*365)]
+    data_day[i, 1:365] <- input_data$values[(i*365+1):((i+1)*365)]
 
   }
 
