@@ -3,7 +3,7 @@
 #' Get mean elevation of squared buffer around grid point.
 #'
 #' @param point_in  Spatial point
-#' @param radius  Length side of square buffer
+#' @param radius  Set length side of square buffer (radius is distance center to side; half total length)
 #' @param dem_in DEM
 #' @export
 elev_buff <- function(point_in, radius = 2500, dem_in){
