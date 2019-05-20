@@ -20,7 +20,8 @@ elev_buff <- function(point_in, radius = 2500, dem_in){
                   x_min, y_plu) #NW corner again to close polygon
 
   pol_sq <- Polygon(matrix(square, ncol = 2, byrow = T))
-  sq_buf <- SpatialPolygons(list(Polygons(list(pol_sq), ID = "sq_buf")), proj4string = CRS(crs(basin, asText = T)))
+  sq_buf <- SpatialPolygons(list(Polygons(list(pol_sq), ID = "sq_buf")),
+                            proj4string = sp::CRS("+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"))
 
 
   #get mean elevation in squared buffer...

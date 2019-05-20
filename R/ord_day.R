@@ -7,7 +7,7 @@
 #' @param start_y Selected start year.
 #' @param end_y Selected end year.
 #' @export
-ord_day <- function(data_in, date, start_y, end_y){
+ord_day <- function(data_in, date, start_y, end_y, break_day = 0, do_ma = F, window_width = 30){
 
   input_data_full <- data.frame(date = date, value = data_in)
 
@@ -24,6 +24,15 @@ ord_day <- function(data_in, date, start_y, end_y){
                            values = with(input_data, value[match(as.Date(full_date), as.Date(date))])
   )
 
+  #Moving average filter
+  if(do_ma){
+
+    input_data$ma <- rollapply(data = input_data$values, width = window_width,
+                               FUN = mea_na, align = "center", fill = NA)
+
+    input_data$values <- input_data$ma
+  }
+
   #Remove 29th of February
   input_data <- input_data[-which(format(input_data$date, "%m%d") == "0229"),]
 
@@ -35,11 +44,28 @@ ord_day <- function(data_in, date, start_y, end_y){
   data_day <-  matrix(NA, nrow = length(start_y:end_y), ncol = 365)
   colnames(data_day) <- c(days)
 
-  for(i in 0:(length(start_y:end_y)-1)) {
 
-    data_day[i, 1:365] <- input_data$values[(i*365+1):((i+1)*365)]
+  if(break_day > 0){
+
+    for(i in 0:(length(start_year:end_year) - 2)) {
+
+      data_day[i, 1:365] <- input_data$values[(i*365+1+break_day):((i+1)*365 + break_day)]
+
+    }
+
+    data_day <- data_day[-nrow(data_day),]
+
+  }else{
+
+    for(i in 0:(length(start_y:end_y)-1)) {
+
+      data_day[i, 1:365] <- input_data$values[(i*365+1):((i+1)*365)]
+
+    }
+
 
   }
+
 
   return(data_day)
 
