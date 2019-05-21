@@ -3,7 +3,7 @@
 #' Order time series according to day of the year and return as matrix with columns is days of the year and rows years.
 #'
 #' @param data_in  Vector of data values.
-#' @param date Date vector as character with form YYYY-MM_DD
+#' @param date Date vector
 #' @param start_y Selected start year.
 #' @param end_y Selected end year.
 #' @export
@@ -47,9 +47,9 @@ ord_day <- function(data_in, date, start_y, end_y, break_day = 0, do_ma = F, win
 
   if(break_day > 0){
 
-    for(i in 0:(length(start_year:end_year) - 2)) {
+    for(i in 0:(length(start_y:end_y) - 2)) {
 
-      data_day[i, 1:365] <- input_data$values[(i*365+1+break_day):((i+1)*365 + break_day)]
+      data_day[i+1, 1:365] <- input_data$values[(i*365+1+break_day):((i+1)*365 + break_day)]
 
     }
 
@@ -57,9 +57,9 @@ ord_day <- function(data_in, date, start_y, end_y, break_day = 0, do_ma = F, win
 
   }else{
 
-    for(i in 0:(length(start_y:end_y)-1)) {
+    for(i in 0:(length(start_y:end_y) - 1)) {
 
-      data_day[i, 1:365] <- input_data$values[(i*365+1):((i+1)*365)]
+      data_day[i+1, 1:365] <- input_data$values[(i*365+1):((i+1)*365)]
 
     }
 
