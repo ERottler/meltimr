@@ -12,23 +12,23 @@
 #' @export
 day_ana <- function(data, date, start_year, end_year, do_ma = F, window_width = 30, method_ana){
 
-  data_day <- order_day(data_in = data, date = date,  start_y = start_year, end_y = end_year,
+  data_day <- ord_day(data_in = data, date = date,  start_y = start_year, end_y = end_year,
                         do_ma = do_ma, window_width = window_width)
 
-  if(method_analys == "mean"){
+  if(method_ana == "mean"){
     res <- apply(data_day[,-1], 2, mea_na)
   }
 
-  if(method_analys == "median"){
+  if(method_ana == "median"){
     res <- apply(data_day[,-1], 2, med_na)
   }
 
-  if(method_analys == "sum"){
+  if(method_ana == "sum"){
     f_sum <- function(data_in){sum(data_in, na.rm = T)}
     res <- apply(data_day[,-1], 2, f_sum)
   }
 
-  if(method_analys == "sens_slope"){
+  if(method_ana == "sens_slope"){
 
     res <- apply(data_day[,-1], 2, sens_slo)
 

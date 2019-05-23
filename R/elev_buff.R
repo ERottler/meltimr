@@ -26,7 +26,7 @@ elev_buff <- function(point_in, radius = 2500, dem_in){
 
   #get mean elevation in squared buffer...
 
-  elev_square <- raster::extract(dem, sq_buf, fun = mean, na.rm = T)
+  elev_square <- raster::extract(dem_in, sq_buf, fun = mean, na.rm = T)
 
   return(elev_square)
 
