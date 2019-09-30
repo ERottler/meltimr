@@ -12,7 +12,7 @@ down_points <- function(lon_lat_point_in){
   d_01 <- d_00 + res_new * 1
   d_02 <- d_00 + res_new * 2
   d_03 <- d_00 - res_new * 1
-  d_04 <- d_00 - res_new * 1
+  d_04 <- d_00 - res_new * 2
   d_05 <- d_00
   d_05[1] <- d_05[1] + res_new * 1
   d_05[2] <- d_05[2] - res_new * 1

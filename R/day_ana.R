@@ -10,10 +10,10 @@
 #' @param window_width If do_ma is TRUE, then moving average filter with here selected window width applied
 #' @param Selected analytical method('mean', 'median', 'sum', 'sens_slope')
 #' @export
-day_ana <- function(data, date, start_year, end_year, do_ma = F, window_width = 30, method_ana){
+day_ana <- function(data, date, start_year, end_year, do_ma = F, window_width = 30, method_ana, break_day = 0){
 
   data_day <- ord_day(data_in = data, date = date,  start_y = start_year, end_y = end_year,
-                        do_ma = do_ma, window_width = window_width)
+                        do_ma = do_ma, window_width = window_width, break_day = break_day)
 
   if(method_ana == "mean"){
     res <- apply(data_day[,-1], 2, mea_na)
