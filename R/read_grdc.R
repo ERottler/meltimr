@@ -1,6 +1,6 @@
 #' Read GRDC data from file.
 #'
-#' Read in GRDC data table from repository.
+#' Read in GRDC data time series from file.
 #'
 #' @param file_path  Path data table.
 #' @export
