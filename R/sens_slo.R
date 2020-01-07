@@ -1,9 +1,9 @@
 #' Sen´s slope
 #'
-#' Calclation linear trend using Sen´s slope.
+#' Calculation of linear trend using Sen´s slope using package 'zyp'.
 #'
-#' @param data_in  Vector of input data
-#' @param Trend only calculated when percentage of NAs in input vecotr does not exceed cover threshold (0-1)
+#' @param data_in  Vecot numeric.
+#' @param cover_thresh Trend only calculated when percentage of NAs in data_in does not exceed cover threshold (0-1)
 #' @export
 sens_slo <- function(data_in, cover_thresh = 0.9){
 
