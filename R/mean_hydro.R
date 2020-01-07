@@ -1,0 +1,92 @@
+#' Mean graph
+#'
+#' Plot option 'Mean graph' from shiny app melTim.
+#'
+#' @param data_day Matrix with values ordered by day (see function ord_day()).
+#' @param break_day Define start year (e.g. 274 is 1.October is start hydrological year in Switzerland).
+#' @param yea_cla_1 Start year of time window 1.
+#' @param yea_cla_2 End year of time window 1.
+#' @param yea_cla_3 Start year of time window 2.
+#' @param yea_cla_4 End year of time window 2.
+#' @param sta_yea_cla Start year of entire time series
+#' @param end_yea_cla End year of entire time series.
+#' @param stat_name Plot title (e.g. station name)
+#' @export
+mean_hydro <- function(data_day, break_day, yea_cla_1, yea_cla_2, yea_cla_3, yea_cla_4,
+                       end_yea_cla, sta_yea_cla, stat_name){
+
+  #Mean seasonal cycles
+  ind_break_1 <- (yea_cla_1 - sta_yea_cla) + 1
+  ind_break_2 <- (yea_cla_2 - sta_yea_cla) + 0
+  ind_break_3 <- (yea_cla_3 - sta_yea_cla) + 1
+  ind_break_4 <- (yea_cla_4 - sta_yea_cla) + 0
+
+  if(break_day == 0){#when break not 1.Jan one year less available to analyse
+    ind_break_1 <- (yea_cla_1 - sta_yea_cla) + 1
+    ind_break_2 <- (yea_cla_2 - sta_yea_cla) + 1
+    ind_break_3 <- (yea_cla_3 - sta_yea_cla) + 1
+    ind_break_4 <- (yea_cla_4 - sta_yea_cla) + 1
+  }
+
+  data_mea   <- apply(data_day[, ], 2, mea_na)
+  data_mea_1 <- apply(data_day[c(ind_break_1:ind_break_2), ], 2, mea_na)
+  data_mea_2 <- apply(data_day[c(ind_break_3:ind_break_4), ], 2, mea_na)
+
+  diff_mea   <- diff(data_mea)
+  diff_mea_1 <- diff(data_mea_1)
+  diff_mea_2 <- diff(data_mea_2)
+
+  sub_diff_mea <- diff_mea_1 - diff_mea_2
+
+  #vertical ablines at maximum
+  doy_max_1 <- which(data_mea_1 == max_na(data_mea_1))
+  doy_max_2 <- which(data_mea_2 == max_na(data_mea_2))
+
+  #Plot: Mean graph
+
+  x_axis_lab <- c(16,46,74,105,135,166,196,227,258,288,319,349)
+  x_axis_tic <- c(16,46,74,105,135,166,196,227,258,288,319,349,380)-15
+
+  y_max <- max(c(data_mea, data_mea_1, data_mea_2))
+  y_min <- min(c(data_mea, data_mea_1, data_mea_2))
+
+  plot(data_mea_1, type = "n", col ="blue3",
+       axes = F, ylab = "", xlab = "", ylim = c(y_min, y_max))
+  lines(data_mea_1, col = "steelblue4", lwd = 2.5)
+  lines(data_mea_2, col = "darkred", lwd = 2.5)
+  abline(v = doy_max_1, col = "steelblue4", lty = "dashed", lwd = 2)
+  abline(v = doy_max_2, col = "darkred",  lty = "dashed", lwd = 2)
+  mtext(paste0("Max. lag: ", (doy_max_1-doy_max_2), " days"), side = 3, line = 0.2, adj = 1, cex = 1.2)
+
+  mtext("Discharge [m³/s]", side = 2, line = 2.0, cex = 1.2)
+  legend_posi <- "topleft"
+
+  axis(2, mgp=c(3, 0.25, 0), tck = -0.009, cex.axis = 1.2)
+  axis(1, at = x_axis_tic, c("","","","","","","","","","","","",""), tick = TRUE,
+       col = "black", col.axis = "black", tck = -0.06)#plot ticks
+  if(break_day == 274){
+    axis(1, at = x_axis_lab, c("O","N","D","J","F","M","A","M","J","J","A","S"), tick = FALSE,
+         col="black", col.axis="black", mgp=c(3, 0.15, 0))#plot labels
+  }
+  if(break_day == 304){
+    axis(1, at = x_axis_lab, c("N","D","J","F","M","A","M","J","J","A","S","O"), tick = FALSE,
+         col="black", col.axis="black", mgp=c(3, 0.15, 0))#plot labels
+  }
+  if(break_day == 334){
+    axis(1, at = x_axis_lab, c("D","J","F","M","A","M","J","J","A","S", "O","N"), tick = FALSE,
+         col="black", col.axis="black", mgp=c(3, 0.15, 0))#plot labels
+  }
+  if(break_day == 0){
+    axis(1, at = x_axis_lab, c("J","F","M","A","M","J","J","A","S","O", "N", "D"), tick = FALSE,
+         col="black", col.axis="black", mgp=c(3, 0.15, 0))#plot labels
+  }
+  mtext(paste0(stat_name, " (", sta_yea_cla, "-", end_yea_cla, ")"), line = 0.2, side = 3, cex = 1.5, adj = 0)
+  abline(v = x_axis_tic, col = "grey55", lty = "dashed", lwd = 0.8)
+  grid(nx = 0, ny = 5, lty = "dashed", col = "grey55", lwd = 0.8)
+  legend(legend_posi, c(paste0(yea_cla_1, "-", yea_cla_2), paste0(yea_cla_3, "-", yea_cla_4)),
+         pch = 19, col = c("steelblue4", "darkred"),
+         bg = "white")
+  box(lwd = 0.7)
+
+
+}
