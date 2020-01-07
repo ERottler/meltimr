@@ -1,11 +1,21 @@
 Package: meltimr
 Type: Package
-Title: Snow melt timing and snow melt contribution to river runoff.
+Title: Shiny App to investigate GRDC runoff data with regard to changes in runoff timing.
 Version: 0.1.0
 Authors@R: person("Erwin", "Rottler", email = "rottler@protonmail.com",role = c("aut", "cre"))
 Maintainer: The package maintainer <rottler@protonmail.com>
-Description: R package to investigate changes in snow melt timing and snow melt contribution to river runoff.
+Description: R code for an interactive shiny web app to investigate changes in runoff timing. Focus is on alpine catchments and changes caused by river regulations and changes in snow packs. Currently, focus is on station data provided by the Global Runoff Data Centre 56068 Koblenz, Germany (GRDC).
 License: CC BY 4.0
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
+Imports:
+    zyp,
+    zoo,
+    readr,
+    viridis,
+    RColorBrewer,
+    leaflet,
+    shiny,
+    shinythemes
+    
