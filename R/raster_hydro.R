@@ -22,7 +22,7 @@ raster_hydro <- function(data_day, break_day, sta_yea_cla, end_yea_cla, stat_nam
   qua_break <- quantile(data_day, probs = 0.70, type = 8, na.rm = T)
 
   breaks_1 <- seq(min_break, qua_break, length.out = length(cols_hydro)/2)
-  breaks_2 <- exp(seq(qua_break+0.01, max_break, length.out = length(cols_hydro)/2 + 1))
+  breaks_2 <- exp(seq(log(qua_break+0.01), log(max_break), length.out = length(cols_hydro)/2 + 1))
   breaks_2[length(breaks_2)] <- breaks_2[length(breaks_2)] + 0.1
 
 

@@ -12,6 +12,7 @@ RoxygenNote: 6.1.1
 Imports:
     zyp,
     zoo,
+    Kendall,
     readr,
     viridis,
     RColorBrewer,

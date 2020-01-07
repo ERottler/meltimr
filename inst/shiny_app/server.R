@@ -6,16 +6,15 @@
 
 #set_up----
 
-#Load Packages
-library(meltimr)
-library(zyp)
-library(zoo)
-library(readr)
-library(viridis)
-library(RColorBrewer)
+grdc_dir <- "/media/rottler/data2/GRDC_DAY/" #Path to folder with GRDC data
+start_year_min <- 1950  #Only include stations with recordings at least since this year
+#Station selection according to location (lat-lon rectangle WSG84)
+lat_upp <- 90.00 #Upper bound
+lat_low <- -90.00 #Lower bound
+lon_left <- -180 #Left bound
+lon_right <- 180.00 #Right bound
 
-#Path to GRDC data
-grdc_dir <- "/media/rottler/data2/GRDC_DAY/"
+#grdc_files----
 
 #Read meta data from GRDC files located in folder 'data/grdc'
 file_paths <- list.files(path = grdc_dir, pattern = "*.Cmd", full.names = T)
@@ -57,11 +56,12 @@ grdc_meta$longitude  <- as.numeric(levels(grdc_meta$longitude))[grdc_meta$longit
 grdc_meta$Start_year  <- as.numeric(levels(grdc_meta$Start_year))[grdc_meta$Start_year]
 grdc_meta$file_path  <- as.character(levels(grdc_meta$file_path))[grdc_meta$file_path]
 
-#Select station according to initial year of time series
-start_year_min <- 1950
-
-grdc_meta <- grdc_meta[which(grdc_meta$Start_year < start_year_min), ]
-
+#Station selection
+grdc_meta <- grdc_meta[which(grdc_meta$Start_year <= start_year_min), ]
+grdc_meta <- grdc_meta[which(grdc_meta$latitude < lat_upp), ]
+grdc_meta <- grdc_meta[which(grdc_meta$latitude > lat_low), ]
+grdc_meta <- grdc_meta[which(grdc_meta$longitude > lon_left), ]
+grdc_meta <- grdc_meta[which(grdc_meta$longitude < lon_right), ]
 
 #server----
 

@@ -1,12 +1,19 @@
 ###
 
 #Shiny Web App to visualize discharge data from GRDC - User Interface
-#Erwin Rottler, University of Potsdam, 01/2020
 
 ###
 
-library(leaflet)
+library(shiny)
 library(shinythemes)
+library(leaflet)
+library(meltimr)
+library(zyp)
+library(Kendall)
+library(zoo)
+library(readr)
+library(viridisLite)
+library(RColorBrewer)
 
 navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
 
@@ -29,7 +36,7 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
         width = 650, height = "auto", style = "opacity: 0.99",
 
         h2("Hydro explorer"),
-                         
+
         selectInput("ana_method", "Analytical tool", c(
           "Raster graph" = "rasterhydro",
           "Mean graph" = "meanhydro",
@@ -37,9 +44,9 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
           "Annual Max" = "annmax",
           "Percentile graph" = "percenthydro"
         )),
-        
+
         checkboxInput(inputId = "condi_adjust", label = "Interactive options"),
-        
+
         conditionalPanel("input.ana_method == 'rasterhydro' && (input.condi_adjust == true)",
                          selectInput("break_day_rh", "Select break day:", choices = c("1.Oct", "1.Nov", "1.Dec", "1.Jan"))
         ),
@@ -101,32 +108,32 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
         ),
 
         plotOutput("hydro_plot", width = "100%"),
-        
+
         downloadButton(outputId = "down", label = "Download", height = "1.0cm")
-        
+
     )
-   ) 
+   )
   ),
-  
+
   tabPanel("Summary",
-           
-           
+
+
            h3("Motivation"),
            p("In snow-dominated river basins, floods often occur during early summer, when high baseflow due to snowmelt is superimposed by heavy  rainfall. An earlier onset of seasonal snowmelt  as  a consequence of a warming climate often is assumed to shift the snowmelt contribution to river runoff and  potential flooding forward  in  time. Against this  background, our study aims  to investigate whether and how recent changes in snow cover translate into changes in river discharge. The spatial focus is on the European Alps, and particularly on the alpine part of the Rhine river basin."),
-           
+
            h3("Approach"),
            p("We assess and characterize historic changes in snow cover at the point and catchment scale. In   this   regard,   we   analyze   in   situ   snow   measurements   and   conduct   snow   simulations   using   a physically based snow model. To examine changes in the seasonality of river runoff and changes in runoff timing, we apply a set of analytical tools on discharge recordings from in and around the alpine ridge.")
-           
+
   ),
-  
+
   tabPanel("Tools",
-           
+
            hr(),
-           
+
            h1("Tools"),
-           
+
            hr(),
-           
+
            h3("Raster graph"),
            p("The raster graph is a three-dimensional surface plot where the x-axis is the day of the year, the y-axis the individual years and the z-axis the daily value of the investigated variable (e.g streamflow or snow depth). The visualization of the data recordings using raster graphs provides a quick first insight into the dynamics and processes controlling investigated variable at the selected site. This visualization tools enables the display of inter- and intra-annual variabilities in one single figure."),
            tags$b("Interactive options"),
@@ -134,7 +141,7 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
            p(tags$a("Time frame:"), "Select start and end year of time frame displayed."),
 
            hr(),
-           
+
            h3("Mean graph"),
            p("Mean annual cycles for two selected time windows (blue and red) are displayed. Vertical lines mark days of the year of annual maxima. The time lag between days of maximum runoff of the two selected time windows is noted top right. The display and comparison of mean annual cycles provides a very good first insight into changes in the seasonal redisbribution of water via seasonal snow packs. The tools simplicity is its strength and weakness at the same time"),
            tags$b("Interactive options"),
@@ -143,17 +150,17 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
            p(tags$a("Time frame 2: "), "Select start and end year of time frame 2 (red line)."),
            p(tags$a("Window width moving averages: "), "Prior the calculation of mean annual cycle a moving average filter can be moved over the time series."),
            p(tags$a("Variable: "), "Display mean average annual cycles of the two selected time frames (Mean windows) or the mean local slope estimated as the difference between two consecutive days (Diff. mean windows: positive values indicate snow accumulation/increase runoff, negative values ablation of snow/decrease runoff)."),
-           
+
            hr(),
-           
+
            h3("Volume timing"),
            p("One approach to investigate the earlier timing of runoff, is to determine the day of the year (DOY) when a certain fraction of the total annual volume passes the gauging station. The 'Volume timing' tool displays the DOYs when 25/50/75 % of the total annual runoff were recorded. On top of the pannel, mean DOY, and a linear trend estimation (positve = earlier) are noted for each volume fraction investigated. This approach certainly gives a good insight into changes in the redistribution of water by a seasonal snow cover. However, caution has to be exercised interpreting changes, particularly in alpine river basins influenced by reservoirs used for hydro power production."),
            tags$b("Interactive options"),
            p(tags$a("Break day:"),  "Select start day of the year considered. Currently available selection are 1.October (start hydrological year in Switzerland), 1.November (start hydrological year in Germany), 1.December and 1.January."),
            p(tags$a("Time frame:"), "Select start and end year of time frame investigated."),
-           
+
            hr(),
-           
+
            h3("Annual Max"),
            p("'Annual Max' is a tool to investigate the timing and magnitude of annual maxima. Furhtermore, the investigation in monthly maxima is possible. Linear trends are calculated using the robust Theil-Sen-approach. For options 'Day of the year' and 'Magnitude', trend magnitudes (per decade) and change over the entire time frame selected are noted top right (positive values = earlier/higher). This tool focuses on the highest discharges and hence is particularly useful in detecting changes in flood characteristics. The interactive options help to get a feeling for the sensitivity of maxima-based approaches to years and months selected."),
            tags$b("Interactive options"),
@@ -161,9 +168,9 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
            p(tags$a("Time frame:"), "Select start and end year of time frame investigated."),
            p(tags$a("Break day: "),  "Select start day of years. Example: Selecting day 305 means that years are from 1.Nov - 30.Oct. If variable is 'Monthly Maxima' or individual months are selected (see next option), break day is automatically set to 1.Jan."),
            p(tags$a("Months: "),  "Only selected months are taken into account to determine maxima (1 to 12 = January to December). Example: Selecting 3 to 6 means that only values recorded from March to June are considered to determine annual maxima."),
-           
+
            hr(),
-           
+
            h3("Percentile graph"),
            p("Percentile graphs for two different time windows. Quantiles are estimated on a monthly level based on all daily of a month. In a 40-year time window, quantiles for the month of January, for example, base on 40 times 31 daily values. Quantiles are estimated empirically based on type 8 of the function 'quantile' in the R environment. The Percentile graph option is a powerful tool, as it offers the posibility to investigate changes along the entire runoff range. Changes in low flow situation as well as high flow can be assessed. However, a sufficient length of the time series is crucial. We recommend at least 30 years for each time window."),
            tags$b("Interactive options"),
@@ -171,27 +178,27 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
            p(tags$a("Time frame 1: "), "Select start and end year of time frame 1 (blue line)."),
            p(tags$a("Time frame 2: "), "Select start and end year of time frame 2 (red line)."),
            p(tags$a("Probability"), "Select which quantile to compare (only relevant for 'Line plot')"),
-          
+
            hr()
-           
+
            ),
-  
+
   tabPanel("Data & Code",
-           
+
            h1("Data"),
            p("All discharge data used was obtained from the Global Runoff Data Centre 56068 Koblenz, Germany (GRDC)."),
-           
+
            hr(),
-           
+
            h3("Code"),
            p("Git repo. Code of Shiny App available at XXX. Including and tutorial how to run it yourself in only three simple steps.")
   ),
-  
+
   tabPanel("Contact",
            h3("Feedback"),
            p("Should you have any comments, questions or suggestions, please do not hesitate to contact us: rottler(at)uni-potsdam.de"),
            h3("Funding"),
            p("This research is funded by Deutsche Forschungsgemeinschaft (DFG) within the graduate research training group NatRiskChange (GRK 2043/1) at the University of Potsdam: http://www.natriskchange.de")
   )
-  
+
 )
