@@ -6,8 +6,9 @@
 
 #set_up----
 
-grdc_dir <- "/media/rottler/data2/GRDC_DAY/" #Path to folder with GRDC data
+grdc_dir <- "/media/rottler/data2/GRDC_DAY" #Path to folder with GRDC data
 start_year_min <- 1950  #Only include stations with recordings at least since this year
+end_year_min <- 2000  #Only include stations with recordings at least until this year
 #Station selection according to location (lat-lon rectangle WSG84)
 lat_upp <- 90.00 #Upper bound
 lat_low <- -90.00 #Lower bound
@@ -39,25 +40,30 @@ for(i in 1:length(file_paths)){
   #Start Year
   sta_year <- substr(meta_rows[24], 26, 29)
 
+  #End Year
+  end_year <- substr(meta_rows[24], 36, 39)
+
   #Meta data single station
-  meta_sing <- c(sta_name, sta_lati, sta_long, sta_year, file_paths[i])
+  meta_sing <- c(sta_name, sta_lati, sta_long, sta_year, end_year, file_paths[i])
 
   #Collect meta data all stations
   grdc_meta <- rbind(grdc_meta, meta_sing)
 
 }
 
-colnames(grdc_meta) <- c("name", "latitude", "longitude", "Start_year", "file_path")
+colnames(grdc_meta) <- c("name", "latitude", "longitude", "Start_year", "End_year", "file_path")
 rownames(grdc_meta) <- NULL
 grdc_meta <- as.data.frame(grdc_meta)
 grdc_meta$name  <- as.character(levels(grdc_meta$name))[grdc_meta$name]
 grdc_meta$latitude   <- as.numeric(levels(grdc_meta$latitude))[grdc_meta$latitude]
 grdc_meta$longitude  <- as.numeric(levels(grdc_meta$longitude))[grdc_meta$longitude]
 grdc_meta$Start_year  <- as.numeric(levels(grdc_meta$Start_year))[grdc_meta$Start_year]
+grdc_meta$End_year  <- as.numeric(levels(grdc_meta$End_year))[grdc_meta$End_year]
 grdc_meta$file_path  <- as.character(levels(grdc_meta$file_path))[grdc_meta$file_path]
 
 #Station selection
 grdc_meta <- grdc_meta[which(grdc_meta$Start_year <= start_year_min), ]
+grdc_meta <- grdc_meta[which(grdc_meta$End_year >= end_year_min), ]
 grdc_meta <- grdc_meta[which(grdc_meta$latitude < lat_upp), ]
 grdc_meta <- grdc_meta[which(grdc_meta$latitude > lat_low), ]
 grdc_meta <- grdc_meta[which(grdc_meta$longitude > lon_left), ]

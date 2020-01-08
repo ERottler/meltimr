@@ -117,20 +117,10 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
 
   tabPanel("Summary",
 
-
-           h3("Motivation"),
-           p("In snow-dominated river basins, floods often occur during early summer, when high baseflow due to snowmelt is superimposed by heavy  rainfall. An earlier onset of seasonal snowmelt  as  a consequence of a warming climate often is assumed to shift the snowmelt contribution to river runoff and  potential flooding forward  in  time. Against this  background, our study aims  to investigate whether and how recent changes in snow cover translate into changes in river discharge. The spatial focus is on the European Alps, and particularly on the alpine part of the Rhine river basin."),
-
-           h3("Approach"),
-           p("We assess and characterize historic changes in snow cover at the point and catchment scale. In   this   regard,   we   analyze   in   situ   snow   measurements   and   conduct   snow   simulations   using   a physically based snow model. To examine changes in the seasonality of river runoff and changes in runoff timing, we apply a set of analytical tools on discharge recordings from in and around the alpine ridge.")
-
+           p("Climatic changes are projected to severly alter river runoff, particularly in snow-dominated river basins. In the framework of this study, we aim to  provide an overview on the impact of seasonal snow packs on river runoff and detect and visualize changes in runoff seasonality and runoff timing. In this regard, we develop an interactive shiny web app, which enables the investigation of >7000 gauging stations from all around the world. The available selection of tools inter alia enables the analysis of changes in inter- and intra-annual variabilities and the timing and magnitude of annual maxima. The interactive nature of the developed web app makes it excellently suitable to  quickly compare gauges/regions/methods/times frames, to put results into context and assess weaknesses and strenghts of individual analytical tools.")
   ),
 
   tabPanel("Tools",
-
-           hr(),
-
-           h1("Tools"),
 
            hr(),
 
@@ -149,12 +139,11 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
            p(tags$a("Time frame 1: "), "Select start and end year of time frame 1 (blue line)."),
            p(tags$a("Time frame 2: "), "Select start and end year of time frame 2 (red line)."),
            p(tags$a("Window width moving averages: "), "Prior the calculation of mean annual cycle a moving average filter can be moved over the time series."),
-           p(tags$a("Variable: "), "Display mean average annual cycles of the two selected time frames (Mean windows) or the mean local slope estimated as the difference between two consecutive days (Diff. mean windows: positive values indicate snow accumulation/increase runoff, negative values ablation of snow/decrease runoff)."),
 
            hr(),
 
            h3("Volume timing"),
-           p("One approach to investigate the earlier timing of runoff, is to determine the day of the year (DOY) when a certain fraction of the total annual volume passes the gauging station. The 'Volume timing' tool displays the DOYs when 25/50/75 % of the total annual runoff were recorded. On top of the pannel, mean DOY, and a linear trend estimation (positve = earlier) are noted for each volume fraction investigated. This approach certainly gives a good insight into changes in the redistribution of water by a seasonal snow cover. However, caution has to be exercised interpreting changes, particularly in alpine river basins influenced by reservoirs used for hydro power production."),
+           p("One approach to investigate the earlier timing of runoff, is to determine the day of the year (DOY) when a certain fraction of the total annual volume passes the gauging station. The 'Volume timing' tool displays the DOYs when 25/50/75 % of the total annual runoff were recorded. On top of the pannel, mean DOY, and a linear trend (Sens's slope) estimation (positve = earlier) are noted for each volume fraction. This approach certainly gives a good insight into changes in the redistribution of water by a seasonal snow cover. However, caution has to be exercised interpreting changes, particularly in alpine river basins influenced by reservoirs used for hydro power production."),
            tags$b("Interactive options"),
            p(tags$a("Break day:"),  "Select start day of the year considered. Currently available selection are 1.October (start hydrological year in Switzerland), 1.November (start hydrological year in Germany), 1.December and 1.January."),
            p(tags$a("Time frame:"), "Select start and end year of time frame investigated."),
@@ -185,20 +174,20 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
 
   tabPanel("Data & Code",
 
-           h1("Data"),
-           p("All discharge data used was obtained from the Global Runoff Data Centre 56068 Koblenz, Germany (GRDC)."),
+           h3("Data"),
+           p("In the framework of this study, we focus on discharge data from the global runoff dataset provided by the Global Runoff Data Centre 56068 Koblenz, Germany (GRDC). This unique collection of discharge time series from all over the world represents a key dataset for hydrological research. For further information, please visit: www.bafg.de/GRDC"),
 
            hr(),
 
            h3("Code"),
-           p("Git repo. Code of Shiny App available at XXX. Including and tutorial how to run it yourself in only three simple steps.")
+           p("Source code of this shiny web app comes in form of an R package and can be accessed at: github.com/ERottler/meltimr.")
   ),
 
   tabPanel("Contact",
            h3("Feedback"),
            p("Should you have any comments, questions or suggestions, please do not hesitate to contact us: rottler(at)uni-potsdam.de"),
            h3("Funding"),
-           p("This research is funded by Deutsche Forschungsgemeinschaft (DFG) within the graduate research training group NatRiskChange (GRK 2043/1) at the University of Potsdam: http://www.natriskchange.de")
+           p("This research is funded by Deutsche Forschungsgemeinschaft (DFG) within the graduate research training group NatRiskChange (GRK 2043/1) at the University of Potsdam: www.natriskchange.de")
   )
 
 )
