@@ -2,7 +2,7 @@
 
 Shiny web app to investigate GRDC runoff data with regard to changes in runoff timing.
 
-The app can be viewed at: http://seca-vista.geo.uni-potsdam.de:3838/AlpTempApp/
+The app can be viewed at: bit.ly/hydroExplorer
 
 
 To run the app on your local machine, take the following steps:
