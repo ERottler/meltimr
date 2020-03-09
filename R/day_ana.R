@@ -16,21 +16,21 @@ day_ana <- function(data, date, start_year, end_year, do_ma = F, window_width = 
                         do_ma = do_ma, window_width = window_width, break_day = break_day)
 
   if(method_ana == "mean"){
-    res <- apply(data_day[,-1], 2, mea_na)
+    res <- apply(data_day, 2, mea_na)
   }
 
   if(method_ana == "median"){
-    res <- apply(data_day[,-1], 2, med_na)
+    res <- apply(data_day, 2, med_na)
   }
 
   if(method_ana == "sum"){
     f_sum <- function(data_in){sum(data_in, na.rm = T)}
-    res <- apply(data_day[,-1], 2, f_sum)
+    res <- apply(data_day, 2, f_sum)
   }
 
   if(method_ana == "sens_slope"){
 
-    res <- apply(data_day[,-1], 2, sens_slo)
+    res <- apply(data_day, 2, sens_slo)
 
   }
 

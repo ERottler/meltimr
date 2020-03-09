@@ -13,9 +13,9 @@ div.outer {
 }
 
 /* Customize fonts */
-body, label, input, button, select { 
+body, label, input, button, select {
   font-family: 'Helvetica Neue', Helvetica;
-  font-weight: 200;
+  font-weight: 150;
 }
 h1, h2, h3, h4 { font-weight: 400; }
 

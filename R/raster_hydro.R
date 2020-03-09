@@ -17,8 +17,8 @@ raster_hydro <- function(data_day, break_day, sta_yea_cla, end_yea_cla, stat_nam
 
   cols_hydro <- colorRampPalette(c(viridis::viridis(20, direction = -1)))(200)
 
-  max_break <- max_na(data_day)
-  min_break <- min_na(data_day)
+  max_break <- max(data_day, na.rm = T)
+  min_break <- min(data_day, na.rm = T)
   qua_break <- quantile(data_day, probs = 0.70, type = 8, na.rm = T)
 
   breaks_1 <- seq(min_break, qua_break, length.out = length(cols_hydro)/2)
