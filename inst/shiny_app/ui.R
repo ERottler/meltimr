@@ -125,7 +125,7 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
            hr(),
 
            h3("Raster graph"),
-           p("The raster graph is a three-dimensional surface plot where the x-axis is the day of the year, the y-axis the individual years and the z-axis the daily value of the investigated variable (e.g streamflow or snow depth). The visualization of the data recordings using raster graphs provides a quick first insight into the dynamics and processes controlling investigated variable at the selected site. This visualization tools enables the display of inter- and intra-annual variabilities in one single figure."),
+           p("The raster graph is a three-dimensional surface plot where the x-axis is the day of the year, the y-axis the individual years and the z-axis the daily value of the investigated variable (e.g streamflow or snow depth). The visualization of the data recordings using raster graphs provides a quick first insight into the dynamics and processes controlling investigated variable at the selected site. This visualization tools enables the display of inter- and intra-annual variabilities in one single figure [1] [2]."),
            tags$b("Interactive options"),
            p(tags$a("Break day:"),  "Customize x-axis by selecting different break days. Currently available selection are 1.October (start hydrological year in Switzerland), 1.November (start hydrological year in Germany), 1.December and 1.January."),
            p(tags$a("Time frame:"), "Select start and end year of time frame displayed."),
@@ -143,7 +143,7 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
            hr(),
 
            h3("Volume timing"),
-           p("One approach to investigate the earlier timing of runoff, is to determine the day of the year (DOY) when a certain fraction of the total annual volume passes the gauging station. The 'Volume timing' tool displays the DOYs when 25/50/75 % of the total annual runoff were recorded. On top of the pannel, mean DOY, and a linear trend (Sens's slope) estimation (positve = earlier) are noted for each volume fraction. This approach certainly gives a good insight into changes in the redistribution of water by a seasonal snow cover. However, caution has to be exercised interpreting changes, particularly in alpine river basins influenced by reservoirs used for hydro power production."),
+           p("One approach to investigate the earlier timing of runoff, is to determine the day of the year (DOY) when a certain fraction of the total annual volume passes the gauging station (e.g. [3] [4]). The 'Volume timing' tool displays the DOYs when 25/50/75 % of the total annual runoff were recorded. On top of the pannel, mean DOY, and a linear trend (Sens's slope) estimation (positve = earlier) are noted for each volume fraction. This approach certainly gives a good insight into changes in the redistribution of water by a seasonal snow cover. However, caution has to be exercised interpreting changes, particularly in alpine river basins influenced by reservoirs used for hydro power production."),
            tags$b("Interactive options"),
            p(tags$a("Break day:"),  "Select start day of the year considered. Currently available selection are 1.October (start hydrological year in Switzerland), 1.November (start hydrological year in Germany), 1.December and 1.January."),
            p(tags$a("Time frame:"), "Select start and end year of time frame investigated."),
@@ -168,7 +168,16 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
            p(tags$a("Time frame 2: "), "Select start and end year of time frame 2 (red line)."),
            p(tags$a("Probability"), "Select which quantile to compare (only relevant for 'Line plot')"),
 
-           hr()
+           hr(),
+
+           h3("References"),
+           p("[1] Koehler, R. 2004. Raster Based Analysis and Visualization of Hydrologic Time Series. Ph.D. dissertation, University of Arizona. Tucson, AZ, 189 p."),
+
+           p("[2] Strandhagen, E., Marcus, W.A., and Meacham, J.E. 2006. Views of the rivers: representing streamflow of the greater Yellowstone ecosystem (hotlink to http://geography.uoregon.edu/amarcus/Publications/Strandhagen-et-al_2006_Cart_Pers.pdf). Cartographic Perspectives, no. 55, Fall."),
+
+           p("[3] Maurer, E. P., I. T. Stewart, C. Bonfils, P. B. Duffy, and D. Cayan (2007), Detection, attribution, and sensitivity of trends toward earlier streamflow in the Sierra Nevada, J. Geophys. Res., 112, D11118, doi:10.1029/2006JD008088"),
+
+           p("[4] Déry, S. J., K. Stahl, R. D. Moore, P. H. Whitfield, B. Menounos, and J. E. Burford (2009), Detection of runoff timing changes in pluvial, nival, and glacial rivers of western Canada, Water Resour. Res., 45, W04426, doi:10.1029/2008WR006975.")
 
            ),
 

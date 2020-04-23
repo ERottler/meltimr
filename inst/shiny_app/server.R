@@ -7,8 +7,9 @@
 #set_up----
 
 grdc_dir <- "/media/rottler/data2/GRDC_DAY" #Path to folder with GRDC data
-start_year_min <- 1950  #Only include stations with recordings at least since this year
-end_year_min <- 2000  #Only include stations with recordings at least until this year
+# grdc_dir <- "/srv/shiny-server/melTim/data" #Path to folder with GRDC data
+start_year_min <- 2000  #Only include stations with recordings at least since this year
+end_year_min <- 1950  #Only include stations with recordings at least until this year
 #Station selection according to location (lat-lon rectangle WSG84)
 lat_upp <- 90.00 #Upper bound
 lat_low <- -90.00 #Lower bound
