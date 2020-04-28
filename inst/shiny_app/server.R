@@ -70,6 +70,10 @@ grdc_meta <- grdc_meta[which(grdc_meta$latitude > lat_low), ]
 grdc_meta <- grdc_meta[which(grdc_meta$longitude > lon_left), ]
 grdc_meta <- grdc_meta[which(grdc_meta$longitude < lon_right), ]
 
+#prevent duplicated latituds for selected via map
+dup_lat <- which(duplicated(grdc_meta$latitude))
+grdc_meta$latitude[dup_lat] <- grdc_meta$latitude[dup_lat] + rnorm(length(dup_lat), 0, 0.001)
+
 #server----
 
 function(input, output, session) {
