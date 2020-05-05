@@ -8,13 +8,6 @@
 
 grdc_dir <- "/media/rottler/data2/GRDC_DAY" #Path to folder with GRDC data
 # grdc_dir <- "/srv/shiny-server/melTim/data" #Path to folder with GRDC data
-start_year_min <- 2000  #Only include stations with recordings at least since this year
-end_year_min <- 1950  #Only include stations with recordings at least until this year
-#Station selection according to location (lat-lon rectangle WSG84)
-lat_upp <- 90.00 #Upper bound
-lat_low <- -90.00 #Lower bound
-lon_left <- -180 #Left bound
-lon_right <- 180.00 #Right bound
 
 #grdc_files----
 
@@ -62,14 +55,6 @@ grdc_meta$Start_year  <- as.numeric(levels(grdc_meta$Start_year))[grdc_meta$Star
 grdc_meta$End_year  <- as.numeric(levels(grdc_meta$End_year))[grdc_meta$End_year]
 grdc_meta$file_path  <- as.character(levels(grdc_meta$file_path))[grdc_meta$file_path]
 
-#Station selection
-grdc_meta <- grdc_meta[which(grdc_meta$Start_year <= start_year_min), ]
-grdc_meta <- grdc_meta[which(grdc_meta$End_year >= end_year_min), ]
-grdc_meta <- grdc_meta[which(grdc_meta$latitude < lat_upp), ]
-grdc_meta <- grdc_meta[which(grdc_meta$latitude > lat_low), ]
-grdc_meta <- grdc_meta[which(grdc_meta$longitude > lon_left), ]
-grdc_meta <- grdc_meta[which(grdc_meta$longitude < lon_right), ]
-
 #prevent duplicated latituds for selected via map
 dup_lat <- which(duplicated(grdc_meta$latitude))
 grdc_meta$latitude[dup_lat] <- grdc_meta$latitude[dup_lat] + rnorm(length(dup_lat), 0, 0.001)
@@ -78,18 +63,35 @@ grdc_meta$latitude[dup_lat] <- grdc_meta$latitude[dup_lat] + rnorm(length(dup_la
 
 function(input, output, session) {
 
-  #Map
-  gauge_map <- shiny::reactive({
+  #Filter stations
+  observe({
 
-    leaflet() %>%
-      addProviderTiles(providers$Stamen.TerrainBackground, group = "Terrain Background") %>%
-      addProviderTiles(providers$OpenStreetMap.HOT,           group = "Open Street Map") %>%
+    filter_sta_yea <- input$filter_sta_yea
+    filter_end_yea <- input$filter_end_yea
+    filter_lat_upp <- input$filter_lat_upp
+    filter_lat_low <- input$filter_lat_low
+    filter_lon_left <- input$filter_lon_left
+    filter_lon_right <- input$filter_lon_right
 
-      addCircleMarkers(grdc_meta$longitude, grdc_meta$latitude, label = grdc_meta$name,
-                       labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
-                       stroke = F, group = "Runoff", fillOpacity = 0.8, fillColor = "darkred",
-                       popup = grdc_meta$name,
-                       clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
+    grdc_meta <- grdc_meta[which(grdc_meta$Start_year <= filter_sta_yea), ]
+    grdc_meta <- grdc_meta[which(grdc_meta$End_year >= filter_end_yea), ]
+    grdc_meta <- grdc_meta[which(grdc_meta$latitude < filter_lat_upp), ]
+    grdc_meta <- grdc_meta[which(grdc_meta$latitude > filter_lat_low), ]
+    grdc_meta <- grdc_meta[which(grdc_meta$longitude > filter_lon_left), ]
+    grdc_meta <- grdc_meta[which(grdc_meta$longitude < filter_lon_right), ]
+
+    #Map
+    gauge_map <- shiny::reactive({
+
+      leaflet() %>%
+        addProviderTiles(providers$Stamen.TerrainBackground, group = "Terrain Background") %>%
+        addProviderTiles(providers$OpenStreetMap.HOT,           group = "Open Street Map") %>%
+
+        addCircleMarkers(grdc_meta$longitude, grdc_meta$latitude, label = grdc_meta$name,
+                         labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
+                         stroke = F, group = "Runoff", fillOpacity = 0.8, fillColor = "darkred",
+                         popup = grdc_meta$name,
+                         clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
                                                                                     var childCount = cluster.getChildCount();
                                                                                     if (childCount < 50) {
                                                                                       c = 'rgba(210, 10, 10, 255);'
@@ -99,20 +101,22 @@ function(input, output, session) {
                                                                                       c = 'rgba(160, 10, 10, 255);'
                                                                                     }
                                                                                     return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
-                                                                                   )
-                                                             )
-      )  %>%
+                         )
+                         )
+        )  %>%
 
-      addLayersControl(
-        baseGroups = c("Terrain Background", "Open Street Map"),
-        position = "bottomleft"
+        addLayersControl(
+          baseGroups = c("Terrain Background", "Open Street Map"),
+          position = "bottomleft"
         ) %>%
 
-      setView(lng = 10.9, lat = 46.5, zoom = 7)
+        setView(lng = 10.9, lat = 46.5, zoom = 7)
+
+    })
+
+    output$map <- renderLeaflet({ gauge_map() })
 
   })
-
-  output$map <- renderLeaflet({ gauge_map() })
 
   #Initial conditions: 'Select station on map.'
   f_plot <- function(){
@@ -439,6 +443,12 @@ function(input, output, session) {
 
       }
 
+      if(input$ana_method == "statsfilter"){
+
+        plot(1:10, 1:10, type = "n", axes = F, ylab = "", xlab = "")
+        mtext("Filter stations using options above.", line = -1, cex = 1.5)
+
+      }
     }
 
     output$hydro_plot <- renderPlot({f_plot()})

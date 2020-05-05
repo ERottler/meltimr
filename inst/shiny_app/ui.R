@@ -42,7 +42,8 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
           "Mean graph" = "meanhydro",
           "Volume timing" = "volutime",
           "Annual Max" = "annmax",
-          "Percentile graph" = "percenthydro"
+          "Percentile graph" = "percenthydro",
+          "Filter stations" = "statsfilter"
         )),
 
         checkboxInput(inputId = "condi_adjust", label = "Interactive options"),
@@ -106,6 +107,30 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
                          sliderInput("vol_frame", label = "Select periods to compare:", animate = F,
                                      min = 1940, max = 2000, step = 1, value = c(1940,1965))
         ),
+        conditionalPanel("input.ana_method == 'statsfilter'",
+                         sliderInput("filter_sta_yea", "Minimum start year:",animate = F,
+                                     min = 1850, max = 2016, step = 1, value = c(1960))
+        ),
+        conditionalPanel("input.ana_method == 'statsfilter'",
+                         sliderInput("filter_end_yea", label = "Minimum end year:", animate = F,
+                                     min = 1850, max = 2016, step = 1, value = c(2000))
+        ),
+        conditionalPanel("input.ana_method == 'statsfilter'",
+                         sliderInput("filter_lat_upp", label = "Maximum latitude:", animate = F,
+                                     min = 0, max = 90, step = 1, value = c(90))
+        ),
+        conditionalPanel("input.ana_method == 'statsfilter'",
+                         sliderInput("filter_lat_low", label = "Minimum latitude:", animate = F,
+                                     min = -90, max = 0, step = 1, value = c(-90))
+        ),
+        conditionalPanel("input.ana_method == 'statsfilter'",
+                         sliderInput("filter_lon_left", label = "Minimum longitude:", animate = F,
+                                     min = -180, max = 0, step = 1, value = c(-180))
+        ),
+        conditionalPanel("input.ana_method == 'statsfilter'",
+                         sliderInput("filter_lon_right", label = "Maximum longitude:", animate = F,
+                                     min = 0, max = 180, step = 1, value = c(180))
+        ),
 
         plotOutput("hydro_plot", width = "100%"),
 
@@ -117,7 +142,7 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
 
   tabPanel("Summary",
 
-           p("Climatic changes are projected to severly alter river runoff, particularly in snow-dominated river basins. In the framework of this study, we aim to  provide an overview on the impact of seasonal snow packs on river runoff and detect and visualize changes in runoff seasonality and runoff timing. In this regard, we develop an interactive shiny web app, which enables the investigation of >7000 gauging stations from all around the world. The available selection of tools inter alia enables the analysis of changes in inter- and intra-annual variabilities and the timing and magnitude of annual maxima. The interactive nature of the developed web app makes it excellently suitable to  quickly compare gauges/regions/methods/times frames, to put results into context and assess weaknesses and strenghts of individual analytical tools.")
+           p("Climatic changes are projected to severly alter river runoff, particularly in snow-dominated river basins. In the framework of this study, we aim to provide an overview on changes in runoff seasonality and runoff timing. In this regard, we develop an interactive shiny web app, which enables the investigation of >7000 gauging stations from all around the world. The available selection of tools inter alia enables the analysis of changes in inter- and intra-annual variabilities and the timing and magnitude of annual maxima. The interactive nature of the developed web app makes it excellently suitable to  quickly compare gauges/regions/methods/times frames, to put results into context and assess weaknesses and strenghts of individual analytical tools.")
   ),
 
   tabPanel("Tools",
@@ -170,6 +195,12 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
 
            hr(),
 
+           h3("Filter stations"),
+           p("Filters gauging stations displayed according to minimum start year, minimum end year, minimum/maximum latitude, minimum/maximum longitude."),
+
+           hr(),
+
+
            h3("References"),
            p("[1] Koehler, R. 2004. Raster Based Analysis and Visualization of Hydrologic Time Series. Ph.D. dissertation, University of Arizona. Tucson, AZ, 189 p."),
 
@@ -196,7 +227,7 @@ navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
            h3("Feedback"),
            p("Should you have any comments, questions or suggestions, please do not hesitate to contact us: rottler(at)uni-potsdam.de"),
            h3("Funding"),
-           p("This research is funded by Deutsche Forschungsgemeinschaft (DFG) within the graduate research training group NatRiskChange (GRK 2043/1) at the University of Potsdam: www.natriskchange.de")
+           p("This research was funded by Deutsche Forschungsgemeinschaft (DFG) within the graduate research training group NatRiskChange (GRK 2043/1) at the University of Potsdam: www.natriskchange.de")
   )
 
 )
