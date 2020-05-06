@@ -2,7 +2,7 @@
 
 Shiny web app to investigate GRDC runoff data with regard to changes in runoff timing.
 
-The app can be viewed at: bit.ly/hydroExplorer
+The app can be viewed at: http://natriskchange.ad.umwelt.uni-potsdam.de:3838/melTim/
 
 
 To run the app on your local machine, take the following steps:
