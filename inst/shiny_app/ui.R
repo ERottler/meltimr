@@ -15,7 +15,7 @@ library(readr)
 library(viridisLite)
 library(RColorBrewer)
 
-navbarPage("melTim", id="nav", theme = shinytheme("sandstone"),
+navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
 
   tabPanel("Interactive map",
     div(class="outer",
