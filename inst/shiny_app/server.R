@@ -8,62 +8,95 @@
 
 grdc_dir <- "/media/rottler/data2/GRDC_DAY" #Path to folder with GRDC data
 # grdc_dir <- "/srv/shiny-server/melTim/data" #Path to folder with GRDC data
+catc_dir <- "/media/rottler/data2/basin_data/grdc_basins/"
 
-#grdc_files----
+#read grdc meta data
+grdc_meta <- read.table(file = paste0("/home/rottler/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app/grdc_meta.csv"),
+                        sep = ";", header = T, stringsAsFactors = F)
+#list watersheds available
+catch_paths <- list.files(path = catc_dir, pattern = "*.shp$", full.names = T)
+catch_names <- list.files(path = catc_dir, pattern = "*.shp$", full.names = F)
+catch_ids <- as.numeric(substr(catch_names, 28, 34))
 
 #Read meta data from GRDC files located in folder 'data/grdc'
 file_paths <- list.files(path = grdc_dir, pattern = "*.Cmd", full.names = T)
+file_names <- list.files(path = grdc_dir, pattern = "*.Cmd", full.names = F)
 
-grdc_meta <- NULL
+#grdc_files----
 
-for(i in 1:length(file_paths)){
+# #list watersheds available
+# catch_paths <- list.files(path = catc_dir, pattern = "*.shp$", full.names = T)
+# catch_names <- list.files(path = catc_dir, pattern = "*.shp$", full.names = F)
+# catch_ids <- as.numeric(substr(catch_names, 28, 34))
+#
+# #Read meta data from GRDC files located in folder 'data/grdc'
+# file_paths <- list.files(path = grdc_dir, pattern = "*.Cmd", full.names = T)
+# file_names <- list.files(path = grdc_dir, pattern = "*.Cmd", full.names = F)
+#
+# grdc_meta <- NULL
+#
+# for(i in 1:length(file_paths)){
+#
+#   print(i)
+#
+#   #get rows with meta information
+#   meta_rows <- read_lines(file_paths[i], n_max = 32)
+#   meta_rows <- iconv(meta_rows, "UTF-8", "ASCII", "")
+#
+#   #Name
+#   sta_name <- substr(meta_rows[11], 26, nchar(meta_rows[11]))
+#
+#   #Longitude
+#   sta_long <- substr(meta_rows[14], 24, nchar(meta_rows[14]))
+#
+#   #Latitude
+#   sta_lati <- substr(meta_rows[13], 24, nchar(meta_rows[13]))
+#
+#   #Start Year
+#   sta_year <- substr(meta_rows[24], 26, 29)
+#
+#   #End Year
+#   end_year <- substr(meta_rows[24], 36, 39)
+#
+#   #Station ID
+#   sta_id <- substr(file_names[i], 1, 7)
+#
+#   #Catchment area
+#   # catch_area <- trimws(substr(meta_rows[15], 23, nchar(meta_rows[15])))
+#
+#   #Catchment available
+#   catch_log <- as.numeric(sta_id) %in% catch_ids
+#
+#   #Meta data single station
+#   meta_sing <- c(sta_name, sta_lati, sta_long, sta_year, end_year, file_paths[i], sta_id, catch_log)
+#
+#   #Collect meta data all stations
+#   grdc_meta <- rbind(grdc_meta, meta_sing)
+#
+# }
+#
+# colnames(grdc_meta) <- c("name", "latitude", "longitude", "Start_year", "End_year", "file_path", "id", "catch_available")
+# rownames(grdc_meta) <- NULL
+# grdc_meta <- as.data.frame(grdc_meta, stringsAsFactors=FALSE)
+# grdc_meta$latitude   <- as.numeric(grdc_meta$latitude)
+# grdc_meta$longitude  <- as.numeric(grdc_meta$longitude)
+# grdc_meta$Start_year  <- as.numeric(grdc_meta$Start_year)
+# grdc_meta$End_year  <- as.numeric(grdc_meta$End_year)
+# grdc_meta$End_year  <- as.numeric(grdc_meta$End_year)
+# # grdc_meta$catch_area  <- as.numeric(grdc_meta$catch_area)
+#
+# #prevent duplicated latituds for selected via map
+# dup_lat <- which(duplicated(grdc_meta$latitude))
+# grdc_meta$latitude[dup_lat] <- grdc_meta$latitude[dup_lat] + rnorm(length(dup_lat), 0, 0.001)
 
-  #get rows with meta information
-  meta_rows <- read_lines(file_paths[i], n_max = 32)
-  meta_rows <- iconv(meta_rows, "UTF-8", "ASCII", "")
-
-  #Name
-  sta_name <- substr(meta_rows[11], 26, nchar(meta_rows[11]))
-
-  #Longitude
-  sta_long <- substr(meta_rows[14], 24, nchar( meta_rows[14]))
-
-  #Latitude
-  sta_lati <- substr(meta_rows[13], 24, nchar(meta_rows[13]))
-
-  #Start Year
-  sta_year <- substr(meta_rows[24], 26, 29)
-
-  #End Year
-  end_year <- substr(meta_rows[24], 36, 39)
-
-  #Meta data single station
-  meta_sing <- c(sta_name, sta_lati, sta_long, sta_year, end_year, file_paths[i])
-
-  #Collect meta data all stations
-  grdc_meta <- rbind(grdc_meta, meta_sing)
-
-}
-
-colnames(grdc_meta) <- c("name", "latitude", "longitude", "Start_year", "End_year", "file_path")
-rownames(grdc_meta) <- NULL
-grdc_meta <- as.data.frame(grdc_meta)
-grdc_meta$name  <- as.character(levels(grdc_meta$name))[grdc_meta$name]
-grdc_meta$latitude   <- as.numeric(levels(grdc_meta$latitude))[grdc_meta$latitude]
-grdc_meta$longitude  <- as.numeric(levels(grdc_meta$longitude))[grdc_meta$longitude]
-grdc_meta$Start_year  <- as.numeric(levels(grdc_meta$Start_year))[grdc_meta$Start_year]
-grdc_meta$End_year  <- as.numeric(levels(grdc_meta$End_year))[grdc_meta$End_year]
-grdc_meta$file_path  <- as.character(levels(grdc_meta$file_path))[grdc_meta$file_path]
-
-#prevent duplicated latituds for selected via map
-dup_lat <- which(duplicated(grdc_meta$latitude))
-grdc_meta$latitude[dup_lat] <- grdc_meta$latitude[dup_lat] + rnorm(length(dup_lat), 0, 0.001)
+#Initial dummy catchment
+catch_sel <- sp::Polygon(matrix(rep(0, 4), ncol = 2))
 
 #server----
 
 function(input, output, session) {
 
-  #Filter stations
+  #Leaflet map with station filter
   observe({
 
     filter_sta_yea <- input$filter_sta_yea
@@ -80,8 +113,8 @@ function(input, output, session) {
     grdc_meta <- grdc_meta[which(grdc_meta$longitude > filter_lon_left), ]
     grdc_meta <- grdc_meta[which(grdc_meta$longitude < filter_lon_right), ]
 
-    #Map
-    gauge_map <- shiny::reactive({
+    #Leaflet map with all stations
+    output$map <- renderLeaflet({
 
       leaflet() %>%
         addProviderTiles(providers$Stamen.TerrainBackground, group = "Terrain Background") %>%
@@ -92,29 +125,28 @@ function(input, output, session) {
                          stroke = F, group = "Runoff", fillOpacity = 0.8, fillColor = "darkred",
                          popup = grdc_meta$name,
                          clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
-                                                                                    var childCount = cluster.getChildCount();
-                                                                                    if (childCount < 50) {
-                                                                                      c = 'rgba(210, 10, 10, 255);'
-                                                                                    } else if (childCount < 100) {
-                                                                                      c = 'rgba(210, 10, 10, 255);'
-                                                                                    } else {
-                                                                                      c = 'rgba(160, 10, 10, 255);'
-                                                                                    }
-                                                                                    return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
+                                                                   var childCount = cluster.getChildCount();
+                                                                   if (childCount < 50) {
+                                                                     c = 'rgba(210, 10, 10, 255);'
+                                                                   } else if (childCount < 100) {
+                                                                     c = 'rgba(210, 10, 10, 255);'
+                                                                   } else {
+                                                                     c = 'rgba(160, 10, 10, 255);'
+                                                                   }
+                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
                          )
                          )
         )  %>%
+        addPolygons(data = catch_sel, layerId = "watershed") %>%
 
         addLayersControl(
           baseGroups = c("Terrain Background", "Open Street Map"),
           position = "bottomleft"
         ) %>%
 
-        setView(lng = 10.9, lat = 46.5, zoom = 7)
+        fitBounds(lng1 = -50, lng2 = 50, lat1 = -30, lat2 = 60)
 
     })
-
-    output$map <- renderLeaflet({ gauge_map() })
 
   })
 
@@ -140,6 +172,32 @@ function(input, output, session) {
 
     grdc_data <- read_grdc(grdc_meta$file_path[stat_sel])
     stat_name <- grdc_meta$name[stat_sel]
+
+    sta_id <- grdc_meta$id[stat_sel]
+
+    catch_path <- grep(sta_id, catch_paths, value = T)
+
+    #Read catchment
+    catch_path <- grep(sta_id, catch_paths, value = T)
+
+    if(length(catch_path) !=1){catch_path <- "xxx"}
+
+    if(file.exists(catch_path)){
+
+      # crswgs84 <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+      catch_sel <- rgdal::readOGR(catch_path)
+      # catch_sel <- sp::spTransform(catch_sel_raw, CRS = crswgs84)
+
+      # #Set map view to boudary limits
+      # map_view <- raster::extent(sp::bbox(catch_sel)) + c(0, 2, -1.5, 1.5)
+    }else{
+      catch_sel <- sp::Polygon(matrix(rep(0, 4), ncol =2))
+    }
+
+    leafletProxy("map") %>%
+      removeShape(layerId = "watershed") %>%
+      addPolygons(data = catch_sel, layerId = "watershed", fill = F,
+                  color = "#366488", opacity = 0.9)
 
     #Raster graph: Reset parameter at selection of new station
     observe({

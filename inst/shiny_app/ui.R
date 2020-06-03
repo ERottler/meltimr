@@ -107,9 +107,14 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
                          sliderInput("vol_frame", label = "Select periods to compare:", animate = F,
                                      min = 1940, max = 2000, step = 1, value = c(1940,1965))
         ),
+        # conditionalPanel("input.ana_method == 'statsfilter'",
+        #                  selectInput("filter_catch", "Catchment boundaries available:",
+        #                              choices = list("yes" = 1, "no"  = 2, "irrelevant" = 3),
+        #                              selected = 1)
+        # ),
         conditionalPanel("input.ana_method == 'statsfilter'",
                          sliderInput("filter_sta_yea", "Minimum start year:",animate = F,
-                                     min = 1850, max = 2016, step = 1, value = c(1960))
+                                     min = 1850, max = 2016, step = 1, value = c(1940))
         ),
         conditionalPanel("input.ana_method == 'statsfilter'",
                          sliderInput("filter_end_yea", label = "Minimum end year:", animate = F,
