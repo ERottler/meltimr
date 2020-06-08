@@ -10,5 +10,5 @@ read_grdc(file_path)
 \item{file_path}{Path data table.}
 }
 \description{
-Read in GRDC data table from repository.
+Read in GRDC data time series from file.
 }

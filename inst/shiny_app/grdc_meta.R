@@ -5,13 +5,14 @@
 ###
 
 grdc_dir <- "/media/rottler/data2/GRDC_DAY" #Path to folder with GRDC data
-# grdc_dir <- "/srv/shiny-server/melTim/data" #Path to folder with GRDC data
 catc_dir <- "/media/rottler/data2/basin_data/grdc_basins/" #Path to folder with GRDC watersheds
+
+#path where save grdc_meta table
+grdc_meta_path <- "/home/rottler/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app/grdc_meta.csv"
 
 #list watersheds available
 catch_paths <- list.files(path = catc_dir, pattern = "*.shp$", full.names = T)
 catch_names <- list.files(path = catc_dir, pattern = "*.shp$", full.names = F)
-catch_ids <- as.numeric(substr(catch_names, 28, 34))
 
 #Read meta data from GRDC files located in folder 'data/grdc'
 file_paths <- list.files(path = grdc_dir, pattern = "*.Cmd", full.names = T)
@@ -21,56 +22,61 @@ grdc_meta <- NULL
 
 for(i in 1:length(file_paths)){
 
-  print(i)
+  print(paste(i, "of", length(file_paths)))
 
   #get rows with meta information
   meta_rows <- read_lines(file_paths[i], n_max = 32)
   meta_rows <- iconv(meta_rows, "UTF-8", "ASCII", "")
-
   #Name
-  sta_name <- substr(meta_rows[11], 26, nchar(meta_rows[11]))
-
+  row_name <- meta_rows[11]
+  sta_name <- substr(row_name, 26, nchar(row_name))
+  #Country
+  row_country <- meta_rows[12]
+  cou_name <- substr(row_country, 12, nchar(row_country))
+  cou_name <- trimws(cou_name)
   #Longitude
-  sta_long <- substr(meta_rows[14], 24, nchar(meta_rows[14]))
-
+  row_long <- meta_rows[14]
+  sta_long_raw <- substr(row_long, 18, nchar(row_long))
+  sta_long <- trimws(sta_long_raw)
   #Latitude
-  sta_lati <- substr(meta_rows[13], 24, nchar(meta_rows[13]))
+  row_lati <- meta_rows[13]
+  sta_lati_raw <- substr(row_lati, 17, nchar(row_lati))
+  sta_lati <- trimws(sta_lati_raw)
+  #Start/End time series
+  row_seri <- meta_rows[24]
+  sta_seri <- substr(row_seri, 26, nchar(row_seri)-13)
+  end_seri <- substr(row_seri, 36, nchar(row_seri)-3)
+  #gauge ID from file name
+  gauge_id <- substr(file_names[i], 1, 7)
 
-  #Start Year
-  sta_year <- substr(meta_rows[24], 26, 29)
+  meta_sing <- c(sta_name, sta_lati, sta_long, sta_seri, end_seri, file_paths[i], gauge_id, cou_name)
 
-  #End Year
-  end_year <- substr(meta_rows[24], 36, 39)
 
-  #Station ID
-  sta_id <- substr(file_names[i], 1, 7)
+  if(i == 1){
 
-  #Catchment area
-  # catch_area <- trimws(substr(meta_rows[15], 23, nchar(meta_rows[15])))
+    grdc_meta <- meta_sing
 
-  #Catchment available
-  catch_log <- as.numeric(sta_id) %in% catch_ids
+  }else{
 
-  #Meta data single station
-  meta_sing <- c(sta_name, sta_lati, sta_long, sta_year, end_year, file_paths[i], sta_id, catch_log)
+    grdc_meta <- rbind(grdc_meta, meta_sing)
 
-  #Collect meta data all stations
-  grdc_meta <- rbind(grdc_meta, meta_sing)
+  }
+
 
 }
 
-colnames(grdc_meta) <- c("name", "latitude", "longitude", "Start_year", "End_year", "file_path", "id", "catch_available")
+colnames(grdc_meta) <- c("name", "latitude", "longitude", "start_series", "end_series", "file_path", "id", "country")
 rownames(grdc_meta) <- NULL
 grdc_meta <- as.data.frame(grdc_meta, stringsAsFactors=FALSE)
 grdc_meta$latitude   <- as.numeric(grdc_meta$latitude)
 grdc_meta$longitude  <- as.numeric(grdc_meta$longitude)
-grdc_meta$Start_year  <- as.numeric(grdc_meta$Start_year)
-grdc_meta$End_year  <- as.numeric(grdc_meta$End_year)
-grdc_meta$End_year  <- as.numeric(grdc_meta$End_year)
-# grdc_meta$catch_area  <- as.numeric(grdc_meta$catch_area)
+grdc_meta$start_series  <- as.numeric(grdc_meta$start_series)
+grdc_meta$end_series  <- as.numeric(grdc_meta$end_series)
+grdc_meta$id <- as.numeric(grdc_meta$id)
 
 #prevent duplicated latituds for selected via map
 dup_lat <- which(duplicated(grdc_meta$latitude))
 grdc_meta$latitude[dup_lat] <- grdc_meta$latitude[dup_lat] + rnorm(length(dup_lat), 0, 0.001)
 
-write.table(grdc_meta, file = paste0("/home/rottler/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app/grdc_meta.csv"), sep = ";", row.names = T, quote = T)
+#save grdc meta information as table (to be read by app at start up)
+write.table(grdc_meta, file = grdc_meta_path, sep = ";", row.names = T, quote = T)

@@ -10,7 +10,7 @@ ord_day(data_in, date, start_y, end_y, break_day = 0, do_ma = F,
 \arguments{
 \item{data_in}{Vector of data values.}
 
-\item{date}{Date vector as character with form YYYY-MM_DD}
+\item{date}{Date vector}
 
 \item{start_y}{Selected start year.}
 

@@ -8,7 +8,7 @@
 #' @param end_year Seleced end year
 #' @param do_ma Apply moving average filter before analysis (FALSE / TRUE)
 #' @param window_width If do_ma is TRUE, then moving average filter with here selected window width applied
-#' @param Selected analytical method('mean', 'median', 'sum', 'sens_slope')
+#' @param method_ana Selected analytical method('mean', 'median', 'sum', 'sens_slope')
 #' @export
 day_ana <- function(data, date, start_year, end_year, do_ma = F, window_width = 30, method_ana, break_day = 0){
 

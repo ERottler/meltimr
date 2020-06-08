@@ -7,10 +7,10 @@
 sens_slo(data_in, cover_thresh = 0.9)
 }
 \arguments{
-\item{data_in}{Vector of input data}
+\item{data_in}{Vecot numeric.}
 
-\item{Trend}{only calculated when percentage of NAs in input vecotr does not exceed cover threshold (0-1)}
+\item{cover_thresh}{Trend only calculated when percentage of NAs in data_in does not exceed cover threshold (0-1)}
 }
 \description{
-Calclation linear trend using Sen´s slope.
+Calculation of linear trend using Sen´s slope using package 'zyp'.
 }

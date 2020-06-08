@@ -9,88 +9,22 @@
 grdc_dir <- "/media/rottler/data2/GRDC_DAY" #Path to folder with GRDC data
 # grdc_dir <- "/srv/shiny-server/melTim/data" #Path to folder with GRDC data
 catc_dir <- "/media/rottler/data2/basin_data/grdc_basins/"
+# catc_dir <- "/srv/shiny-server/melTim/basins"
 
 #read grdc meta data
-grdc_meta <- read.table(file = paste0("/home/rottler/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app/grdc_meta.csv"),
-                        sep = ";", header = T, stringsAsFactors = F)
+grdc_meta_path <- "/home/rottler/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app/grdc_meta.csv"
+grdc_meta <- read.table(file = grdc_meta_path, sep = ";", header = T, stringsAsFactors = F)
+
 #list watersheds available
-catch_paths <- list.files(path = catc_dir, pattern = "*.shp$", full.names = T)
-catch_names <- list.files(path = catc_dir, pattern = "*.shp$", full.names = F)
-catch_ids <- as.numeric(substr(catch_names, 28, 34))
+catch_paths <- list.files(path = catc_dir, pattern = "*\\.shp$", full.names = T)
+catch_names <- list.files(path = catc_dir, pattern = "*\\.shp$", full.names = F)
 
-#Read meta data from GRDC files located in folder 'data/grdc'
-file_paths <- list.files(path = grdc_dir, pattern = "*.Cmd", full.names = T)
-file_names <- list.files(path = grdc_dir, pattern = "*.Cmd", full.names = F)
-
-#grdc_files----
-
-# #list watersheds available
-# catch_paths <- list.files(path = catc_dir, pattern = "*.shp$", full.names = T)
-# catch_names <- list.files(path = catc_dir, pattern = "*.shp$", full.names = F)
-# catch_ids <- as.numeric(substr(catch_names, 28, 34))
-#
-# #Read meta data from GRDC files located in folder 'data/grdc'
-# file_paths <- list.files(path = grdc_dir, pattern = "*.Cmd", full.names = T)
-# file_names <- list.files(path = grdc_dir, pattern = "*.Cmd", full.names = F)
-#
-# grdc_meta <- NULL
-#
-# for(i in 1:length(file_paths)){
-#
-#   print(i)
-#
-#   #get rows with meta information
-#   meta_rows <- read_lines(file_paths[i], n_max = 32)
-#   meta_rows <- iconv(meta_rows, "UTF-8", "ASCII", "")
-#
-#   #Name
-#   sta_name <- substr(meta_rows[11], 26, nchar(meta_rows[11]))
-#
-#   #Longitude
-#   sta_long <- substr(meta_rows[14], 24, nchar(meta_rows[14]))
-#
-#   #Latitude
-#   sta_lati <- substr(meta_rows[13], 24, nchar(meta_rows[13]))
-#
-#   #Start Year
-#   sta_year <- substr(meta_rows[24], 26, 29)
-#
-#   #End Year
-#   end_year <- substr(meta_rows[24], 36, 39)
-#
-#   #Station ID
-#   sta_id <- substr(file_names[i], 1, 7)
-#
-#   #Catchment area
-#   # catch_area <- trimws(substr(meta_rows[15], 23, nchar(meta_rows[15])))
-#
-#   #Catchment available
-#   catch_log <- as.numeric(sta_id) %in% catch_ids
-#
-#   #Meta data single station
-#   meta_sing <- c(sta_name, sta_lati, sta_long, sta_year, end_year, file_paths[i], sta_id, catch_log)
-#
-#   #Collect meta data all stations
-#   grdc_meta <- rbind(grdc_meta, meta_sing)
-#
-# }
-#
-# colnames(grdc_meta) <- c("name", "latitude", "longitude", "Start_year", "End_year", "file_path", "id", "catch_available")
-# rownames(grdc_meta) <- NULL
-# grdc_meta <- as.data.frame(grdc_meta, stringsAsFactors=FALSE)
-# grdc_meta$latitude   <- as.numeric(grdc_meta$latitude)
-# grdc_meta$longitude  <- as.numeric(grdc_meta$longitude)
-# grdc_meta$Start_year  <- as.numeric(grdc_meta$Start_year)
-# grdc_meta$End_year  <- as.numeric(grdc_meta$End_year)
-# grdc_meta$End_year  <- as.numeric(grdc_meta$End_year)
-# # grdc_meta$catch_area  <- as.numeric(grdc_meta$catch_area)
-#
-# #prevent duplicated latituds for selected via map
-# dup_lat <- which(duplicated(grdc_meta$latitude))
-# grdc_meta$latitude[dup_lat] <- grdc_meta$latitude[dup_lat] + rnorm(length(dup_lat), 0, 0.001)
+#paths/names GRDC data files
+file_paths <- list.files(path = grdc_dir, pattern = "*\\.Cmd", full.names = T)
+file_names <- list.files(path = grdc_dir, pattern = "*\\.Cmd", full.names = F)
 
 #Initial dummy catchment
-catch_sel <- sp::Polygon(matrix(rep(0, 4), ncol = 2))
+catch_sel <- sp::Polygon(matrix(rep(0, 6), ncol = 2))
 
 #server----
 
@@ -106,8 +40,8 @@ function(input, output, session) {
     filter_lon_left <- input$filter_lon_left
     filter_lon_right <- input$filter_lon_right
 
-    grdc_meta <- grdc_meta[which(grdc_meta$Start_year <= filter_sta_yea), ]
-    grdc_meta <- grdc_meta[which(grdc_meta$End_year >= filter_end_yea), ]
+    grdc_meta <- grdc_meta[which(grdc_meta$start_series <= filter_sta_yea), ]
+    grdc_meta <- grdc_meta[which(grdc_meta$end_series >= filter_end_yea), ]
     grdc_meta <- grdc_meta[which(grdc_meta$latitude < filter_lat_upp), ]
     grdc_meta <- grdc_meta[which(grdc_meta$latitude > filter_lat_low), ]
     grdc_meta <- grdc_meta[which(grdc_meta$longitude > filter_lon_left), ]
@@ -137,12 +71,15 @@ function(input, output, session) {
                          )
                          )
         )  %>%
-        addPolygons(data = catch_sel, layerId = "watershed") %>%
+        addPolygons(data = catch_sel, layerId = "watershed", group = "Watershed") %>%
 
         addLayersControl(
           baseGroups = c("Terrain Background", "Open Street Map"),
-          position = "bottomleft"
+          overlayGroups = c("Watershed"),
+          position = "bottomleft",
+          options = layersControlOptions(collapsed = TRUE)
         ) %>%
+        hideGroup("Watershed") %>%
 
         fitBounds(lng1 = -50, lng2 = 50, lat1 = -30, lat2 = 60)
 
@@ -175,8 +112,6 @@ function(input, output, session) {
 
     sta_id <- grdc_meta$id[stat_sel]
 
-    catch_path <- grep(sta_id, catch_paths, value = T)
-
     #Read catchment
     catch_path <- grep(sta_id, catch_paths, value = T)
 
@@ -191,13 +126,19 @@ function(input, output, session) {
       # #Set map view to boudary limits
       # map_view <- raster::extent(sp::bbox(catch_sel)) + c(0, 2, -1.5, 1.5)
     }else{
-      catch_sel <- sp::Polygon(matrix(rep(0, 4), ncol =2))
+      catch_sel <- sp::Polygon(matrix(rep(0, 6), ncol =2))
     }
 
     leafletProxy("map") %>%
       removeShape(layerId = "watershed") %>%
       addPolygons(data = catch_sel, layerId = "watershed", fill = F,
-                  color = "#366488", opacity = 0.9)
+                  color = "#366488", opacity = 0.9, group = "Watershed") %>%
+    addLayersControl(
+      baseGroups = c("Terrain Background", "Open Street Map"),
+      overlayGroups = c("Watershed"),
+      position = "bottomleft",
+      options = layersControlOptions(collapsed = TRUE)
+    )
 
     #Raster graph: Reset parameter at selection of new station
     observe({

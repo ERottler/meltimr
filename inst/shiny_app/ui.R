@@ -4,6 +4,7 @@
 
 ###
 
+#load packages
 library(shiny)
 library(shinythemes)
 library(leaflet)
@@ -220,7 +221,13 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
   tabPanel("Data & Code",
 
            h3("Data"),
-           p("In the framework of this study, we focus on discharge data from the global runoff dataset provided by the Global Runoff Data Centre 56068 Koblenz, Germany (GRDC). This unique collection of discharge time series from all over the world represents a key dataset for hydrological research. For further information, please visit: www.bafg.de/GRDC"),
+           p("In the framework of this study, we focus on discharge data from the global runoff dataset provided by the Global Runoff Data Centre 56068 Koblenz, Germany (GRDC). This unique collection of discharge time series from all over the world represents a key dataset for hydrological research. For further information, please visit:"),
+           tags$a(href="https://www.bafg.de/GRDC/EN/Home/homepage_node.html", "Global Runoff Database"),
+
+           hr(),
+
+           p("Watershed boundaries were derived by Bernhard Lehner based on the HydroSHEDS drainage network. For more information and access to the corresponding technical report within the GRDC Report Series visit:"),
+           tags$a(href="https://www.bafg.de/GRDC/EN/02_srvcs/22_gslrs/222_WSB/watershedBoundaries_node.html", "GRDC Watershed Boundaries"),
 
            hr(),
 
