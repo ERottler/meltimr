@@ -8,9 +8,9 @@ mean_hydro(data_day, break_day, yea_cla_1, yea_cla_2, yea_cla_3, yea_cla_4,
   end_yea_cla, sta_yea_cla, stat_name)
 }
 \arguments{
-\item{data_day}{Matrix with values ordered by day (see function ord_day()).}
+\item{data_day}{Matrix with values ordered by day (see function \code{\link{ord_day}}).}
 
-\item{break_day}{Define start year (e.g. 274 is 1.October is start hydrological year in Switzerland).}
+\item{break_day}{Define start day (e.g. 274 is 1.October, is start of the hydrological year in Switzerland).}
 
 \item{yea_cla_1}{Start year of time window 1.}
 
@@ -27,5 +27,5 @@ mean_hydro(data_day, break_day, yea_cla_1, yea_cla_2, yea_cla_3, yea_cla_4,
 \item{stat_name}{Plot title (e.g. station name)}
 }
 \description{
-Plot option 'Mean graph' from shiny app melTim.
+Plot option 'Mean graph' from shiny app 'Hydro Explorer'.
 }

@@ -1,9 +1,9 @@
 #' Raster graph
 #'
-#' Plot option 'Raster graph' from shiny app melTim.
+#' Plot option 'Raster graph' from shiny app 'Hydro Explorer'.
 #'
-#' @param data_day Matrix with values ordered by day (see function ord_day()).
-#' @param break_day Define start year (e.g. 274 is 1.October is start hydrological year in Switzerland).
+#' @param data_day Matrix with values ordered by day (see function \code{\link{ord_day}}).
+#' @param break_day Define start day (e.g. 274 is 1.October, is start of the hydrological year in Switzerland).
 #' @param sta_yea_cla Start year of time series visualized.
 #' @param end_yea_cla End year of time series visualized.
 #' @param stat_name Plot title (e.g. station name)

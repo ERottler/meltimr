@@ -15,6 +15,12 @@ ord_day(data_in, date, start_y, end_y, break_day = 0, do_ma = F,
 \item{start_y}{Selected start year.}
 
 \item{end_y}{Selected end year.}
+
+\item{break_day}{Define start day (e.g. 274 is 1.October, is start of the hydrological year in Switzerland).}
+
+\item{do_ma}{Apply moving average filter (TRUE or FALSE).}
+
+\item{window_width}{Window width of moving average filter.}
 }
 \description{
 Order time series according to day of the year and return as matrix with columns is days of the year and rows years.

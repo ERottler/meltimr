@@ -7,9 +7,9 @@
 raster_hydro(data_day, break_day, sta_yea_cla, end_yea_cla, stat_name)
 }
 \arguments{
-\item{data_day}{Matrix with values ordered by day (see function ord_day()).}
+\item{data_day}{Matrix with values ordered by day (see function \code{\link{ord_day}}).}
 
-\item{break_day}{Define start year (e.g. 274 is 1.October is start hydrological year in Switzerland).}
+\item{break_day}{Define start day (e.g. 274 is 1.October, is start of the hydrological year in Switzerland).}
 
 \item{sta_yea_cla}{Start year of time series visualized.}
 
@@ -18,5 +18,5 @@ raster_hydro(data_day, break_day, sta_yea_cla, end_yea_cla, stat_name)
 \item{stat_name}{Plot title (e.g. station name)}
 }
 \description{
-Plot option 'Raster graph' from shiny app melTim.
+Plot option 'Raster graph' from shiny app 'Hydro Explorer'.
 }

@@ -1,10 +1,10 @@
 #' Annual/Montly maxima graph
 #'
-#' Plot option 'Annual Max' from shiny app melTim.
+#' Plot option 'Annual Max' from shiny app 'Hydro Explorer'.
 #'
-#' @param data_day Matrix with values ordered by day (see function ord_day()).
-#' @param break_day Define start year (e.g. 274 is 1.October is start hydrological year in Switzerland).
-#' @param ama_var Select plot type: 1) Day of the year of annual maxima (timing), 2) Magnitudes of annual maxima or 3) Montly maxima.
+#' @param data_day Matrix with values ordered by day (see function \code{\link{ord_day}}).
+#' @param break_day Define start day (e.g. 274 is 1.October, which is the start of  hydrological year in Switzerland).
+#' @param ama_var Select variable investigated: 1) day of the year of annual maxima (ama_doy), 2) magnitudes of annual maxima (ama_mag) or 3) montly maxima (ama_mon).
 #' @param yea_ama_1 Start year selected time window.
 #' @param yea_ama_2 End year selected time window.
 #' @param sta_yea_cla Start year of entire time series

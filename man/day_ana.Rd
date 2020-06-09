@@ -20,7 +20,7 @@ day_ana(data, date, start_year, end_year, do_ma = F, window_width = 30,
 
 \item{window_width}{If do_ma is TRUE, then moving average filter with here selected window width applied}
 
-\item{Selected}{analytical method('mean', 'median', 'sum', 'sens_slope')}
+\item{method_ana}{Selected analytical method('mean', 'median', 'sum', 'sens_slope')}
 }
 \description{
 Apply functions on daily level. First, time series re-structured according to day of the year, then selected analytical function applied.

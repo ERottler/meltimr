@@ -1,8 +1,8 @@
 #' Percentile graph
 #'
-#' Plot option 'Percentile graph' from shiny app melTim.
+#' Plot option 'Percentile graph' from shiny app 'Hydro Explorer'.
 #'
-#' @param data_day Matrix with values ordered by day (see function ord_day()).
+#' @param data_day Matrix with values ordered by day (see function \code{\link{ord_day}}).
 #' @param yea_per_1 Start year of time window 1.
 #' @param yea_per_2 End year of time window 1.
 #' @param yea_per_3 Start year of time window 2.

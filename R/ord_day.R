@@ -6,6 +6,9 @@
 #' @param date Date vector
 #' @param start_y Selected start year.
 #' @param end_y Selected end year.
+#' @param break_day Define start day (e.g. 274 is 1.October, is start of the hydrological year in Switzerland).
+#' @param do_ma Apply moving average filter (TRUE or FALSE).
+#' @param window_width Window width of moving average filter.
 #' @export
 ord_day <- function(data_in, date, start_y, end_y, break_day = 0, do_ma = F, window_width = 30){
 

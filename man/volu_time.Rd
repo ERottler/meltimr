@@ -8,7 +8,7 @@ volu_time(day_cross, sta_yea_cla, end_yea_cla, break_day, day_cross_slo,
   day_cross_mea, day_cross_day, stat_name)
 }
 \arguments{
-\item{day_cross}{Matrix with DOYs when certain fraction of annual runoff was recorded (currently 25, 50 and 75 %).}
+\item{day_cross}{Matrix with DOYs when certain fraction of annual runoff was recorded (currently 25, 50 and 75 \%).}
 
 \item{sta_yea_cla}{Start year of time series investigated.}
 
@@ -16,11 +16,11 @@ volu_time(day_cross, sta_yea_cla, end_yea_cla, break_day, day_cross_slo,
 
 \item{break_day}{Define start year (e.g. 274 is 1.October is start hydrological year in Switzerland).}
 
-\item{day_cross_slo}{Trend in DOYs for fractions 25/50/75 % of annual runoff in days/dec}
+\item{day_cross_slo}{Trend in DOYs for fractions 25/50/75 \% of annual runoff in days/dec}
 
-\item{day_cross_mea}{Mean DOY for fractions 25/50/75 % of annual runoff.}
+\item{day_cross_mea}{Mean DOY for fractions 25/50/75 \% of annual runoff.}
 
-\item{day_cross_day}{Trend in DOYs for fractions 25/50/75 % of annual runoff for the entire time frame.}
+\item{day_cross_day}{Trend in DOYs for fractions 25/50/75 \% of annual runoff for the entire time frame.}
 
 \item{stat_name}{Plot title (e.g. station name)}
 }

@@ -18,5 +18,8 @@ Imports:
     RColorBrewer,
     leaflet,
     shiny,
-    shinythemes
+    shinythemes,
+    viridisLite,
+    rgdal,
+    sp
     

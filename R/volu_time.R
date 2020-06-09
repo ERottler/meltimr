@@ -2,7 +2,7 @@
 #'
 #' Plot option 'Volume timing' from shiny app melTim.
 #'
-#' @param day_cross Matrix with DOYs when certain fraction of annual runoff was recorded (currently 25, 50 and 75 per cent).
+#' @param day_cross Matrix with DOYs when certain fraction of annual runoff was recorded (currently 25, 50 and 75 \%).
 #' @param break_day Define start year (e.g. 274 is 1.October is start hydrological year in Switzerland).
 #' @param sta_yea_cla Start year of time series investigated.
 #' @param end_yea_cla Endyear of time series investigated.

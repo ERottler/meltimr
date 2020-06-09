@@ -8,9 +8,9 @@ annmax_plot(data_day, break_day, yea_ama_1, yea_ama_2, end_yea_ama,
   sta_yea_ama, month_sel_1, month_sel_2, stat_name, ama_var)
 }
 \arguments{
-\item{data_day}{Matrix with values ordered by day (see function ord_day()).}
+\item{data_day}{Matrix with values ordered by day (see function \code{\link{ord_day}}).}
 
-\item{break_day}{Define start year (e.g. 274 is 1.October is start hydrological year in Switzerland).}
+\item{break_day}{Define start day (e.g. 274 is 1.October, which is the start of  hydrological year in Switzerland).}
 
 \item{yea_ama_1}{Start year selected time window.}
 
@@ -22,12 +22,12 @@ annmax_plot(data_day, break_day, yea_ama_1, yea_ama_2, end_yea_ama,
 
 \item{stat_name}{Plot title (e.g. station name)}
 
-\item{ama_var}{Select plot type: 1) Day of the year of annual maxima (timing), 2) Magnitudes of annual maxima or 3) Montly maxima.}
+\item{ama_var}{Select variable investigated: 1) day of the year of annual maxima (ama_doy), 2) magnitudes of annual maxima (ama_mag) or 3) montly maxima (ama_mon).}
 
 \item{sta_yea_cla}{Start year of entire time series}
 
 \item{end_yea_cla}{End year of entire time series.}
 }
 \description{
-Plot option 'Annual Max' from shiny app melTim.
+Plot option 'Annual Max' from shiny app 'Hydro Explorer'.
 }
