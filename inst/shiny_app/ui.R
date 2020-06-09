@@ -1,6 +1,7 @@
 ###
 
 #Shiny Web App to visualize discharge data from GRDC - User Interface
+#Erwin Rottler, University of Potsdam, 2019/2020
 
 ###
 
@@ -15,6 +16,8 @@ library(zoo)
 library(readr)
 library(viridisLite)
 library(RColorBrewer)
+library(rgdal)
+library(sp)
 
 navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
 
@@ -148,8 +151,9 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
 
   tabPanel("Summary",
 
-           p("Climatic changes are projected to severly alter river runoff, particularly in snow-dominated river basins. In the framework of this study, we aim to provide an overview on changes in runoff seasonality and runoff timing. In this regard, we develop an interactive shiny web app, which enables the investigation of >7000 gauging stations from all around the world. The available selection of tools inter alia enables the analysis of changes in inter- and intra-annual variabilities and the timing and magnitude of annual maxima. The interactive nature of the developed web app makes it excellently suitable to  quickly compare gauges/regions/methods/times frames, to put results into context and assess weaknesses and strenghts of individual analytical tools.")
-  ),
+           p("Climatic changes and anthropogenic modifications of the river network/basin have the potential to fundentally alter river runoff. In the framework of this study, we investigate historic changes in runoff seasonality and runoff timing observed at gauging stations all over the world. In this regard, we develop the 'HydroExplorer', an interactive shiny web app, which enables the investigation of >7000 time series. The available selection of tools inter alia enables the analysis of changes in mean annual cycles, inter- and intra-annual variability, the timing and magnitude of annual maxima and changes in quantile values over time. The interactive nature of the developed web app allows a quick comparison of gauges, regions, methods and times frames, and makes it possible to asses weaknesses and strenghts of individual analytical tools.")
+
+           ),
 
   tabPanel("Tools",
 
@@ -164,7 +168,7 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
            hr(),
 
            h3("Mean graph"),
-           p("Mean annual cycles for two selected time windows (blue and red) are displayed. Vertical lines mark days of the year of annual maxima. The time lag between days of maximum runoff of the two selected time windows is noted top right. The display and comparison of mean annual cycles provides a very good first insight into changes in the seasonal redisbribution of water via seasonal snow packs. The tools simplicity is its strength and weakness at the same time"),
+           p("Mean annual cycles for two selected time windows (blue and red) are displayed. Vertical lines mark days of the year of annual maxima. The time lag between days of maximum runoff of the two selected time windows is noted top right. The display and comparison of mean annual cycles provides a very good first insight into changes in the seasonal redisbribution of water via seasonal snow packs. The tools simplicity is its strength and weakness at the same time."),
            tags$b("Interactive options"),
            p(tags$a("Break day:"),  "Customize x-axis by selecting different break days. Currently available selection are 1.October (start hydrological year in Switzerland), 1.November (start hydrological year in Germany), 1.December and 1.January."),
            p(tags$a("Time frame 1: "), "Select start and end year of time frame 1 (blue line)."),
@@ -174,7 +178,7 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
            hr(),
 
            h3("Volume timing"),
-           p("One approach to investigate the earlier timing of runoff, is to determine the day of the year (DOY) when a certain fraction of the total annual volume passes the gauging station (e.g. [3] [4]). The 'Volume timing' tool displays the DOYs when 25/50/75 % of the total annual runoff were recorded. On top of the pannel, mean DOY, and a linear trend (Sens's slope) estimation (positve = earlier) are noted for each volume fraction. This approach certainly gives a good insight into changes in the redistribution of water by a seasonal snow cover. However, caution has to be exercised interpreting changes, particularly in alpine river basins influenced by reservoirs used for hydro power production."),
+           p("One approach to investigate the earlier timing of runoff, is to determine the day of the year (DOY) when a certain fraction of the total annual volume passes the gauging station (e.g. [3] [4]). The 'Volume timing' tool displays the DOYs when 25/50/75 % of the total annual runoff were recorded. On top of the pannel, mean DOY, and a linear trend (Sens's slope) estimation (positve = earlier) are noted for each volume fraction. This approach gives a good insight into changes in the redistribution of water by a seasonal snow cover. However, caution has to be exercised interpreting changes, particularly in alpine river basins influenced by reservoirs used for hydro power production."),
            tags$b("Interactive options"),
            p(tags$a("Break day:"),  "Select start day of the year considered. Currently available selection are 1.October (start hydrological year in Switzerland), 1.November (start hydrological year in Germany), 1.December and 1.January."),
            p(tags$a("Time frame:"), "Select start and end year of time frame investigated."),
@@ -192,7 +196,7 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
            hr(),
 
            h3("Percentile graph"),
-           p("Percentile graphs for two different time windows. Quantiles are estimated on a monthly level based on all daily of a month. In a 40-year time window, quantiles for the month of January, for example, base on 40 times 31 daily values. Quantiles are estimated empirically based on type 8 of the function 'quantile' in the R environment. The Percentile graph option is a powerful tool, as it offers the posibility to investigate changes along the entire runoff range. Changes in low flow situation as well as high flow can be assessed. However, a sufficient length of the time series is crucial. We recommend at least 30 years for each time window."),
+           p("Percentile graphs for two different time windows. Quantiles are estimated on a monthly level based on all daily of a month. In a 40-year time window, quantiles for the month of January, for example, base on 40 times 31 daily values. Quantiles are estimated empirically based on type 8 of the function 'quantile' in the R environment. The Percentile graph option is a powerful tool, as it offers the posibility to investigate changes along the entire runoff range. Changes in low flow situation as well as high flow can be investigated. However, a sufficient length of the time series is crucial. We recommend at least 30 years for each time window."),
            tags$b("Interactive options"),
            p(tags$a("Plot type:"),  "The option 'Line plot' enables the comparison of quantiles of a selected probability level (see option 'Probability'). The 'Image plot' shows the difference between quantile values of different time windows for all probability levels."),
            p(tags$a("Time frame 1: "), "Select start and end year of time frame 1 (blue line)."),
@@ -226,20 +230,22 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
 
            hr(),
 
-           p("Watershed boundaries were derived by Bernhard Lehner based on the HydroSHEDS drainage network. For more information and access to the corresponding technical report within the GRDC Report Series visit:"),
+           p("Watershed boundaries were derived by Bernhard Lehner based on the HydroSHEDS drainage network. For more information and access to the corresponding technical report within the GRDC Report Series, please visit:"),
            tags$a(href="https://www.bafg.de/GRDC/EN/02_srvcs/22_gslrs/222_WSB/watershedBoundaries_node.html", "GRDC Watershed Boundaries"),
 
            hr(),
 
            h3("Code"),
-           p("Source code of this shiny web app comes in form of an R package and can be accessed at: github.com/ERottler/meltimr.")
+           p("Source code of this shiny web app comes in form of an R package and can be accessed at:"),
+           tags$a(href= "https://github.com/ERottler/meltimr", "github.com/ERottler/meltimr")
   ),
 
   tabPanel("Contact",
            h3("Feedback"),
            p("Should you have any comments, questions or suggestions, please do not hesitate to contact us: rottler(at)uni-potsdam.de"),
            h3("Funding"),
-           p("This research was funded by Deutsche Forschungsgemeinschaft (DFG) within the graduate research training group NatRiskChange (GRK 2043/1) at the University of Potsdam: www.natriskchange.de")
+           p("This research was funded by Deutsche Forschungsgemeinschaft (DFG) within the graduate research training group NatRiskChange (GRK 2043/1) at the University of Potsdam:"),
+           tags$a(href="https://www.uni-potsdam.de/en/natriskchange", "RTG NatRiskChange")
   )
 
 )

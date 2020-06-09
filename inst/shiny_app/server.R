@@ -1,6 +1,7 @@
 ###
 
 #Shiny Web App to visualize discharge data from GRDC - Server
+#Erwin Rottler, University of Potsdam, 2019/2020
 
 ###
 
@@ -24,7 +25,7 @@ file_paths <- list.files(path = grdc_dir, pattern = "*\\.Cmd", full.names = T)
 file_names <- list.files(path = grdc_dir, pattern = "*\\.Cmd", full.names = F)
 
 #Initial dummy catchment
-catch_sel <- sp::Polygon(matrix(rep(0, 6), ncol = 2))
+catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol = 2))
 
 #server----
 
@@ -126,7 +127,7 @@ function(input, output, session) {
       # #Set map view to boudary limits
       # map_view <- raster::extent(sp::bbox(catch_sel)) + c(0, 2, -1.5, 1.5)
     }else{
-      catch_sel <- sp::Polygon(matrix(rep(0, 6), ncol =2))
+      catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol =2))
     }
 
     leafletProxy("map") %>%
@@ -456,7 +457,7 @@ function(input, output, session) {
 
       filename = function(){
 
-        paste0("meltim.png")
+        paste0("hydro_explorer.png")
 
       },
       content = function(file){
