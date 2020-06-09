@@ -2,17 +2,16 @@
 #'
 #' Plot option 'Volume timing' from shiny app melTim.
 #'
-#' @param day_cross Matrix with DOYs when certain fraction of annual runoff was recorded (currently 25, 50 and 75 %).
+#' @param day_cross Matrix with DOYs when certain fraction of annual runoff was recorded (currently 25, 50 and 75 per cent).
 #' @param break_day Define start year (e.g. 274 is 1.October is start hydrological year in Switzerland).
 #' @param sta_yea_cla Start year of time series investigated.
 #' @param end_yea_cla Endyear of time series investigated.
 #' @param stat_name Plot title (e.g. station name)
-#' @param day_cross_slo Trend in DOYs for fractions 25/50/75 % of annual runoff in days/dec
-#' @param day_cross_mea Mean DOY for fractions 25/50/75 % of annual runoff.
-#' @param day_cross_day Trend in DOYs for fractions 25/50/75 % of annual runoff for the entire time frame.
+#' @param day_cross_slo Trend in DOYs for fractions 25/50/75 \% of annual runoff in days/dec
+#' @param day_cross_mea Mean DOY for fractions 25/50/75 \% of annual runoff.
+#' @param day_cross_day Trend in DOYs for fractions 25/50/75 \% of annual runoff for the entire time frame.
 #' @export
-volu_time <- function(day_cross, sta_yea_cla, end_yea_cla, break_day, day_cross_slo,
-                      day_cross_mea, day_cross_day, stat_name){
+volu_time <- function(day_cross, sta_yea_cla, end_yea_cla, break_day, day_cross_slo, day_cross_mea, day_cross_day, stat_name){
 
   smo_val <- 0.25
 
@@ -65,6 +64,5 @@ volu_time <- function(day_cross, sta_yea_cla, end_yea_cla, break_day, day_cross_
   mtext(paste0(round(day_cross_slo[1]* decs, 2), " days"), side = 3, line = 0.1, adj = 0.35, col = col_1, cex = cex_dat, padj = 0)
   mtext(paste0(round(day_cross_slo[2]* decs, 2), " days"), side = 3, line = 0.1, adj = 0.65, col = col_2, cex = cex_dat, padj = 0)
   mtext(paste0(round(day_cross_slo[3]* decs, 2), " days"), side = 3, line = 0.1, adj = 1.00, col = col_3, cex = cex_dat, padj = 0)
-
 
 }
