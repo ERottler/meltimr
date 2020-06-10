@@ -1,18 +1,13 @@
 ###
 
-#Read GRDC meta data from files
+#Shiny Web App to visualize discharge data from GRDC
+#Read GRDC meta information from files
+#Erwin Rottler, University of Potsdam, 2019/2020
 
 ###
 
-grdc_dir <- "/media/rottler/data2/GRDC_DAY" #Path to folder with GRDC data
-catc_dir <- "/media/rottler/data2/basin_data/grdc_basins/" #Path to folder with GRDC watersheds
-
-#path where save grdc_meta table
-grdc_meta_path <- "/home/rottler/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app/grdc_meta.csv"
-
-#list watersheds available
-catch_paths <- list.files(path = catc_dir, pattern = "*.shp$", full.names = T)
-catch_names <- list.files(path = catc_dir, pattern = "*.shp$", full.names = F)
+#get folder paths defined in set_dir.R
+source(paste0(getwd(), "/inst/shiny_app/set_dir.R"))
 
 #Read meta data from GRDC files located in folder 'data/grdc'
 file_paths <- list.files(path = grdc_dir, pattern = "*.Cmd", full.names = T)
@@ -67,6 +62,7 @@ for(i in 1:length(file_paths)){
 
 colnames(grdc_meta) <- c("name", "latitude", "longitude", "start_series", "end_series", "file_path", "id", "country")
 rownames(grdc_meta) <- NULL
+
 grdc_meta <- as.data.frame(grdc_meta, stringsAsFactors=FALSE)
 grdc_meta$latitude   <- as.numeric(grdc_meta$latitude)
 grdc_meta$longitude  <- as.numeric(grdc_meta$longitude)

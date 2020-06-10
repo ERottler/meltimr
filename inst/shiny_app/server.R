@@ -1,19 +1,17 @@
 ###
 
-#Shiny Web App to visualize discharge data from GRDC - Server
+#Shiny Web App to visualize discharge data from GRDC
+#Server file
 #Erwin Rottler, University of Potsdam, 2019/2020
 
 ###
 
 #set_up----
 
-grdc_dir <- "/media/rottler/data2/GRDC_DAY" #Path to folder with GRDC data
-# grdc_dir <- "/srv/shiny-server/melTim/data" #Path to folder with GRDC data
-catc_dir <- "/media/rottler/data2/basin_data/grdc_basins/"
-# catc_dir <- "/srv/shiny-server/melTim/basins"
+#get folder paths defined in set_dir.R
+source(paste0(getwd(), "/set_dir.R"))
 
 #read grdc meta data
-grdc_meta_path <- "/home/rottler/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app/grdc_meta.csv"
 grdc_meta <- read.table(file = grdc_meta_path, sep = ";", header = T, stringsAsFactors = F)
 
 #list watersheds available
@@ -99,7 +97,7 @@ function(input, output, session) {
   output$hydro_plot <- renderPlot({f_plot()})
 
   #Dummy which gets selected gauge
-  gauge_sel <-  shiny::reactiveValues(clicked_gauge = "Basel, Rheinhalle")
+  gauge_sel <-  shiny::reactiveValues(clicked_gauge = "XXX")
 
   #Reaction to selection of station on map
   observeEvent(input$map_marker_click,{

@@ -1,0 +1,3 @@
+"name";"latitude";"longitude";"start_series";"end_series";"file_path";"id";"country"
+"1";"Station A";47.51;10.05;1940;1989;"/home/rottler/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app//data/1234567_Q_Day.Cmd.txt";1234567;"Country A"
+"2";"Station B";48.03;10.02;1940;1989;"/home/rottler/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app//data/7654321_Q_Day.Cmd.txt";7654321;"Country B"

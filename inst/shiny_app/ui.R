@@ -1,6 +1,7 @@
 ###
 
-#Shiny Web App to visualize discharge data from GRDC - User Interface
+#Shiny Web App to visualize discharge data from GRDC
+#User Interface
 #Erwin Rottler, University of Potsdam, 2019/2020
 
 ###
@@ -111,18 +112,13 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
                          sliderInput("vol_frame", label = "Select periods to compare:", animate = F,
                                      min = 1940, max = 2000, step = 1, value = c(1940,1965))
         ),
-        # conditionalPanel("input.ana_method == 'statsfilter'",
-        #                  selectInput("filter_catch", "Catchment boundaries available:",
-        #                              choices = list("yes" = 1, "no"  = 2, "irrelevant" = 3),
-        #                              selected = 1)
-        # ),
         conditionalPanel("input.ana_method == 'statsfilter'",
                          sliderInput("filter_sta_yea", "Minimum start year:",animate = F,
-                                     min = 1850, max = 2016, step = 1, value = c(1940))
+                                     min = 1850, max = 2016, step = 1, value = c(1945))
         ),
         conditionalPanel("input.ana_method == 'statsfilter'",
                          sliderInput("filter_end_yea", label = "Minimum end year:", animate = F,
-                                     min = 1850, max = 2016, step = 1, value = c(2000))
+                                     min = 1850, max = 2016, step = 1, value = c(1985))
         ),
         conditionalPanel("input.ana_method == 'statsfilter'",
                          sliderInput("filter_lat_upp", label = "Maximum latitude:", animate = F,

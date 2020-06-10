@@ -7,11 +7,11 @@
 # file generation date:  2050-01-01
 #
 # GRDC-No.:              1234567
-# River:                 Synthetic Data 2
-# Station:               Synthetic Data 2
-# Country:               Synthetic Data 2
-# Latitude (DD):       48.00
-# Longitude (DD):      10.00
+# River:                 River A
+# Station:               Station A
+# Country:               Country A
+# Latitude (DD):       47.51
+# Longitude (DD):      10.05
 # Catchment area (km²):      -999.000
 # Altitude (m ASL):        -999.000
 # Next downstream station:      1234568
