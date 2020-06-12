@@ -4,8 +4,16 @@
 \alias{day_ana}
 \title{Analysis on daily level}
 \usage{
-day_ana(data, date, start_year, end_year, do_ma = F, window_width = 30,
-  method_ana, break_day = 0)
+day_ana(
+  data,
+  date,
+  start_year,
+  end_year,
+  do_ma = F,
+  window_width = 30,
+  method_ana,
+  break_day = 0
+)
 }
 \arguments{
 \item{data}{Vector of input data}

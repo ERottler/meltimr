@@ -6,6 +6,8 @@
 
 ###
 
+library(readr)
+
 #get folder paths defined in set_dir.R
 source(paste0(getwd(), "/inst/shiny_app/set_dir.R"))
 

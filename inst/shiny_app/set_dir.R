@@ -10,8 +10,8 @@
 app_dir <- "/home/rottler/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app/"
 
 #path to folder with GRDC files with observed runoff
-grdc_dir <- paste0(app_dir, "/data")
-# grdc_dir <- "/media/rottler/data2/GRDC_DAY"
+# grdc_dir <- paste0(app_dir, "/data")
+grdc_dir <- "/media/rottler/data2/GRDC_DAY"
 # grdc_dir <- "/srv/shiny-server/melTim/data"
 
 #Path to folder with watershed boundaries

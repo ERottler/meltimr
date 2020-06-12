@@ -4,8 +4,15 @@
 \alias{ord_day}
 \title{Order time series by day}
 \usage{
-ord_day(data_in, date, start_y, end_y, break_day = 0, do_ma = F,
-  window_width = 30)
+ord_day(
+  data_in,
+  date,
+  start_y,
+  end_y,
+  break_day = 0,
+  do_ma = F,
+  window_width = 30
+)
 }
 \arguments{
 \item{data_in}{Vector of data values.}
