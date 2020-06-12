@@ -7,8 +7,8 @@
 #' @param ama_var Select variable investigated: 1) day of the year of annual maxima (ama_doy), 2) magnitudes of annual maxima (ama_mag) or 3) montly maxima (ama_mon).
 #' @param yea_ama_1 Start year selected time window.
 #' @param yea_ama_2 End year selected time window.
-#' @param sta_yea_cla Start year of entire time series
-#' @param end_yea_cla End year of entire time series.
+#' @param sta_yea_ama Start year of entire time series
+#' @param end_yea_ama End year of entire time series.
 #' @param month_sel_1 Start month to use for calculating maxima.
 #' @param month_sel_2 End month to use for calculating maxima.
 #' @param stat_name Plot title (e.g. station name)
@@ -56,16 +56,16 @@ annmax_plot <- function(data_day, break_day, yea_ama_1, yea_ama_2, end_yea_ama, 
     }
 
 
-    plot(mon_max_slo, type = "l", lwd = 2, axes = F, ylab = "", xlab = "")
-    points(mon_max_slo, pch = 19, cex = 2)
-    axis(2, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
-    axis(1, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
+    graphics::plot(mon_max_slo, type = "l", lwd = 2, axes = F, ylab = "", xlab = "")
+    graphics::points(mon_max_slo, pch = 19, cex = 2)
+    graphics::axis(2, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
+    graphics::axis(1, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
 
-    abline (h = 0, lwd = 1, col = "grey55", lty = 2)
-    mtext("Trend discharge [(m³/s)/dec]", line = 2.0, side = 2, cex = 1.2)
-    mtext("Month", line = 2.0, side = 1, cex = 1.2)
-    mtext(paste0(stat_name, " (", yea_ama_1, "-", yea_ama_2, ")"), line = 0.5, side = 3, cex = 1.5, adj = 0)
-    box(lwd = 0.8)
+    graphics::abline (h = 0, lwd = 1, col = "grey55", lty = 2)
+    graphics::mtext(expression(paste("Trend discharge [m"^"3", " s"^"-1", " dec"^"-1","]")), line = 2.0, side = 2, cex = 1.2)
+    graphics::mtext("Month", line = 2.0, side = 1, cex = 1.2)
+    graphics::mtext(paste0(stat_name, " (", yea_ama_1, "-", yea_ama_2, ")"), line = 0.5, side = 3, cex = 1.5, adj = 0)
+    graphics::box(lwd = 0.8)
 
   }else{
 
@@ -114,36 +114,36 @@ annmax_plot <- function(data_day, break_day, yea_ama_1, yea_ama_2, end_yea_ama, 
     smo_val <- 0.25
     days <- seq(as.Date("2014-01-01"), to = as.Date("2014-12-31"), by = "days")
 
-    par(mar = c(3.0, 3.0, 6, 0.1))
+    graphics::par(mar = c(3.0, 3.5, 6, 0.1))
 
-    plot(yea_ama_1:yea_ama_2, ama_res, type = "n", axes = F, ylab = "", xlab = "")
-    lines(yea_ama_1:yea_ama_2, ama_res, col = "black", lwd = 2)
-    points(yea_ama_1:yea_ama_2, ama_res, col = "black", pch = 19, cex = 0.6)
-    lines(yea_ama_1:yea_ama_2, loess_NA_restore(ama_res, smoo_val = smo_val), col = "black")
+    graphics::plot(yea_ama_1:yea_ama_2, ama_res, type = "n", axes = F, ylab = "", xlab = "")
+    graphics::lines(yea_ama_1:yea_ama_2, ama_res, col = "black", lwd = 2)
+    graphics::points(yea_ama_1:yea_ama_2, ama_res, col = "black", pch = 19, cex = 0.6)
+    graphics::lines(yea_ama_1:yea_ama_2, loess_NA_restore(ama_res, smoo_val = smo_val), col = "black")
 
-    axis(2, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
-    axis(1, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
-    abline(v = seq(1800, 2020, 10), lty = "dashed", lwd = 0.8, col = "grey55")
-    grid(nx= 0, ny = 5, col = "grey55", lty = "dashed", lwd = 0.8)
-    box(lwd = 0.8)
-    mtext(paste0(stat_name, " (", sta_yea_ama, "-", end_yea_ama, ")"), line = 3.0, side = 3, cex = 1.5)
+    graphics::axis(2, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
+    graphics::axis(1, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
+    graphics::abline(v = seq(1800, 2020, 10), lty = "dashed", lwd = 0.8, col = "grey55")
+    graphics::grid(nx= 0, ny = 5, col = "grey55", lty = "dashed", lwd = 0.8)
+    graphics::box(lwd = 0.8)
+    graphics::mtext(paste0(stat_name, " (", sta_yea_ama, "-", end_yea_ama, ")"), line = 3.0, side = 3, cex = 1.5)
 
     if(ama_var == "ama_doy"){
-      mtext("Day of the year (DOY)", line = 2.0, side = 2, cex = 1.2)
-      mtext("Year", line = 2.0, side = 1, cex = 1.2)
-      mtext(paste0(" Day Zero: ", format(days[break_day + cols_sel[1]], "%d-%m")), side = 3, line = 1.5, adj = 0, cex = 1.2)
-      mtext(paste0(" Months: ", month_sel_1, " to ", month_sel_2), side = 3, line = 0.2, adj = 0.0, cex = 1.2)
-      mtext(paste0(" Sen's slope: ", round(ama_res_slo, 2),  " days/dec"), side = 3, line = 1.5, adj = 1.0, cex = 1.2)
-      mtext(paste0(" Days earlier: ", round(ama_res_slo * decs, 2),  " days"), side = 3, line = 0.2, adj = 1.0, cex = 1.2)
+      graphics::mtext("Day of the year (DOY)", line = 2.0, side = 2, cex = 1.2)
+      graphics::mtext("Year", line = 2.0, side = 1, cex = 1.2)
+      graphics::mtext(paste0(" Day Zero: ", format(days[break_day + cols_sel[1]], "%d-%m")), side = 3, line = 1.5, adj = 0, cex = 1.2)
+      graphics::mtext(paste0(" Months: ", month_sel_1, " to ", month_sel_2), side = 3, line = 0.2, adj = 0.0, cex = 1.2)
+      graphics::mtext(paste0(" Sen's slope: ", round(ama_res_slo, 2),  " days/dec"), side = 3, line = 1.5, adj = 1.0, cex = 1.2)
+      graphics::mtext(paste0(" Days earlier: ", round(ama_res_slo * decs, 2),  " days"), side = 3, line = 0.2, adj = 1.0, cex = 1.2)
     }
 
     if(ama_var == "ama_mag"){
-      mtext("Discharge [m³/s]", line = 2.0, side = 2, cex = 1.2)
-      mtext("Year", line = 2.0, side = 1, cex = 1.2)
-      mtext(paste0(" Day Zero: ", format(days[break_day + cols_sel[1]], "%d-%m")), side = 3, line = 1.5, adj = 0, cex = 1.2)
-      mtext(paste0(" Months: ", month_sel_1, " to ", month_sel_2), side = 3, line = 0.2, adj = 0.0, cex = 1.2)
-      mtext(paste0(" Sen's slope: ", round(ama_res_slo * -1, 2),  " (m³/s)/dec"), side = 3, line = 1.5, adj = 1.0, cex = 1.2)
-      mtext(paste0(" Change total: ", round(ama_res_slo * -1 * decs, 2),  " m³/s"), side = 3, line = 0.2, adj = 1.0, cex = 1.2)
+      graphics::mtext(expression(paste("Discharge [m"^"3", " s"^"-1", "]")), line = 1.8, side = 2, cex = 1.2)
+      graphics::mtext("Year", line = 2.0, side = 1, cex = 1.2)
+      graphics::mtext(paste0(" Day Zero: ", format(days[break_day + cols_sel[1]], "%d-%m")), side = 3, line = 1.5, adj = 0, cex = 1.2)
+      graphics::mtext(paste0(" Months: ", month_sel_1, " to ", month_sel_2), side = 3, line = 0.2, adj = 0.0, cex = 1.2)
+      graphics::mtext(paste0(" Sen's slope: ", round(ama_res_slo * -1, 2), " [m3 s-1 dec-1]"), side = 3, line = 1.5, adj = 1.0, cex = 1.2)
+      graphics::mtext(paste0(" Change total: ", round(ama_res_slo * -1 * decs, 2),  " [m3 s-1]"), side = 3, line = 0.2, adj = 1.0, cex = 1.2)
     }
 
   }

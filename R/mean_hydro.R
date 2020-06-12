@@ -50,43 +50,42 @@ mean_hydro <- function(data_day, break_day, yea_cla_1, yea_cla_2, yea_cla_3, yea
   y_max <- max(c(data_mea, data_mea_1, data_mea_2))
   y_min <- min(c(data_mea, data_mea_1, data_mea_2))
 
-  plot(data_mea_1, type = "n", col ="blue3",
+  graphics::plot(data_mea_1, type = "n", col ="blue3",
        axes = F, ylab = "", xlab = "", ylim = c(y_min, y_max))
-  lines(data_mea_1, col = "steelblue4", lwd = 2.5)
-  lines(data_mea_2, col = "darkred", lwd = 2.5)
-  abline(v = doy_max_1, col = "steelblue4", lty = "dashed", lwd = 2)
-  abline(v = doy_max_2, col = "darkred",  lty = "dashed", lwd = 2)
-  mtext(paste0("Max. lag: ", (doy_max_1-doy_max_2), " days"), side = 3, line = 0.2, adj = 1, cex = 1.2)
+  graphics::lines(data_mea_1, col = "steelblue4", lwd = 2.5)
+  graphics::lines(data_mea_2, col = "darkred", lwd = 2.5)
+  graphics::abline(v = doy_max_1, col = "steelblue4", lty = "dashed", lwd = 2)
+  graphics::abline(v = doy_max_2, col = "darkred",  lty = "dashed", lwd = 2)
+  graphics::mtext(paste0("Max. lag: ", (doy_max_1-doy_max_2), " days"), side = 3, line = 0.2, adj = 1, cex = 1.2)
 
-  mtext("Discharge [m³/s]", side = 2, line = 2.0, cex = 1.2)
+  graphics::mtext(expression(paste("Discharge [m"^"3", " s"^"-1", "]")), side = 2, line = 2.0, cex = 1.2)
   legend_posi <- "topleft"
 
-  axis(2, mgp=c(3, 0.25, 0), tck = -0.009, cex.axis = 1.2)
-  axis(1, at = x_axis_tic, c("","","","","","","","","","","","",""), tick = TRUE,
+  graphics::axis(2, mgp=c(3, 0.25, 0), tck = -0.009, cex.axis = 1.2)
+  graphics::axis(1, at = x_axis_tic, c("","","","","","","","","","","","",""), tick = TRUE,
        col = "black", col.axis = "black", tck = -0.06)#plot ticks
   if(break_day == 274){
-    axis(1, at = x_axis_lab, c("O","N","D","J","F","M","A","M","J","J","A","S"), tick = FALSE,
+    graphics::axis(1, at = x_axis_lab, c("O","N","D","J","F","M","A","M","J","J","A","S"), tick = FALSE,
          col="black", col.axis="black", mgp=c(3, 0.15, 0))#plot labels
   }
   if(break_day == 304){
-    axis(1, at = x_axis_lab, c("N","D","J","F","M","A","M","J","J","A","S","O"), tick = FALSE,
+    graphics::axis(1, at = x_axis_lab, c("N","D","J","F","M","A","M","J","J","A","S","O"), tick = FALSE,
          col="black", col.axis="black", mgp=c(3, 0.15, 0))#plot labels
   }
   if(break_day == 334){
-    axis(1, at = x_axis_lab, c("D","J","F","M","A","M","J","J","A","S", "O","N"), tick = FALSE,
+    graphics::axis(1, at = x_axis_lab, c("D","J","F","M","A","M","J","J","A","S", "O","N"), tick = FALSE,
          col="black", col.axis="black", mgp=c(3, 0.15, 0))#plot labels
   }
   if(break_day == 0){
-    axis(1, at = x_axis_lab, c("J","F","M","A","M","J","J","A","S","O", "N", "D"), tick = FALSE,
+    graphics::axis(1, at = x_axis_lab, c("J","F","M","A","M","J","J","A","S","O", "N", "D"), tick = FALSE,
          col="black", col.axis="black", mgp=c(3, 0.15, 0))#plot labels
   }
-  mtext(paste0(stat_name, " (", sta_yea_cla, "-", end_yea_cla, ")"), line = 0.2, side = 3, cex = 1.5, adj = 0)
-  abline(v = x_axis_tic, col = "grey55", lty = "dashed", lwd = 0.8)
-  grid(nx = 0, ny = 5, lty = "dashed", col = "grey55", lwd = 0.8)
-  legend(legend_posi, c(paste0(yea_cla_1, "-", yea_cla_2), paste0(yea_cla_3, "-", yea_cla_4)),
+  graphics::mtext(paste0(stat_name, " (", sta_yea_cla, "-", end_yea_cla, ")"), line = 0.2, side = 3, cex = 1.5, adj = 0)
+  graphics::abline(v = x_axis_tic, col = "grey55", lty = "dashed", lwd = 0.8)
+  graphics::grid(nx = 0, ny = 5, lty = "dashed", col = "grey55", lwd = 0.8)
+  graphics::legend(legend_posi, c(paste0(yea_cla_1, "-", yea_cla_2), paste0(yea_cla_3, "-", yea_cla_4)),
          pch = 19, col = c("steelblue4", "darkred"),
          bg = "white")
-  box(lwd = 0.7)
-
+  graphics::box(lwd = 0.7)
 
 }

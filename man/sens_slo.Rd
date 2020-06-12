@@ -7,7 +7,7 @@
 sens_slo(data_in, cover_thresh = 0.9)
 }
 \arguments{
-\item{data_in}{Vecot numeric.}
+\item{data_in}{Numeric vector.}
 
 \item{cover_thresh}{Trend only calculated when percentage of NAs in data_in does not exceed cover threshold (0-1)}
 }

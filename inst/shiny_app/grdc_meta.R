@@ -1,7 +1,7 @@
 ###
 
 #Shiny Web App to visualize discharge data from GRDC
-#Read GRDC meta information from files
+#GRDC meta information
 #Erwin Rottler, University of Potsdam, 2019/2020
 
 ###

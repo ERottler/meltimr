@@ -7,7 +7,9 @@
 lin_trend(data_in, index_in)
 }
 \arguments{
-\item{file_path}{Path data table.}
+\item{data_in}{Numeric data vector.}
+
+\item{index_in}{Index 1 to length of data vector.}
 }
 \description{
 Calculate linear trend using function glm for fitting generalized linear models.

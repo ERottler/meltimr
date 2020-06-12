@@ -68,7 +68,7 @@ max_na <- function(x){
 #' med_na(c(NA, NA, NA))
 #' @export
 med_na <- function(x){
-  ifelse (all(is.na(x)), NA, median(x, na.rm = TRUE))
+  ifelse (all(is.na(x)), NA, stats::median(x, na.rm = TRUE))
 }
 
 

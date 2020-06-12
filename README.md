@@ -19,26 +19,33 @@ Watershed boundaries were derived by Bernhard Lehner based on the HydroSHEDS dra
 
 https://www.bafg.de/GRDC/EN/02_srvcs/22_gslrs/222_WSB/watershedBoundaries_node.html
 
+# Target audience
 
-# Run locally
+The Hydro Explorer targets researchers working in the field of environmetal science. Particularly intersted might be hydrologist investigating changes in river runoff, which now can explore a global data set in an interactive way. Furthermore, (son-to-be) users of the GRDC data base can easily explore available time seres. The app also can be used for teaching purposes, in order to illustrate the variaty of river runoff regimes and factors causing changes in runoff seasonality.   
 
-To run the app on your local machine, take the following steps:
+# Test flawless functionality
 
-1) Install this R package: ```devtools::install_github("ERottler/meltimr")```
+To test the app on your local machine, take the following steps:
 
-2) Download folder with R-scripts for shiny app *inst/shinyapp*
+1) Make sure up-to-date versions of [R](https://www.r-project.org/) and [RStudio](https://rstudio.com/) are installed.
 
-3) Request runoff data from the Global Runoff Data Centre 56068 Koblenz, Germany (GRDC)
+2) Install this R package: ```devtools::install_github("ERottler/meltimr")``` Other R packages needed in order to run the Hydro Explorer are listed in the DESCRIPTION of the package and get installed automatically. 
 
-4) Read GRDC meta data from files using *inst/shinyapp/grdc_meta.R*. Therefore, set folder path to GRDC files at the beginning of the script (and optionally also to watershed boundaries).
+3) Download this git repository, extract files and open the R-project by clicking on 'meltimr.Rproj'
 
-5) Open the server file *inst/shinyapp/server.R* and add the paths to the GRDC file directory and the meta data table. Optionally also add the path to the watershed boundaries.
+4) Adjust the app directory path in *inst/shiny_app/set_dir.R*
 
-In order to get started without having GRDC data at hand, two synthetic data files in the GRDC-format are located in *inst/shinyapp/data*. Feel free to modify existing analytical tools and add new options and data sources!
+4) Run the following command: ```shiny::runApp(paste0(getwd(), "/inst/shiny_app/"))```
 
-# Contact
+The app should start showing two artificial gauging stations.
 
-Should you have any comments, questions or suggestions, please do not hesitate to contact us: rottler(a)uni-potsdam.de
+# Run app with you own GRDC data
+
+The test run uses two artificial GRDC dummy data files located in *inst/shiny_app/data*. Shoud you have GRDC files at hand already, either copy them into this folder or change the GRDC folder path in *inst/shiny_app/set_dir.R*. Should you need (more) data, send a request to the [Global Runoff Data Centre 56068 Koblenz, Germany (GRDC)](https://www.bafg.de/GRDC/EN/01_GRDC/grdc_node.html). In order for the app to run, the meta information stored in the headers of the individual GRDC files needs to be provided as table (see *inst/shinyapp/grdc_meta.csv*). This data table can be created by running the script *inst/shinyapp/grdc_meta.R*. Should you want to display watershed boundaries of your gauging stations on click, add them as shapefiles (station ID as name, e.g. 1234567.shp) into the folder containing watershed boundaries defined in *inst/shinyapp/set_dir.R*. 
+
+# Modify and add analytical tools/data sources
+
+Feel free to modify existing analytical tools and add new options and data sources! User feedback and contributions are highly welcome. Should you have questions or encounter problems, please report using the [GitHub Issue Tracker](https://github.com/ERottler/meltimr/issues) or write an email: rottler(a)uni-potsdam.de To fix a bug or make other improvements, please consider sending a [pull request](https://github.com/ERottler/meltimr/pulls).
 
 # Funding
 

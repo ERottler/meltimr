@@ -30,7 +30,7 @@ ord_day <- function(data_in, date, start_y, end_y, break_day = 0, do_ma = F, win
   #Moving average filter
   if(do_ma){
 
-    input_data$ma <- rollapply(data = input_data$values, width = window_width,
+    input_data$ma <- zoo::rollapply(data = input_data$values, width = window_width,
                                FUN = mea_na, align = "center", fill = NA)
 
     input_data$values <- input_data$ma

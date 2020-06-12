@@ -13,13 +13,13 @@ loess_NA_restore <- function(data_in, smoo_val = 0.2, NA_restore = TRUE){
   NAs <- which(is.na(data_in))
 
   #approximate NAs
-  data_in_sm <- na.approx(data_in, na.rm=F)
+  data_in_sm <- zoo::na.approx(data_in, na.rm=F)
 
   #smooth wiht loess
   x <- 1:length(data_in_sm)
-  smooth_mod <- loess(data_in_sm ~ x, span=smoo_val)
+  smooth_mod <- stats::loess(data_in_sm ~ x, span=smoo_val)
 
-  data_in_sm[which(!is.na(data_in_sm))] <- predict(smooth_mod)
+  data_in_sm[which(!is.na(data_in_sm))] <- stats::predict(smooth_mod)
 
   #restore NAs
   if(NA_restore){data_in_sm[NAs] <- NA}

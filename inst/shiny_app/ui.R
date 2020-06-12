@@ -26,7 +26,7 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
     div(class="outer",
 
       tags$head(
-        includeCSS("styles.css") # Include custom CSS
+        includeCSS("styles.css")
       ),
 
       leafletOutput("map", width="100%", height="100%"),

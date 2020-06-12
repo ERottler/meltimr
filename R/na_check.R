@@ -2,7 +2,7 @@
 #'
 #' Check vector if NAs. Only use arrays with no NAs. If one NA all put to NA.
 #'
-#' @param file_path  Path data table.
+#' @param data_in  Numeric data vector to be checked for NAs.
 #' @export
 na_check <- function(data_in){
 

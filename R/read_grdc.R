@@ -6,7 +6,7 @@
 #' @export
 read_grdc <- function(file_path){
 
-  data_grdc <- read.table(file_path, sep = ";", header = T, stringsAsFactors = F, na.strings = c("-999.00","-999.000"))
+  data_grdc <- utils::read.table(file_path, sep = ";", header = T, stringsAsFactors = F, na.strings = c("-999.00","-999.000"))
 
   #define date
   data_grdc_date <- as.Date(strptime(data_grdc$YYYY.MM.DD, "%Y-%m-%d", tz="UTC"))

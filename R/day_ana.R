@@ -9,6 +9,7 @@
 #' @param do_ma Apply moving average filter before analysis (FALSE / TRUE)
 #' @param window_width If do_ma is TRUE, then moving average filter with here selected window width applied
 #' @param method_ana Selected analytical method('mean', 'median', 'sum', 'sens_slope')
+#' @param break_day Define start day (e.g. 274 is 1.October, which is the start of  hydrological year in Switzerland).
 #' @export
 day_ana <- function(data, date, start_year, end_year, do_ma = F, window_width = 30, method_ana, break_day = 0){
 

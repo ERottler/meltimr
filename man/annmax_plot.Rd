@@ -16,6 +16,10 @@ annmax_plot(data_day, break_day, yea_ama_1, yea_ama_2, end_yea_ama,
 
 \item{yea_ama_2}{End year selected time window.}
 
+\item{end_yea_ama}{End year of entire time series.}
+
+\item{sta_yea_ama}{Start year of entire time series}
+
 \item{month_sel_1}{Start month to use for calculating maxima.}
 
 \item{month_sel_2}{End month to use for calculating maxima.}
@@ -23,10 +27,6 @@ annmax_plot(data_day, break_day, yea_ama_1, yea_ama_2, end_yea_ama,
 \item{stat_name}{Plot title (e.g. station name)}
 
 \item{ama_var}{Select variable investigated: 1) day of the year of annual maxima (ama_doy), 2) magnitudes of annual maxima (ama_mag) or 3) montly maxima (ama_mon).}
-
-\item{sta_yea_cla}{Start year of entire time series}
-
-\item{end_yea_cla}{End year of entire time series.}
 }
 \description{
 Plot option 'Annual Max' from shiny app 'Hydro Explorer'.

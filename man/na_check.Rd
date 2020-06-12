@@ -7,7 +7,7 @@
 na_check(data_in)
 }
 \arguments{
-\item{file_path}{Path data table.}
+\item{data_in}{Numeric data vector to be checked for NAs.}
 }
 \description{
 Check vector if NAs. Only use arrays with no NAs. If one NA all put to NA.

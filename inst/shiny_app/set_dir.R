@@ -1,6 +1,7 @@
 ###
 
-#Shiny Web App to visualize discharge data from GRDC - Define paths
+#Shiny Web App to visualize discharge data from GRDC
+#Define paths
 #Erwin Rottler, University of Potsdam, 2019/2020
 
 ###
@@ -13,7 +14,7 @@ grdc_dir <- paste0(app_dir, "/data")
 # grdc_dir <- "/media/rottler/data2/GRDC_DAY"
 # grdc_dir <- "/srv/shiny-server/melTim/data"
 
-#Path to folder with watershed boundaries (can be empty)
+#Path to folder with watershed boundaries
 catc_dir <- paste0(app_dir, "/basins")
 # catc_dir <- "/media/rottler/data2/basin_data/grdc_basins/"
 # catc_dir <- "/srv/shiny-server/melTim/basins/"
