@@ -27,4 +27,5 @@ Imports:
     graphics,
     grDevices,
     utils
-    
+Suggests: 
+    testthat

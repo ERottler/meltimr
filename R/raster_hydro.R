@@ -13,7 +13,7 @@ raster_hydro <- function(data_day, break_day, sta_yea_cla, end_yea_cla, stat_nam
   x_axis_lab <- c(16,46,74,105,135,166,196,227,258,288,319,349)
   x_axis_tic <- c(16,46,74,105,135,166,196,227,258,288,319,349,380)-15
 
-  lab_unit <- expression(paste0("[m"^"3", " s"^"-1", "]"))
+  lab_unit <- expression(paste("[m"^"3", " s"^"-1", "]"))
 
   cols_hydro <- grDevices::colorRampPalette(c(viridis::viridis(20, direction = -1)))(200)
 
