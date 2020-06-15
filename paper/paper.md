@@ -11,7 +11,7 @@ authors:
     orcid: 0000-0003-0872-7098
     affiliation: 1
 affiliations:
- - name: Institute of Environmental Science and Geography, University of Potsdam
+ - name: Institute of Environmental Science and Geography, University of Potsdam, Karl-Liebknecht-Straße 24-25, 14476 Potsdam, Germany
    index: 1
 date: 15 June 2010
 bibliography: paper.bib
@@ -19,7 +19,7 @@ bibliography: paper.bib
 
 # Summary 
 
-Climatic changes and anthropogenic modifications of the river network or basin have the potential to fundamentally alter river runoff. In the framework of this study, we investigate historic changes in runoff seasonality and runoff timing observed at gauging stations all over the world. In this regard, we develop the 'Hydro Explorer', an interactive shiny web app, which enables the investigation of more than 7000 time series. The available selection of tools inter alia enables the analysis of changes in mean annual cycles, inter- and intra-annual variability, the timing and magnitude of annual maxima and changes in quantile values over time. The interactive nature of the developed web app allows a quick comparison of gauges, regions, methods and times frames and makes it possible to assess weaknesses and strenghts of individual analytical tools.
+Climatic changes and anthropogenic modifications of the river network or basin have the potential to fundamentally alter river runoff. In the framework of this study, we investigate historic changes in runoff seasonality and runoff timing observed at gauging stations all over the world. In this regard, we develop an interactive shiny web app called 'Hydro Explorer', which enables the investigation of more than 7000 discharge time series. The available selection of analytical tools inter alia enables the analysis of changes in mean annual cycles, inter- and intra-annual variability, the timing and magnitude of annual maxima and changes in quantile values over time. The interactive nature of the developed web app allows a quick comparison of gauges, regions, methods and times frames and makes it possible to assess weaknesses and strenghts of individual analytical tools.
 
 Web Application:  http://natriskchange.ad.umwelt.uni-potsdam.de:3838/HydroExplorer/
 
