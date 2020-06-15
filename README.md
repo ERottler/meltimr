@@ -37,7 +37,7 @@ To test the app on your local machine, take the following steps:
 
 The app should start showing two artificial gauging stations.
 
-# Run app with you own GRDC data
+# Run app with your own GRDC data
 
 The test run uses two artificial GRDC dummy data files located in *inst/shiny_app/data*. Shoud you have GRDC files at hand already, either copy them into this folder or change the GRDC folder path in *inst/shiny_app/set_dir.R*. Should you need (more) data, send a request to the [Global Runoff Data Centre 56068 Koblenz, Germany (GRDC)](https://www.bafg.de/GRDC/EN/01_GRDC/grdc_node.html). In order for the app to run, the meta information stored in the headers of the individual GRDC files needs to be provided as table (see *inst/shinyapp/grdc_meta.csv*). This data table can be created by running the script *inst/shinyapp/grdc_meta.R*. Should you want to display watershed boundaries of your gauging stations on click, add them as shapefiles (station ID as name, e.g. 1234567.shp) into the folder containing watershed boundaries defined in *inst/shinyapp/set_dir.R*. 
 
