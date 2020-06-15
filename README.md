@@ -1,6 +1,6 @@
 # Summary
 
-Climatic changes and anthropogenic modifications of the river network or basin have the potential to fundamentally alter river runoff. In the framework of this study, we investigate historic changes in runoff seasonality and runoff timing observed at gauging stations around the world. In this regard, we develop the 'Hydro Explorer', an interactive shiny web app, which enables the investigation of more than 7000 time series. The available selection of tools inter alia enables the analysis of changes in mean annual cycles, inter- and intra-annual variability, the timing and magnitude of annual maxima and changes in quantile values over time. The interactive nature of the developed web app allows a quick comparison of gauges, regions, methods and times frames and makes it possible to assess weaknesses and strenghts of individual analytical tools.
+Climatic changes and anthropogenic modifications of the river network or basin have the potential to fundamentally alter river runoff. In the framework of this study, we investigate historic changes in runoff seasonality and runoff timing observed at gauging stations all over the world. In this regard, we develop the 'Hydro Explorer', an interactive shiny web app, which enables the investigation of more than 7000 time series. The available selection of tools inter alia enables the analysis of changes in mean annual cycles, inter- and intra-annual variability, the timing and magnitude of annual maxima and changes in quantile values over time. The interactive nature of the developed web app allows a quick comparison of gauges, regions, methods and times frames and makes it possible to assess weaknesses and strenghts of individual analytical tools.
 
 # Hydro Explorer
 
@@ -29,9 +29,11 @@ To test the app on your local machine, take the following steps:
 
 3) Download this git repository, extract files and open the R-project by clicking on 'meltimr.Rproj'
 
-4) Adjust the app directory path in *inst/shiny_app/set_dir.R*
+4) Navigate to the shiny app folder *inst/shiny_app* and add the full app directory path in *inst/shiny_app/set_dir.R*
 
-4) Run the following command: ```shiny::runApp(paste0(getwd(), "/inst/shiny_app/"))```
+5) Run the the script *inst/shiny_app/grdc_meta.R*. This script reads meta information from GRDC-files and saves them in a table, which provides all informationen needed in the Hydro Explorer.
+
+6) Run the following command: ```shiny::runApp(paste0(getwd(), "/inst/shiny_app/"))```
 
 The app should start showing two artificial gauging stations.
 
@@ -41,7 +43,7 @@ The test run uses two artificial GRDC dummy data files located in *inst/shiny_ap
 
 # Modify and add analytical tools/data sources
 
-Feel free to modify existing analytical tools and add new options and data sources! User feedback and contributions are highly welcome. Should you have questions or encounter problems, please report using the [GitHub Issue Tracker](https://github.com/ERottler/meltimr/issues) or write an email: rottler(a)uni-potsdam.de To fix a bug or make other improvements, please consider sending a [pull request](https://github.com/ERottler/meltimr/pulls).
+Feel free to modify existing analytical tools and add new options and data sources! User feedback and contributions are highly welcome. Should you have questions or encounter problems, please report using the [GitHub Issue Tracker](https://github.com/ERottler/meltimr/issues) or write an email: erwin.rottler(a)uni-potsdam.de To fix a bug or make other improvements, please consider sending a [pull request](https://github.com/ERottler/meltimr/pulls).
 
 # Funding
 
