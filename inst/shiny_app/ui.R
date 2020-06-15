@@ -40,7 +40,7 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
         draggable = T, top = 80, left = "auto", right = 20, bottom = "auto",
         width = 650, height = "auto", style = "opacity: 0.99",
 
-        h3("Hydro explorer"),
+        h3("Hydro Explorer"),
 
         selectInput("ana_method", "Analytical tool", c(
           "Raster graph" = "rasterhydro",

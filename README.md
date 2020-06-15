@@ -19,10 +19,6 @@ Watershed boundaries were derived by Bernhard Lehner based on the HydroSHEDS dra
 
 https://www.bafg.de/GRDC/EN/02_srvcs/22_gslrs/222_WSB/watershedBoundaries_node.html
 
-# Target audience
-
-The Hydro Explorer targets researchers working in the field of environmetal science. Particularly intersted might be hydrologist investigating changes in river runoff, which now can explore a global data set in an interactive way. Furthermore, (son-to-be) users of the GRDC data base can easily explore available time seres. The app also can be used for teaching purposes, in order to illustrate the variaty of river runoff regimes and factors causing changes in runoff seasonality.   
-
 # Test functionality
 
 To test the app on your local machine, take the following steps:
