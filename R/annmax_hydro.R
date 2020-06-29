@@ -108,10 +108,12 @@ annmax_plot <- function(data_day, break_day, yea_ama_1, yea_ama_2, end_yea_ama, 
 
     #Slope DOY annual maxima
     decs <- length(yea_ama_1:yea_ama_2)/10
-
     ama_res_slo <- sens_slo(ama_res) * 10 * -1 # [day/dec]
+    ama_years <- yea_ama_1:yea_ama_2
+    ama_res_sl <- as.numeric(zyp.trend.vector(ama_res, x = ama_years,  method = "zhang", conf.intervals = F)[2])
+    ama_res_in <- as.numeric(zyp.trend.vector(ama_res, x = ama_years,  method = "zhang", conf.intervals = F)[11])
 
-    smo_val <- 0.25
+    # smo_val <- 0.25
     days <- seq(as.Date("2014-01-01"), to = as.Date("2014-12-31"), by = "days")
 
     graphics::par(mar = c(3.0, 3.5, 6, 0.1))
@@ -119,8 +121,9 @@ annmax_plot <- function(data_day, break_day, yea_ama_1, yea_ama_2, end_yea_ama, 
     graphics::plot(yea_ama_1:yea_ama_2, ama_res, type = "n", axes = F, ylab = "", xlab = "")
     graphics::lines(yea_ama_1:yea_ama_2, ama_res, col = "black", lwd = 2)
     graphics::points(yea_ama_1:yea_ama_2, ama_res, col = "black", pch = 19, cex = 0.6)
-    graphics::lines(yea_ama_1:yea_ama_2, loess_NA_restore(ama_res, smoo_val = smo_val), col = "black")
-
+    # graphics::lines(yea_ama_1:yea_ama_2, loess_NA_restore(ama_res, smoo_val = smo_val), col = "black")
+    graphics::segments(x0 = yea_ama_1, y0 = (yea_ama_1*ama_res_sl+ama_res_in),
+                       x1 = yea_ama_2, y1 = (yea_ama_2*ama_res_sl+ama_res_in), col = "black", lwd = 1.0)
     graphics::axis(2, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
     graphics::axis(1, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
     graphics::abline(v = seq(1800, 2020, 10), lty = "dashed", lwd = 0.8, col = "grey55")

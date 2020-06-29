@@ -13,9 +13,18 @@
 #' @export
 volu_time <- function(day_cross, sta_yea_cla, end_yea_cla, break_day, day_cross_slo, day_cross_mea, day_cross_day, stat_name){
 
-  smo_val <- 0.25
+  # smo_val <- 0.25
 
   if(break_day > 0){end_yea_cla <- end_yea_cla-1}# if not 1.Jan one year cut
+
+  volu_years <- sta_yea_cla:end_yea_cla
+  ama_res_sl_1 <- as.numeric(zyp.trend.vector(day_cross[1, ], x = volu_years,  method = "zhang", conf.intervals = F)[2])
+  ama_res_sl_2 <- as.numeric(zyp.trend.vector(day_cross[2, ], x = volu_years,  method = "zhang", conf.intervals = F)[2])
+  ama_res_sl_3 <- as.numeric(zyp.trend.vector(day_cross[3, ], x = volu_years,  method = "zhang", conf.intervals = F)[2])
+
+  ama_res_in_1 <- as.numeric(zyp.trend.vector(day_cross[1, ], x = volu_years,  method = "zhang", conf.intervals = F)[11])
+  ama_res_in_2 <- as.numeric(zyp.trend.vector(day_cross[2, ], x = volu_years,  method = "zhang", conf.intervals = F)[11])
+  ama_res_in_3 <- as.numeric(zyp.trend.vector(day_cross[3, ], x = volu_years,  method = "zhang", conf.intervals = F)[11])
 
   cols_min <- grDevices::colorRampPalette(c(viridis::viridis(9, direction = 1)[1:4], "cadetblue3", "white"))(100)
   cols_max <- grDevices::colorRampPalette(c("white", "yellow2","gold2", "orange2", "orangered3", "orangered4", "red4"))(100)
@@ -32,9 +41,15 @@ volu_time <- function(day_cross, sta_yea_cla, end_yea_cla, break_day, day_cross_
   graphics::lines(sta_yea_cla:end_yea_cla, day_cross[3, ], col = col_3, lwd = 1.5)
   graphics::lines(sta_yea_cla:end_yea_cla, day_cross[2, ], col = col_2, lwd = 1.5)
   graphics::lines(sta_yea_cla:end_yea_cla, day_cross[1, ], col = col_1, lwd = 1.5)
-  graphics::lines(sta_yea_cla:end_yea_cla, loess_NA_restore(day_cross[3, ], smoo_val = smo_val), col = col_3, lty = "dashed")
-  graphics::lines(sta_yea_cla:end_yea_cla, loess_NA_restore(day_cross[2, ], smoo_val = smo_val), col = col_2, lty = "dashed")
-  graphics::lines(sta_yea_cla:end_yea_cla, loess_NA_restore(day_cross[1, ], smoo_val = smo_val), col = col_1, lty = "dashed")
+  graphics::segments(x0 = sta_yea_cla, y0 = (sta_yea_cla*ama_res_sl_1+ama_res_in_1),
+                     x1 = end_yea_cla, y1 = (end_yea_cla*ama_res_sl_1+ama_res_in_1), col = col_1, lwd = 1.0)
+  graphics::segments(x0 = sta_yea_cla, y0 = (sta_yea_cla*ama_res_sl_2+ama_res_in_2),
+                     x1 = end_yea_cla, y1 = (end_yea_cla*ama_res_sl_2+ama_res_in_2), col = col_2, lwd = 1.0)
+  graphics::segments(x0 = sta_yea_cla, y0 = (sta_yea_cla*ama_res_sl_3+ama_res_in_3),
+                     x1 = end_yea_cla, y1 = (end_yea_cla*ama_res_sl_3+ama_res_in_3), col = col_3, lwd = 1.0)
+  # graphics::lines(sta_yea_cla:end_yea_cla, loess_NA_restore(day_cross[3, ], smoo_val = smo_val), col = col_3, lty = "dashed")
+  # graphics::lines(sta_yea_cla:end_yea_cla, loess_NA_restore(day_cross[2, ], smoo_val = smo_val), col = col_2, lty = "dashed")
+  # graphics::lines(sta_yea_cla:end_yea_cla, loess_NA_restore(day_cross[1, ], smoo_val = smo_val), col = col_1, lty = "dashed")
   graphics::axis(2, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
   graphics::axis(1, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
   graphics::abline(v = seq(1800, 2020, 10), lty = "dashed", lwd = 0.8, col = "grey55")
