@@ -334,7 +334,7 @@ function(input, output, session) {
             if(length(which(is.na(data_cumsum_scale[, i]))) > 0){
               day_cross[p, i] <- NA
             }else{
-              day_cross[p, i] <- day_cross[p, i] <- min(which(data_cumsum_scale[, i] > percents[p]))
+              day_cross[p, i] <- min(which(data_cumsum_scale[, i] > percents[p]))
             }
           }
         }
