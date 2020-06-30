@@ -34,7 +34,7 @@ volu_time <- function(day_cross, sta_yea_cla, end_yea_cla, break_day, day_cross_
   col_2 <- "black"
   col_3 <- "steelblue4"
 
-  graphics::par(mar = c(3.0, 3.0, 6, 0.1))
+  graphics::par(mar = c(2.0, 3.0, 6, 0.1))
 
   graphics::plot(sta_yea_cla:end_yea_cla, day_cross[3, ], type = "n", ylim = c(min_na(day_cross[1, ]), max_na(day_cross[3, ])),
                  axes = F, ylab = "", xlab = "")
@@ -57,7 +57,7 @@ volu_time <- function(day_cross, sta_yea_cla, end_yea_cla, break_day, day_cross_
   graphics::box(lwd = 0.8)
   graphics::mtext(paste0(stat_name, " (", sta_yea_cla, "-", end_yea_cla+1, ")"), line = 4.0, side = 3, cex = 1.5, adj = 0.0)
   graphics::mtext("Day of the year (DOY)", line = 2.0, side = 2, cex = 1.2)
-  graphics::mtext("Year", line = 2.0, side = 1, cex = 1.2)
+  # graphics::mtext("Year", line = 1.5, side = 1, cex = 1.2)
   cex_dat <- 0.9
   decs <- length(sta_yea_cla:end_yea_cla)/10
 
