@@ -116,7 +116,7 @@ annmax_plot <- function(data_day, break_day, yea_ama_1, yea_ama_2, end_yea_ama, 
     # smo_val <- 0.25
     days <- seq(as.Date("2014-01-01"), to = as.Date("2014-12-31"), by = "days")
 
-    graphics::par(mar = c(3.0, 3.5, 6, 0.1))
+    graphics::par(mar = c(2.0, 3.5, 5, 0.1))
 
     graphics::plot(yea_ama_1:yea_ama_2, ama_res, type = "n", axes = F, ylab = "", xlab = "")
     graphics::lines(yea_ama_1:yea_ama_2, ama_res, col = "black", lwd = 2)
@@ -133,7 +133,7 @@ annmax_plot <- function(data_day, break_day, yea_ama_1, yea_ama_2, end_yea_ama, 
 
     if(ama_var == "ama_doy"){
       graphics::mtext("Day of the year (DOY)", line = 2.0, side = 2, cex = 1.2)
-      graphics::mtext("Year", line = 2.0, side = 1, cex = 1.2)
+      # graphics::mtext("Year", line = 2.0, side = 1, cex = 1.2)
       graphics::mtext(paste0(" Day Zero: ", format(days[break_day + cols_sel[1]], "%d-%m")), side = 3, line = 1.5, adj = 0, cex = 1.2)
       graphics::mtext(paste0(" Months: ", month_sel_1, " to ", month_sel_2), side = 3, line = 0.2, adj = 0.0, cex = 1.2)
       graphics::mtext(paste0(" Sen's slope: ", round(ama_res_slo, 2),  " days/dec"), side = 3, line = 1.5, adj = 1.0, cex = 1.2)
@@ -142,7 +142,7 @@ annmax_plot <- function(data_day, break_day, yea_ama_1, yea_ama_2, end_yea_ama, 
 
     if(ama_var == "ama_mag"){
       graphics::mtext(expression(paste("Discharge [m"^"3", " s"^"-1", "]")), line = 1.8, side = 2, cex = 1.2)
-      graphics::mtext("Year", line = 2.0, side = 1, cex = 1.2)
+      # graphics::mtext("Year", line = 2.0, side = 1, cex = 1.2)
       graphics::mtext(paste0(" Day Zero: ", format(days[break_day + cols_sel[1]], "%d-%m")), side = 3, line = 1.5, adj = 0, cex = 1.2)
       graphics::mtext(paste0(" Months: ", month_sel_1, " to ", month_sel_2), side = 3, line = 0.2, adj = 0.0, cex = 1.2)
       graphics::mtext(paste0(" Sen's slope: ", round(ama_res_slo * -1, 2), " [m3 s-1 dec-1]"), side = 3, line = 1.5, adj = 1.0, cex = 1.2)
