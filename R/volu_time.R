@@ -55,7 +55,7 @@ volu_time <- function(day_cross, sta_yea_cla, end_yea_cla, break_day, day_cross_
   graphics::abline(v = seq(1800, 2020, 10), lty = "dashed", lwd = 0.8, col = "grey55")
   graphics::grid(nx= 0, ny = 5, col = "grey55", lty = "dashed", lwd = 0.8)
   graphics::box(lwd = 0.8)
-  graphics::mtext(paste0(stat_name, " (", sta_yea_cla, "-", end_yea_cla+1, ")"), line = 4.0, side = 3, cex = 1.5)
+  graphics::mtext(paste0(stat_name, " (", sta_yea_cla, "-", end_yea_cla+1, ")"), line = 4.0, side = 3, cex = 1.5, adj = 0.0)
   graphics::mtext("Day of the year (DOY)", line = 2.0, side = 2, cex = 1.2)
   graphics::mtext("Year", line = 2.0, side = 1, cex = 1.2)
   cex_dat <- 0.9
