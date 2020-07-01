@@ -80,7 +80,8 @@ mean_hydro <- function(data_day, break_day, yea_cla_1, yea_cla_2, yea_cla_3, yea
     graphics::axis(1, at = x_axis_lab, c("J","F","M","A","M","J","J","A","S","O", "N", "D"), tick = FALSE,
          col="black", col.axis="black", mgp=c(3, 0.15, 0))#plot labels
   }
-  graphics::mtext(paste0(stat_name, " (", sta_yea_cla, "-", end_yea_cla, ")"), line = 0.2, side = 3, cex = 1.5, adj = 0)
+  # graphics::mtext(paste0(stat_name, " (", sta_yea_cla, "-", end_yea_cla, ")"), line = 0.2, side = 3, cex = 1.5, adj = 0)
+  graphics::mtext(paste0(stat_name), line = 0.2, side = 3, cex = 1.5, adj = 0)
   graphics::abline(v = x_axis_tic, col = "grey55", lty = "dashed", lwd = 0.8)
   graphics::grid(nx = 0, ny = 5, lty = "dashed", col = "grey55", lwd = 0.8)
   graphics::legend(legend_posi, c(paste0(yea_cla_1, "-", yea_cla_2), paste0(yea_cla_3, "-", yea_cla_4)),

@@ -129,7 +129,9 @@ annmax_plot <- function(data_day, break_day, yea_ama_1, yea_ama_2, end_yea_ama, 
     graphics::abline(v = seq(1800, 2020, 10), lty = "dashed", lwd = 0.8, col = "grey55")
     graphics::grid(nx= 0, ny = 5, col = "grey55", lty = "dashed", lwd = 0.8)
     graphics::box(lwd = 0.8)
-    graphics::mtext(paste0(stat_name, " (", sta_yea_ama, "-", end_yea_ama, ")"), line = 3.0, side = 3, cex = 1.5)
+    # graphics::mtext(paste0(stat_name, " (", sta_yea_ama, "-", end_yea_ama, ")"), line = 3.0, side = 3, cex = 1.5)
+    graphics::mtext(paste0(stat_name), line = 3.0, side = 3, cex = 1.5)
+
 
     if(ama_var == "ama_doy"){
       graphics::mtext("Day of the year (DOY)", line = 2.0, side = 2, cex = 1.2)

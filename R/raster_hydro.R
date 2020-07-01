@@ -61,7 +61,8 @@ raster_hydro <- function(data_day, break_day, sta_yea_cla, end_yea_cla, stat_nam
 
   graphics::mtext("Year", side = 2, line = 2.0, cex = 1.2)
   graphics::axis(2, mgp=c(3, 0.25, 0), tck = -0.005, cex.axis = 1.5)
-  graphics::mtext(paste0(stat_name, " (", sta_yea_cla, "-", end_yea_cla, ")"), side = 3, line = 0.5, cex = 1.5, adj = 0)
+  # graphics::mtext(paste0(stat_name, " (", sta_yea_cla, "-", end_yea_cla, ")"), side = 3, line = 0.5, cex = 1.5, adj = 0)
+  graphics::mtext(paste0(stat_name), side = 3, line = 0.5, cex = 1.5, adj = 0)
   graphics::mtext(lab_unit, side = 3, line = 0.5, cex = 1, adj = 1)
   graphics::box()
 
