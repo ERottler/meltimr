@@ -102,7 +102,7 @@ perc_hydro <- function(data_day, yea_per_1, yea_per_2, yea_per_3, yea_per_4,
     my_bre <- c(seq(-max_na(abs(qdif)), 0, length.out = n_min),
                 seq(0, max_na(abs(qdif)), length.out = n_max+1))
 
-    graphics::par(mar = c(1.6, 4.5, 2.5, 0.2))
+    graphics::par(mar = c(1.8, 4.5, 2.8, 0.2))
 
     graphics::layout(matrix(c(1,1,1,1,1,1,1,1,2),
                             1, 9), widths=c(), heights=c())
@@ -121,7 +121,7 @@ perc_hydro <- function(data_day, yea_per_1, yea_per_2, yea_per_3, yea_per_4,
     graphics::mtext(expression(paste("[m"^"3", " s"^"-1", "]")), side = 3, line = 0.5, cex = 1.2, adj = 1)
     graphics::box()
 
-    graphics::par(mar = c(1.6, 0.8, 2.5, 1.6))
+    graphics::par(mar = c(1.8, 0.8, 2.8, 1.8))
 
     image_scale(as.matrix(qdif), col = my_col, breaks = my_bre, horiz=F, ylab="", xlab="", yaxt="n", axes=F)
     graphics::axis(4, mgp=c(3, 0.75, 0), tck = -0.08, cex.axis = 1.4)
