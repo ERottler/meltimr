@@ -56,7 +56,7 @@ mean_hydro <- function(data_day, break_day, yea_cla_1, yea_cla_2, yea_cla_3, yea
   graphics::lines(data_mea_2, col = "darkred", lwd = 2.5)
   graphics::abline(v = doy_max_1, col = "steelblue4", lty = "dashed", lwd = 2)
   graphics::abline(v = doy_max_2, col = "darkred",  lty = "dashed", lwd = 2)
-  graphics::mtext(paste0("Max. lag: ", (doy_max_1-doy_max_2), " days"), side = 3, line = 0.2, adj = 1, cex = 1.2)
+  graphics::mtext(paste0("Peak lag: ", (doy_max_1-doy_max_2), " days"), side = 3, line = 0.2, adj = 1, cex = 1.2)
 
   graphics::mtext(expression(paste("Discharge [m"^"3", " s"^"-1", "]")), side = 2, line = 2.0, cex = 1.2)
   legend_posi <- "topleft"
