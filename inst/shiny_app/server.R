@@ -29,6 +29,22 @@ catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol = 2))
 
 function(input, output, session) {
 
+  query_modal <- modalDialog(
+    title = "Welcome to the Hydro Explorer!",
+    "Analyze more than 7000 discharge time series with regard to runoff timing and runoff seasonality. Tip: Switch between tabs in order to read a short summary and get more information on available analytical tools, discharge data and source code.",
+    easyClose = F,
+    footer = tagList(
+      actionButton("start_window", "Start")
+    )
+  )
+
+  # Show the model on start up ...
+  showModal(query_modal)
+
+  observeEvent(input$start_window, {
+    removeModal()
+  })
+
   #Leaflet map with station filter
   observe({
 
