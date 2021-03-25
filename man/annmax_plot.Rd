@@ -4,18 +4,8 @@
 \alias{annmax_plot}
 \title{Annual/Montly maxima graph}
 \usage{
-annmax_plot(
-  data_day,
-  break_day,
-  yea_ama_1,
-  yea_ama_2,
-  end_yea_ama,
-  sta_yea_ama,
-  month_sel_1,
-  month_sel_2,
-  stat_name,
-  ama_var
-)
+annmax_plot(data_day, break_day, yea_ama_1, yea_ama_2, end_yea_ama,
+  sta_yea_ama, month_sel_1, month_sel_2, stat_name, ama_var)
 }
 \arguments{
 \item{data_day}{Matrix with values ordered by day (see function \code{\link{ord_day}}).}

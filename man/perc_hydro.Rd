@@ -4,18 +4,8 @@
 \alias{perc_hydro}
 \title{Percentile graph}
 \usage{
-perc_hydro(
-  data_day,
-  yea_per_1,
-  yea_per_2,
-  yea_per_3,
-  yea_per_4,
-  end_yea_per,
-  sta_yea_per,
-  stat_name,
-  plot_per,
-  perc_sel
-)
+perc_hydro(data_day, yea_per_1, yea_per_2, yea_per_3, yea_per_4,
+  end_yea_per, sta_yea_per, stat_name, plot_per, perc_sel)
 }
 \arguments{
 \item{data_day}{Matrix with values ordered by day (see function \code{\link{ord_day}}).}

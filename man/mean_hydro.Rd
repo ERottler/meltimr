@@ -4,17 +4,8 @@
 \alias{mean_hydro}
 \title{Mean graph}
 \usage{
-mean_hydro(
-  data_day,
-  break_day,
-  yea_cla_1,
-  yea_cla_2,
-  yea_cla_3,
-  yea_cla_4,
-  end_yea_cla,
-  sta_yea_cla,
-  stat_name
-)
+mean_hydro(data_day, break_day, yea_cla_1, yea_cla_2, yea_cla_3, yea_cla_4,
+  end_yea_cla, sta_yea_cla, stat_name)
 }
 \arguments{
 \item{data_day}{Matrix with values ordered by day (see function \code{\link{ord_day}}).}

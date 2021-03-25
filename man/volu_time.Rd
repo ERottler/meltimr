@@ -4,16 +4,8 @@
 \alias{volu_time}
 \title{Volume timing graph}
 \usage{
-volu_time(
-  day_cross,
-  sta_yea_cla,
-  end_yea_cla,
-  break_day,
-  day_cross_slo,
-  day_cross_mea,
-  day_cross_day,
-  stat_name
-)
+volu_time(day_cross, sta_yea_cla, end_yea_cla, break_day, day_cross_slo,
+  day_cross_mea, day_cross_day, stat_name)
 }
 \arguments{
 \item{day_cross}{Matrix with DOYs when certain fraction of annual runoff was recorded (currently 25, 50 and 75 \%).}

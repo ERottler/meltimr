@@ -4,7 +4,8 @@
 \alias{image_scale}
 \title{Color scale for image plot.}
 \usage{
-image_scale(z, zlim, col, breaks, horiz = TRUE, ylim = NULL, xlim = NULL, ...)
+image_scale(z, zlim, col, breaks, horiz = TRUE, ylim = NULL,
+  xlim = NULL, ...)
 }
 \arguments{
 \item{z}{Input data matrix. Results of moving average analysis.}
