@@ -20,7 +20,7 @@ grdc_disc_dir <- "/home/erwin/Documents/storage_research/grdc_data/GRDC_DAY"
 
 ###Path to folder with GRDC watershed boundaries
 # catc_dir <- "/media/rottler/data2/basin_data/grdc_basins/"
-grdc_catc_dir <- paste0("")
+grdc_catc_dir <- paste0("/home/erwin/Documents/storage_research/grdc_data/stat_bas_shp/")
 # catc_dir <- "/srv/shiny-server/melTim/basins/"
 
 ### Path to LamaH discharge data

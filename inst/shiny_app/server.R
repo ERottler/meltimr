@@ -14,8 +14,11 @@ source(paste0(getwd(), "/set_dir.R"))
 disc_meta <- read.table(file = disc_meta_path, sep = ";", header = T, stringsAsFactors = F)
 
 #list GRDC watersheds available
-catch_paths <- list.files(path = grdc_catc_dir, pattern = "*\\.shp$", full.names = T)
-catch_names <- list.files(path = grdc_catc_dir, pattern = "*\\.shp$", full.names = F)
+catch_paths_grdc <- list.files(path = grdc_catc_dir, pattern = "*\\.shp$", full.names = T)
+catch_names_grdc <- list.files(path = grdc_catc_dir, pattern = "*\\.shp$", full.names = F)
+
+#LamaH watershed boundaries
+catch_lamah <- rgdal::readOGR(paste0(lamah_dir, "/A_basins_total_upstrm/3_shapefiles/Upstrm_area_total.shp"))
 
 #Initial dummy catchment
 catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol = 2))
@@ -61,9 +64,9 @@ function(input, output, session) {
     output$map <- renderLeaflet({
 
       leaflet() %>%
-        addProviderTiles(providers$Stamen.TonerBackground,   group = "Toner Background") %>%
         addProviderTiles(providers$Stamen.TerrainBackground, group = "Terrain Background") %>%
         addProviderTiles(providers$OpenStreetMap.HOT,        group = "Open Street Map") %>%
+        addProviderTiles(providers$Stamen.TonerBackground,   group = "Toner Background") %>%
 
         addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "grdc")],
                          disc_meta$latitude[which(disc_meta$source == "grdc")],
@@ -106,7 +109,7 @@ function(input, output, session) {
         addPolygons(data = catch_sel, layerId = "watershed", group = "Watershed") %>%
 
         addLayersControl(
-          baseGroups = c("Toner Background", "Terrain Background", "Open Street Map"),
+          baseGroups = c("Terrain Background", "Open Street Map", "Toner Background"),
           overlayGroups = c("GRDC", "LamaH", "Watershed"),
           position = "bottomleft",
           options = layersControlOptions(collapsed = F)
@@ -139,40 +142,52 @@ function(input, output, session) {
 
     stat_sel <- which(disc_meta$latitude == gauge_sel$clicked_gauge$lat)
 
+    stat_name <- disc_meta$name[stat_sel] #station name
+    sta_id <- disc_meta$id[stat_sel] #station id
+
     if(disc_meta$source[stat_sel] == "grdc"){
+
+      #read discharge time series
       disc_data <- read_grdc(disc_meta$file_path[stat_sel])
+
+      #read watershed boundaries for selected gauge
+      catch_path <- grep(sta_id, catch_paths_grdc, value = T)
+
+      if(length(catch_path) !=1){catch_path <- "xxx"}
+
+      if(file.exists(catch_path)){
+
+        catch_sel <- rgdal::readOGR(catch_path)
+
+      }else{
+
+        catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol =2))
+
+        }
     }
 
     if(disc_meta$source[stat_sel] == "lamah"){
+
+      #read discharge time series
       disc_data <- read_lamah(disc_meta$file_path[stat_sel])
+
+      #select watershed boundaries for selected gauge
+      sel_ind <- which(catch_lamah@data$ID == sta_id)
+
+      crswgs84 <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+      catch_sel_lae <- catch_lamah[sel_ind, ]
+      catch_sel <- spTransform(catch_sel_lae, crswgs84)
+
     }
 
-    stat_name <- disc_meta$name[stat_sel]
-    sta_id <- disc_meta$id[stat_sel]
 
-    #Read catchment
-    catch_path <- grep(sta_id, catch_paths, value = T)
-
-    if(length(catch_path) !=1){catch_path <- "xxx"}
-
-    if(file.exists(catch_path)){
-
-      # crswgs84 <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
-      catch_sel <- rgdal::readOGR(catch_path)
-      # catch_sel <- sp::spTransform(catch_sel_raw, CRS = crswgs84)
-
-      # #Set map view to boudary limits
-      # map_view <- raster::extent(sp::bbox(catch_sel)) + c(0, 2, -1.5, 1.5)
-    }else{
-      catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol =2))
-    }
-
+    #Update leaflat map and show watershed selected
     leafletProxy("map") %>%
       removeShape(layerId = "watershed") %>%
       addPolygons(data = catch_sel, layerId = "watershed", fill = F,
                   color = "#366488", opacity = 0.9, group = "Watershed") %>%
     addLayersControl(
-      baseGroups = c("Toner Background", "Terrain Background", "Open Street Map"),
+      baseGroups = c("Terrain Background", "Open Street Map", "Toner Background"),
       overlayGroups = c("GRDC", "LamaH", "Watershed"),
       position = "bottomleft",
       options = layersControlOptions(collapsed = F)
