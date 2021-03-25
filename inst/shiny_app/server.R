@@ -34,7 +34,7 @@ function(input, output, session) {
     "Analyze more than 7000 discharge time series with regard to runoff timing and runoff seasonality. Tip: Switch between tabs in order to read a short summary and get more information on available analytical tools, discharge data and source code.",
     easyClose = F,
     footer = tagList(
-      actionButton("start_window", "Start")
+      actionButton("start_window", "Explore")
     )
   )
 
