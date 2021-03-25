@@ -1,8 +1,7 @@
 ###
 
-#Shiny Web App to visualize discharge data from GRDC
+#Shiny Web App to visualize daily discharge data from large data sets
 #User Interface
-#Erwin Rottler, University of Potsdam, 2019/2020
 
 ###
 
@@ -10,6 +9,7 @@
 library(shiny)
 library(shinythemes)
 library(leaflet)
+# library(leaflet.providers)
 library(meltimr)
 library(zyp)
 library(Kendall)
@@ -113,12 +113,12 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
                                      min = 1940, max = 2000, step = 1, value = c(1940,1965), sep = "")
         ),
         conditionalPanel("input.ana_method == 'statsfilter'",
-                         sliderInput("filter_sta_yea", "Minimum start year:",animate = F,
-                                     min = 1850, max = 2016, step = 1, value = c(1945), sep = "")
+                         sliderInput("filter_sta_yea", "Maximum start year:",animate = F,
+                                     min = 1850, max = 2016, step = 1, value = c(1990), sep = "")
         ),
         conditionalPanel("input.ana_method == 'statsfilter'",
                          sliderInput("filter_end_yea", label = "Minimum end year:", animate = F,
-                                     min = 1850, max = 2016, step = 1, value = c(1985), sep = "")
+                                     min = 1850, max = 2016, step = 1, value = c(1990), sep = "")
         ),
         conditionalPanel("input.ana_method == 'statsfilter'",
                          sliderInput("filter_lat_upp", label = "Maximum latitude:", animate = F,
@@ -147,7 +147,7 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
 
   tabPanel("Summary",
 
-           p("Climatic changes and anthropogenic modifications of the river network/basin have the potential to fundentally alter river runoff. In the framework of this study, we investigate historic changes in runoff seasonality and runoff timing observed at gauging stations all over the world. In this regard, we develop the 'HydroExplorer', an interactive shiny web app, which enables the investigation of >7000 time series. The available selection of tools inter alia enables the analysis of changes in mean annual cycles, inter- and intra-annual variability, the timing and magnitude of annual maxima and changes in quantile values over time. The interactive nature of the developed web app allows a quick comparison of gauges, regions, methods and times frames, and makes it possible to asses weaknesses and strenghts of individual analytical tools.")
+           p("Climatic changes and anthropogenic modifications of the river network/basin have the potential to fundentally alter river runoff. In the framework of this study, we investigate historic changes in runoff seasonality and runoff timing observed at gauging stations all over the world. In this regard, we develop the 'HydroExplorer', an interactive shiny web app, which enables the investigation of daily resolution discharge time series from large hydrological data sets. The available selection of tools inter alia enables the analysis of changes in mean annual cycles, inter- and intra-annual variability, the timing and magnitude of annual maxima and changes in quantile values over time. The interactive nature of the developed web app allows a quick comparison of gauges, regions, methods and times frames, and makes it possible to asses weaknesses and strenghts of individual analytical tools.")
 
   ),
 
@@ -221,25 +221,43 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
 
   tabPanel("Data & Code",
 
-           h3("Data"),
-           p("In the framework of this study, we focus on discharge data from the global runoff dataset provided by the Global Runoff Data Centre 56068 Koblenz, Germany (GRDC). This unique collection of discharge time series from all over the world represents a key dataset for hydrological research. For further information, please visit:"),
-           tags$a(href="https://www.bafg.de/GRDC/EN/Home/homepage_node.html", "Global Runoff Database",
-                  style="color:CadetBlue;
-                         font-weight: bold;
-                         font-style: italic"),
+           h2("Data"),
 
            hr(),
 
-           p("Watershed boundaries were derived by Bernhard Lehner based on the HydroSHEDS drainage network. For more information and access to the corresponding technical report within the GRDC Report Series, please visit:"),
-           tags$a(href="https://www.bafg.de/GRDC/EN/02_srvcs/22_gslrs/222_WSB/watershedBoundaries_node.html",
-                  "GRDC Watershed Boundaries",
-                  style="color:CadetBlue;
+           h4("GRDC"),
+           p("In the framework of this study, we focus on discharge data from the global runoff dataset provided by the",
+             tags$a(href="https://www.bafg.de/GRDC/EN/Home/homepage_node.html", "Global Runoff Data Center",
+                    style="color:CadetBlue;
                          font-weight: bold;
                          font-style: italic"),
+             "56068 Koblenz, Germany (GRDC). This unique collection of discharge time series from all over the world represents a key dataset for hydrological research.",
+             tags$a(href="https://www.bafg.de/GRDC/EN/02_srvcs/22_gslrs/222_WSB/watershedBoundaries_node.html",
+                    "GRDC Watershed Boundaries",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic"),
+             "were derived by Bernhard Lehner based on the HydroSHEDS drainage network. For more information access to the corresponding technical report within the GRDC Report Series."),
 
            hr(),
 
-           h3("Code"),
+           h4("LamaH"),
+           p("The Hydro Explorer also enables the investigation of discharge time series from",
+             tags$a(href="https://doi.org/10.5281/zenodo.4525244", "LamaH | Large-Sample Data for Hydrology and Environmental Sciences for Central Europe",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic"),
+             "This is a new dataset for large-sample studies and comparative hydrology in Central Europe. The data set also contains catchment attributes (topography, climatology, hydrology, land cover, vegetation, soil and geological properties as well as meteorological time series. For further information, please have a look at the corresponding",
+             tags$a(href="https://doi.org/10.5194/essd-2021-72", "research article",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic")
+             ),
+
+
+           hr(),
+
+           h2("Code"),
            p("Source code of this Shiny web app comes in form of an R package and can be accessed at:"),
            tags$a(href= "https://github.com/ERottler/meltimr", "github.com/ERottler/meltimr",
                   style="color:CadetBlue;

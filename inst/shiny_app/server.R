@@ -1,8 +1,7 @@
 ###
 
-#Shiny Web App to visualize discharge data from GRDC
+#Shiny Web App to visualize daily discharge data from large data sets
 #Server file
-#Erwin Rottler, University of Potsdam, 2019/2020
 
 ###
 
@@ -11,16 +10,12 @@
 #get folder paths defined in set_dir.R
 source(paste0(getwd(), "/set_dir.R"))
 
-#read grdc meta data
-grdc_meta <- read.table(file = grdc_meta_path, sep = ";", header = T, stringsAsFactors = F)
+#read discharge meta data
+disc_meta <- read.table(file = disc_meta_path, sep = ";", header = T, stringsAsFactors = F)
 
-#list watersheds available
-catch_paths <- list.files(path = catc_dir, pattern = "*\\.shp$", full.names = T)
-catch_names <- list.files(path = catc_dir, pattern = "*\\.shp$", full.names = F)
-
-#paths/names GRDC data files
-file_paths <- list.files(path = grdc_dir, pattern = "*\\.Cmd", full.names = T)
-file_names <- list.files(path = grdc_dir, pattern = "*\\.Cmd", full.names = F)
+#list GRDC watersheds available
+catch_paths <- list.files(path = grdc_catc_dir, pattern = "*\\.shp$", full.names = T)
+catch_names <- list.files(path = grdc_catc_dir, pattern = "*\\.shp$", full.names = F)
 
 #Initial dummy catchment
 catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol = 2))
@@ -31,7 +26,7 @@ function(input, output, session) {
 
   query_modal <- modalDialog(
     title = "Welcome to the Hydro Explorer!",
-    "Analyze more than 7000 discharge time series with regard to runoff timing and runoff seasonality. Tip: Switch between tabs in order to read a short summary and get more information on available analytical tools, discharge data and source code.",
+    "Analyze daily resolution discharge time series from large data sets with regard to runoff timing and runoff seasonality. Switch between tabs in order to read a short summary and get more information on available analytical tools, discharge data and source code.",
     easyClose = F,
     footer = tagList(
       actionButton("start_window", "Explore")
@@ -55,32 +50,54 @@ function(input, output, session) {
     filter_lon_left <- input$filter_lon_left
     filter_lon_right <- input$filter_lon_right
 
-    grdc_meta <- grdc_meta[which(grdc_meta$start_series <= filter_sta_yea), ]
-    grdc_meta <- grdc_meta[which(grdc_meta$end_series >= filter_end_yea), ]
-    grdc_meta <- grdc_meta[which(grdc_meta$latitude < filter_lat_upp), ]
-    grdc_meta <- grdc_meta[which(grdc_meta$latitude > filter_lat_low), ]
-    grdc_meta <- grdc_meta[which(grdc_meta$longitude > filter_lon_left), ]
-    grdc_meta <- grdc_meta[which(grdc_meta$longitude < filter_lon_right), ]
+    disc_meta <- disc_meta[which(disc_meta$start_series <= filter_sta_yea), ]
+    disc_meta <- disc_meta[which(disc_meta$end_series >= filter_end_yea), ]
+    disc_meta <- disc_meta[which(disc_meta$latitude < filter_lat_upp), ]
+    disc_meta <- disc_meta[which(disc_meta$latitude > filter_lat_low), ]
+    disc_meta <- disc_meta[which(disc_meta$longitude > filter_lon_left), ]
+    disc_meta <- disc_meta[which(disc_meta$longitude < filter_lon_right), ]
 
     #Leaflet map with all stations
     output$map <- renderLeaflet({
 
       leaflet() %>%
+        addProviderTiles(providers$Stamen.TonerBackground,   group = "Toner Background") %>%
         addProviderTiles(providers$Stamen.TerrainBackground, group = "Terrain Background") %>%
-        addProviderTiles(providers$OpenStreetMap.HOT,           group = "Open Street Map") %>%
+        addProviderTiles(providers$OpenStreetMap.HOT,        group = "Open Street Map") %>%
 
-        addCircleMarkers(grdc_meta$longitude, grdc_meta$latitude, label = grdc_meta$name,
+        addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "grdc")],
+                         disc_meta$latitude[which(disc_meta$source == "grdc")],
+                         label = disc_meta$name[which(disc_meta$source == "grdc")],
                          labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
-                         stroke = F, group = "Runoff", fillOpacity = 0.8, fillColor = "darkred",
-                         popup = grdc_meta$name,
+                         stroke = F, group = "GRDC", fillOpacity = 0.8, fillColor = "darkred",
+                         popup = disc_meta$name[which(disc_meta$source == "grdc")],
+                         clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
+                                                                   var childCount = cluster.getChildCount();
+                                                                   if (childCount < 100) {
+                                                                     c = 'rgba(210, 10, 10, 255);'
+                                                                   } else if (childCount < 200) {
+                                                                     c = 'rgba(210, 10, 10, 255);'
+                                                                   } else {
+                                                                     c = 'rgba(210, 10, 10, 255);'
+                                                                   }
+                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) }) ;}"
+                         )
+                         )
+        )  %>%
+        addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "lamah")],
+                         disc_meta$latitude[which(disc_meta$source == "lamah")],
+                         label = disc_meta$name[which(disc_meta$source == "lamah")],
+                         labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
+                         stroke = F, group = "LamaH", fillOpacity = 0.8, fillColor = '#3399FF',
+                         popup = disc_meta$name[which(disc_meta$source == "lamah")],
                          clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
                                                                    var childCount = cluster.getChildCount();
                                                                    if (childCount < 50) {
-                                                                     c = 'rgba(210, 10, 10, 255);'
+                                                                     c = '#3399FF;'
                                                                    } else if (childCount < 100) {
-                                                                     c = 'rgba(210, 10, 10, 255);'
+                                                                     c = '#3399FF;'
                                                                    } else {
-                                                                     c = 'rgba(160, 10, 10, 255);'
+                                                                     c = '#3399FF;'
                                                                    }
                                                                    return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
                          )
@@ -89,10 +106,10 @@ function(input, output, session) {
         addPolygons(data = catch_sel, layerId = "watershed", group = "Watershed") %>%
 
         addLayersControl(
-          baseGroups = c("Terrain Background", "Open Street Map"),
-          overlayGroups = c("Watershed"),
+          baseGroups = c("Toner Background", "Terrain Background", "Open Street Map"),
+          overlayGroups = c("GRDC", "LamaH", "Watershed"),
           position = "bottomleft",
-          options = layersControlOptions(collapsed = TRUE)
+          options = layersControlOptions(collapsed = F)
         ) %>%
         hideGroup("Watershed") %>%
 
@@ -120,12 +137,18 @@ function(input, output, session) {
 
     gauge_sel$clicked_gauge <- input$map_marker_click
 
-    stat_sel <- which(grdc_meta$latitude == gauge_sel$clicked_gauge$lat)
+    stat_sel <- which(disc_meta$latitude == gauge_sel$clicked_gauge$lat)
 
-    grdc_data <- read_grdc(grdc_meta$file_path[stat_sel])
-    stat_name <- grdc_meta$name[stat_sel]
+    if(disc_meta$source[stat_sel] == "grdc"){
+      disc_data <- read_grdc(disc_meta$file_path[stat_sel])
+    }
 
-    sta_id <- grdc_meta$id[stat_sel]
+    if(disc_meta$source[stat_sel] == "lamah"){
+      disc_data <- read_lamah(disc_meta$file_path[stat_sel])
+    }
+
+    stat_name <- disc_meta$name[stat_sel]
+    sta_id <- disc_meta$id[stat_sel]
 
     #Read catchment
     catch_path <- grep(sta_id, catch_paths, value = T)
@@ -149,18 +172,18 @@ function(input, output, session) {
       addPolygons(data = catch_sel, layerId = "watershed", fill = F,
                   color = "#366488", opacity = 0.9, group = "Watershed") %>%
     addLayersControl(
-      baseGroups = c("Terrain Background", "Open Street Map"),
-      overlayGroups = c("Watershed"),
+      baseGroups = c("Toner Background", "Terrain Background", "Open Street Map"),
+      overlayGroups = c("GRDC", "LamaH", "Watershed"),
       position = "bottomleft",
-      options = layersControlOptions(collapsed = TRUE)
+      options = layersControlOptions(collapsed = F)
     )
 
     #Raster graph: Reset parameter at selection of new station
     observe({
 
-      sta_yea_cla <- as.numeric(format(grdc_data$date[1], "%Y"))
+      sta_yea_cla <- as.numeric(format(disc_data$date[1], "%Y"))
 
-      end_yea_cla <- as.numeric(format(grdc_data$date[nrow(grdc_data)], "%Y"))
+      end_yea_cla <- as.numeric(format(disc_data$date[nrow(disc_data)], "%Y"))
 
       rast_time_init <- c(sta_yea_cla, end_yea_cla)
 
@@ -171,9 +194,9 @@ function(input, output, session) {
     #Mean graph: Reset parameter at selection of new station
     observe({
 
-      sta_yea_cla <- as.numeric(format(grdc_data$date[1], "%Y"))
+      sta_yea_cla <- as.numeric(format(disc_data$date[1], "%Y"))
 
-      end_yea_cla <- as.numeric(format(grdc_data$date[nrow(grdc_data)], "%Y"))
+      end_yea_cla <- as.numeric(format(disc_data$date[nrow(disc_data)], "%Y"))
 
       rast_time_init <- c(sta_yea_cla, end_yea_cla)
 
@@ -188,9 +211,9 @@ function(input, output, session) {
     #Percentile graph: Reset parameter at selection of new station
     observe({
 
-      sta_yea_cla <- as.numeric(format(grdc_data$date[1], "%Y"))
+      sta_yea_cla <- as.numeric(format(disc_data$date[1], "%Y"))
 
-      end_yea_cla <- as.numeric(format(grdc_data$date[nrow(grdc_data)], "%Y"))
+      end_yea_cla <- as.numeric(format(disc_data$date[nrow(disc_data)], "%Y"))
 
       rast_time_init <- c(sta_yea_cla, end_yea_cla)
 
@@ -205,17 +228,17 @@ function(input, output, session) {
     observe({
 
       if(input$break_day_ama == 1){
-        sta_yea_ama <- as.numeric(format(grdc_data$date[1], "%Y"))
+        sta_yea_ama <- as.numeric(format(disc_data$date[1], "%Y"))
       }else{
-        sta_yea_ama <- as.numeric(format(grdc_data$date[1], "%Y")) + 1
+        sta_yea_ama <- as.numeric(format(disc_data$date[1], "%Y")) + 1
       }
 
-      end_yea_ama <- as.numeric(format(grdc_data$date[nrow(grdc_data)], "%Y"))
+      end_yea_ama <- as.numeric(format(disc_data$date[nrow(disc_data)], "%Y"))
 
       if(input$break_day_ama == 1){
-        sta_yea_ama <- as.numeric(format(grdc_data$date[1], "%Y"))
+        sta_yea_ama <- as.numeric(format(disc_data$date[1], "%Y"))
       }else{
-        sta_yea_ama <- as.numeric(format(grdc_data$date[1], "%Y")) + 1
+        sta_yea_ama <- as.numeric(format(disc_data$date[1], "%Y")) + 1
       }
 
       updateSliderInput(session, "years_ama", label = "Select time frame:",
@@ -226,9 +249,9 @@ function(input, output, session) {
     #Volume timing: Reset parameter at selection of new station
     observe({
 
-      sta_yea_cla <- as.numeric(format(grdc_data$date[1], "%Y"))
+      sta_yea_cla <- as.numeric(format(disc_data$date[1], "%Y"))
 
-      end_yea_cla <- as.numeric(format(grdc_data$date[nrow(grdc_data)], "%Y"))
+      end_yea_cla <- as.numeric(format(disc_data$date[nrow(disc_data)], "%Y"))
 
       rast_time_init <- c(sta_yea_cla, end_yea_cla)
 
@@ -240,9 +263,9 @@ function(input, output, session) {
 
       if(input$ana_method == "rasterhydro"){
 
-          sta_yea_cla <- as.numeric(format(grdc_data$date[1], "%Y"))
+          sta_yea_cla <- as.numeric(format(disc_data$date[1], "%Y"))
 
-          end_yea_cla <- as.numeric(format(grdc_data$date[nrow(grdc_data)], "%Y"))
+          end_yea_cla <- as.numeric(format(disc_data$date[nrow(disc_data)], "%Y"))
 
           if(input$break_day_rh == "1.Oct"){my_break_day = 274}
           if(input$break_day_rh == "1.Nov"){my_break_day = 304}
@@ -250,8 +273,8 @@ function(input, output, session) {
           if(input$break_day_rh == "1.Jan"){my_break_day =   0}
 
           #Order data by day (including break day to set start hydrologica year)
-          data_day <- ord_day(data_in = grdc_data$value,
-                              date = grdc_data$date,
+          data_day <- ord_day(data_in = disc_data$value,
+                              date = disc_data$date,
                               start_y = input$raster_time[1],
                               end_y = input$raster_time[2],
                               break_day = my_break_day,
@@ -268,9 +291,9 @@ function(input, output, session) {
 
       if(input$ana_method == "meanhydro"){
 
-        sta_yea_cla <- as.numeric(format(grdc_data$date[1], "%Y"))
+        sta_yea_cla <- as.numeric(format(disc_data$date[1], "%Y"))
 
-        end_yea_cla <- as.numeric(format(grdc_data$date[nrow(grdc_data)], "%Y"))
+        end_yea_cla <- as.numeric(format(disc_data$date[nrow(disc_data)], "%Y"))
 
         if(input$break_day_mh == "1.Oct"){my_break_day = 274}
         if(input$break_day_mh == "1.Nov"){my_break_day = 304}
@@ -284,8 +307,8 @@ function(input, output, session) {
         my_window <- input$window_mh
 
         #Order data by day (including break day to set start hydrologica year)
-        data_day <- ord_day(data_in = grdc_data$value,
-                            date = grdc_data$date,
+        data_day <- ord_day(data_in = disc_data$value,
+                            date = disc_data$date,
                             start_y = sta_yea_cla,
                             end_y = end_yea_cla,
                             break_day = my_break_day,
@@ -316,8 +339,8 @@ function(input, output, session) {
         end_yea_cla <- input$vol_frame[2]
 
         #Order data by day (including break day to set start hydrologica year)
-        data_day <- ord_day(data_in = grdc_data$value,
-                            date = grdc_data$date,
+        data_day <- ord_day(data_in = disc_data$value,
+                            date = disc_data$date,
                             start_y = sta_yea_cla,
                             end_y = end_yea_cla,
                             break_day = my_break_day,
@@ -374,9 +397,9 @@ function(input, output, session) {
 
       if(input$ana_method == "percenthydro"){
 
-        sta_yea_per <- as.numeric(format(grdc_data$date[1], "%Y"))
+        sta_yea_per <- as.numeric(format(disc_data$date[1], "%Y"))
 
-        end_yea_per <- as.numeric(format(grdc_data$date[nrow(grdc_data)], "%Y"))
+        end_yea_per <- as.numeric(format(disc_data$date[nrow(disc_data)], "%Y"))
 
         yea_per_1 <- input$break_year_ph1[1]
         yea_per_2 <- input$break_year_ph1[2]
@@ -388,8 +411,8 @@ function(input, output, session) {
         if(input$plo_sel_per == "Image plot"){plot_per <- "image"}
 
         #Order data by day (including break day to set start hydrologica year)
-        data_day <- ord_day(data_in = grdc_data$value,
-                            date = grdc_data$date,
+        data_day <- ord_day(data_in = disc_data$value,
+                            date = disc_data$date,
                             start_y = sta_yea_per,
                             end_y = end_yea_per,
                             break_day = 0,
@@ -417,9 +440,9 @@ function(input, output, session) {
 
         my_break_day <- input$break_day_ama - 1 # minus 1, so that 1 is 1st Jan
 
-        sta_yea_ama <- as.numeric(format(grdc_data$date[1], "%Y"))
+        sta_yea_ama <- as.numeric(format(disc_data$date[1], "%Y"))
 
-        end_yea_ama <- as.numeric(format(grdc_data$date[nrow(grdc_data)], "%Y"))
+        end_yea_ama <- as.numeric(format(disc_data$date[nrow(disc_data)], "%Y"))
 
         yea_ama_1 <- input$years_ama[1]
         yea_ama_2 <- input$years_ama[2]
@@ -436,8 +459,8 @@ function(input, output, session) {
         }
 
         #Order data by day (including break day to set start hydrologica year)
-        data_day <- ord_day(data_in = grdc_data$value,
-                            date = grdc_data$date,
+        data_day <- ord_day(data_in = disc_data$value,
+                            date = disc_data$date,
                             start_y = sta_yea_ama,
                             end_y = end_yea_ama,
                             break_day = my_break_day,

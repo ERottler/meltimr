@@ -1,24 +1,30 @@
 ###
 
-#Shiny Web App to visualize discharge data from GRDC
+#Shiny Web App to visualize daily discharge data from large data sets
 #Define paths
-#Erwin Rottler, University of Potsdam, 2019/2020
 
 ###
 
-#path to shiny app
-app_dir <- "/home/rottler/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app/"
+### Path to shiny app
+# app_dir <- "/home/rottler/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app/"
+app_dir <- "/home/erwin/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app/"
 # app_dir <- "/srv/shiny-server/melTim/"
 
-#path to folder with GRDC files with observed runoff
-grdc_dir <- paste0(app_dir, "/data")
+### Path to discharge meta data file (generated with disc_meta.R)
+disc_meta_path <- paste0(app_dir, "/disc_meta.csv")
+
+### Path to folder with GRDC files with observed runoff
 # grdc_dir <- "/media/rottler/data2/GRDC_DAY"
+grdc_disc_dir <- "/home/erwin/Documents/storage_research/grdc_data/GRDC_DAY"
 # grdc_dir <- "/srv/shiny-server/melTim/data"
 
-#Path to folder with watershed boundaries
-catc_dir <- paste0(app_dir, "/basins")
+###Path to folder with GRDC watershed boundaries
 # catc_dir <- "/media/rottler/data2/basin_data/grdc_basins/"
+grdc_catc_dir <- paste0("")
 # catc_dir <- "/srv/shiny-server/melTim/basins/"
 
-#path to grdc meta data file (generated with grdc_meta.R)
-grdc_meta_path <- paste0(app_dir, "/grdc_meta.csv")
+### Path to LamaH discharge data
+lamah_disc_dir <- "/home/erwin/Documents/storage_research/lamah/CAMELS_AT/A_basins_total_upstrm/2_timeseries/"
+
+### Path to LamaH watershed boundaries
+lamah_dir <- "/home/erwin/Documents/storage_research/lamah/CAMELS_AT"
