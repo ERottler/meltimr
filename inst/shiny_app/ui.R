@@ -65,11 +65,11 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
         ),
         conditionalPanel("input.ana_method == 'meanhydro' && (input.condi_adjust == true)",
                          sliderInput("break_year_mh1", label = "Select time frame 1:", animate = F,
-                                     min = 1940, max = 2000, step = 1, value = c(1940, 1960), sep = "")
+                                     min = 1940, max = 2000, step = 1, value = c(1961, 1985), sep = "")
         ),
         conditionalPanel("input.ana_method == 'meanhydro' && (input.condi_adjust == true)",
                          sliderInput("break_year_mh2", label = "Select time frame 2:", animate = F,
-                                     min = 1940, max = 2000, step = 1, value = c(1970, 2000), sep = "")
+                                     min = 1940, max = 2000, step = 1, value = c(1986, 2010), sep = "")
         ),
         conditionalPanel("input.ana_method == 'meanhydro' && (input.condi_adjust == true)",
                          sliderInput("window_mh", label = "Window width moving averages:", animate = T,
@@ -114,11 +114,11 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
         ),
         conditionalPanel("input.ana_method == 'statsfilter'",
                          sliderInput("filter_sta_yea", "Maximum start year:",animate = F,
-                                     min = 1850, max = 2016, step = 1, value = c(1990), sep = "")
+                                     min = 1850, max = 2020, step = 1, value = c(2020), sep = "")
         ),
         conditionalPanel("input.ana_method == 'statsfilter'",
                          sliderInput("filter_end_yea", label = "Minimum end year:", animate = F,
-                                     min = 1850, max = 2016, step = 1, value = c(1990), sep = "")
+                                     min = 1850, max = 2020, step = 1, value = c(1900), sep = "")
         ),
         conditionalPanel("input.ana_method == 'statsfilter'",
                          sliderInput("filter_lat_upp", label = "Maximum latitude:", animate = F,
@@ -247,7 +247,7 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
                     style="color:CadetBlue;
                          font-weight: bold;
                          font-style: italic"),
-             "This is a new dataset for large-sample studies and comparative hydrology in Central Europe. The data set also contains catchment attributes (topography, climatology, hydrology, land cover, vegetation, soil and geological properties as well as meteorological time series. For further information, please have a look at the corresponding",
+             "This is a new dataset for large-sample studies and comparative hydrology in Central Europe. The data set also contains catchment attributes (topography, climatology, hydrology, land cover, vegetation, soil and geological properties) as well as meteorological time series. For further information, please have a look at the corresponding",
              tags$a(href="https://doi.org/10.5194/essd-2021-72", "research article",
                     style="color:CadetBlue;
                          font-weight: bold;

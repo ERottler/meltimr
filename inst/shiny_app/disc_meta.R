@@ -101,6 +101,8 @@ get_id_lamah <- function(file_name){
   as.numeric(substr(file_name, 4, (nchar(file_name)-4)))
 }
 ids_lamah_files <- sapply(file_names_lamah, get_id_lamah)
+
+#order file paths following ID
 file_paths_lamah[ids_lamah_files] <- file_paths_lamah
 
 #modify observation end
@@ -116,10 +118,6 @@ gauges <- SpatialPointsDataFrame(data.frame(lon = lamah_meta_full$lon,
                                     proj4string =  raster::crs(gauges_shp))
 gauges    <- spTransform(gauges, crswgs84)
 
-#prevent duplicated latituds for selected via map
-dup_lat <- which(duplicated(gauges@coords[, 2]))
-gauges@coords[dup_lat, 2] <- gauges@coords[dup_lat, 2]  + rnorm(length(dup_lat), 0, 0.001)
-
 #select information
 lamah_meta <- data.frame(name = as.character(lamah_meta_full$name),
                          latitude = gauges@coords[, 2],
@@ -134,6 +132,81 @@ lamah_meta <- data.frame(name = as.character(lamah_meta_full$name),
 
 #combine with grdc meta
 meta_expo <- rbind(grdc_meta, lamah_meta)
+
+#prevent duplicated latituds for selected via map
+dup_lat <- which(duplicated(meta_expo$latitude))
+meta_expo$latitude[dup_lat] <- meta_expo$latitude[dup_lat]  + rnorm(length(dup_lat), 0, 0.001)
+
+#save meta information as table (to be read by app at start up)
+write.table(meta_expo, file = disc_meta_path, sep = ";", row.names = F, quote = T)
+
+#camels----
+# CAMELS: Large-Sample Hydrometeorological Dataset
+# 671 basins in the United States Geological Survey’s Hydro-Climatic Data Network
+# https://ncar.github.io/hydrology/datasets/CAMELS_timeseries
+
+usgs_gauge_meta <- read.csv(paste0(camels_dir_disc, "/basin_metadata/gauge_information.txt"),
+                            sep = "\t", skip = 1, header = F)
+
+#add read in 0 lost when at the beginning from station ID
+usgs_gauge_meta$V2 <- as.character(usgs_gauge_meta$V2)
+usgs_gauge_meta$V2[which(nchar(usgs_gauge_meta$V2) < 8)] <- paste0("0", usgs_gauge_meta$V2[which(nchar(usgs_gauge_meta$V2) < 8)])
+
+file_paths_usgs <- list.files(path = paste0(camels_dir_disc, "/usgs_streamflow"), pattern = "*.txt", full.names = T, recursive = T)
+file_names_usgs <- list.files(path = paste0(camels_dir_disc, "/usgs_streamflow"), pattern = "*.txt", full.names = F, recursive = T)
+
+#get id from filenames
+get_id_usgs <- function(file_name){
+  as.character(substr(file_name, (nchar(file_name)-25), (nchar(file_name)-18)))
+}
+ids_usgs_files <- sapply(file_names_usgs, get_id_usgs)
+
+#order file paths following ID
+file_paths_usgs_ord <- rep(NA, nrow(usgs_gauge_meta))
+for(i in 1:nrow(usgs_gauge_meta)){
+
+  file_path_sel <- grep(usgs_gauge_meta[i, 2], file_paths_usgs, value = T)
+
+  if(length(file_path_sel) > 1){
+    print(i)
+    print(length(file_path_sel))
+  }
+
+  file_paths_usgs_ord[i] <- file_path_sel
+
+}
+
+#get start/end of time series
+start_series <- NULL
+end_series <- NULL
+for(i in 1:length(file_paths_usgs_ord)){
+
+  usgs_disc_sel <- read.csv(file_paths_usgs_ord[i], sep = "", header = F)
+  sta_yea_sel <- min(usgs_disc_sel[, 2], na.rm = T)
+  end_yea_sel <- max(usgs_disc_sel[, 2], na.rm = T)
+
+  start_series <- c(start_series, sta_yea_sel)
+  end_series <- c(end_series, end_yea_sel)
+}
+
+#select information
+usgs_meta <- data.frame(name = as.character(usgs_gauge_meta[, 3]),
+                        latitude = usgs_gauge_meta[, 4],
+                        longitude = usgs_gauge_meta[, 5],
+                        start_series = start_series,
+                        end_series = end_series,
+                        file_path = file_paths_usgs_ord,
+                        id = usgs_gauge_meta[, 2],
+                        country = rep("USA", nrow(usgs_gauge_meta)),
+                        source = rep("usgs", nrow(usgs_gauge_meta)),
+                        stringsAsFactors=FALSE)
+
+#combine with grdc meta
+meta_expo <- rbind(grdc_meta, lamah_meta, usgs_meta)
+
+#prevent duplicated latituds for selected via map
+dup_lat <- which(duplicated(meta_expo$latitude))
+meta_expo$latitude[dup_lat] <- meta_expo$latitude[dup_lat]  + rnorm(length(dup_lat), 0, 0.001)
 
 #save meta information as table (to be read by app at start up)
 write.table(meta_expo, file = disc_meta_path, sep = ";", row.names = F, quote = T)

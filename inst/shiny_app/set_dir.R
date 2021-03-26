@@ -23,8 +23,12 @@ grdc_disc_dir <- "/home/erwin/Documents/storage_research/grdc_data/GRDC_DAY"
 grdc_catc_dir <- paste0("/home/erwin/Documents/storage_research/grdc_data/stat_bas_shp/")
 # catc_dir <- "/srv/shiny-server/melTim/basins/"
 
-### Path to LamaH discharge data
-lamah_disc_dir <- "/home/erwin/Documents/storage_research/lamah/CAMELS_AT/A_basins_total_upstrm/2_timeseries/"
-
-### Path to LamaH watershed boundaries
+### Path to LamaH
 lamah_dir <- "/home/erwin/Documents/storage_research/lamah/CAMELS_AT"
+
+### Path to CAMELS time series
+camels_dir_disc <- "/home/erwin/Documents/storage_research/camels_us/basin_timeseries_v1p2_metForcing_obsFlow/basin_dataset_public_v1p2"
+
+### Path to CAMELS watershed boundaries
+camels_us_catch_dir <- "/home/erwin/Documents/storage_research/camels_us/basin_set_full_res/"
+

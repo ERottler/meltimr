@@ -20,6 +20,9 @@ catch_names_grdc <- list.files(path = grdc_catc_dir, pattern = "*\\.shp$", full.
 #LamaH watershed boundaries
 catch_lamah <- rgdal::readOGR(paste0(lamah_dir, "/A_basins_total_upstrm/3_shapefiles/Upstrm_area_total.shp"))
 
+#CAMELS-US watershed boundaries
+catch_usgs <- rgdal::readOGR(paste0(camels_us_catch_dir, "/HCDN_nhru_final_671.shp"))
+
 #Initial dummy catchment
 catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol = 2))
 
@@ -29,7 +32,7 @@ function(input, output, session) {
 
   query_modal <- modalDialog(
     title = "Welcome to the Hydro Explorer!",
-    "Analyze daily resolution discharge time series from large data sets with regard to runoff timing and runoff seasonality. Switch between tabs in order to read a short summary and get more information on available analytical tools, discharge data and source code.",
+    "Analyze daily resolution discharge time series with regard to runoff timing and runoff seasonality. Switch between tabs to read a short summary and get more information on available analytical tools, discharge data sets and source code.",
     easyClose = F,
     footer = tagList(
       actionButton("start_window", "Explore")
@@ -66,7 +69,7 @@ function(input, output, session) {
       leaflet() %>%
         addProviderTiles(providers$Stamen.TerrainBackground, group = "Terrain Background") %>%
         addProviderTiles(providers$OpenStreetMap.HOT,        group = "Open Street Map") %>%
-        addProviderTiles(providers$Stamen.TonerBackground,   group = "Toner Background") %>%
+        # addProviderTiles(providers$Stamen.TonerBackground,   group = "Toner Background") %>%
 
         addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "grdc")],
                          disc_meta$latitude[which(disc_meta$source == "grdc")],
@@ -106,15 +109,34 @@ function(input, output, session) {
                          )
                          )
         )  %>%
+        addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "usgs")],
+                         disc_meta$latitude[which(disc_meta$source == "usgs")],
+                         label = disc_meta$name[which(disc_meta$source == "usgs")],
+                         labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
+                         stroke = F, group = "CAMELS-US", fillOpacity = 0.8, fillColor = '#FFCC33',
+                         popup = disc_meta$name[which(disc_meta$source == "usgs")],
+                         clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
+                                                                   var childCount = cluster.getChildCount();
+                                                                   if (childCount < 50) {
+                                                                     c = '#FFCC33;'
+                                                                   } else if (childCount < 100) {
+                                                                     c = '#FFCC33;'
+                                                                   } else {
+                                                                     c = '#FFCC33;'
+                                                                   }
+                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
+                         )
+                         )
+        )  %>%
         addPolygons(data = catch_sel, layerId = "watershed", group = "Watershed") %>%
 
         addLayersControl(
-          baseGroups = c("Terrain Background", "Open Street Map", "Toner Background"),
-          overlayGroups = c("GRDC", "LamaH", "Watershed"),
+          baseGroups = c("Terrain Background", "Open Street Map"),
+          overlayGroups = c("GRDC", "LamaH", "CAMELS-US", "Watershed"),
           position = "bottomleft",
           options = layersControlOptions(collapsed = F)
         ) %>%
-        hideGroup("Watershed") %>%
+        # hideGroup("Watershed") %>%
 
         fitBounds(lng1 = -50, lng2 = 50, lat1 = -30, lat2 = 60)
 
@@ -180,6 +202,19 @@ function(input, output, session) {
 
     }
 
+    if(disc_meta$source[stat_sel] == "usgs"){
+
+      #read discharge time series
+      disc_data <- read_camels(disc_meta$file_path[stat_sel])
+
+      #select watershed boundaries for selected gauge
+      sel_ind <- which(catch_usgs@data$hru_id == sta_id)
+
+      crswgs84 <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+      catch_sel_raw <- catch_usgs[sel_ind, ]
+      catch_sel <- spTransform(catch_sel_raw, crswgs84)
+
+    }
 
     #Update leaflat map and show watershed selected
     leafletProxy("map") %>%
@@ -187,8 +222,8 @@ function(input, output, session) {
       addPolygons(data = catch_sel, layerId = "watershed", fill = F,
                   color = "#366488", opacity = 0.9, group = "Watershed") %>%
     addLayersControl(
-      baseGroups = c("Terrain Background", "Open Street Map", "Toner Background"),
-      overlayGroups = c("GRDC", "LamaH", "Watershed"),
+      baseGroups = c("Terrain Background", "Open Street Map"),
+      overlayGroups = c("GRDC", "LamaH", "CAMELS-US", "Watershed"),
       position = "bottomleft",
       options = layersControlOptions(collapsed = F)
     )
@@ -216,10 +251,10 @@ function(input, output, session) {
       rast_time_init <- c(sta_yea_cla, end_yea_cla)
 
       updateSliderInput(session, "break_year_mh1", label = "Select time frame 1:",
-                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = c(1927, 1981))
+                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = c(1961, 1985))
 
       updateSliderInput(session, "break_year_mh2", label = "Select time frame 2:",
-                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = c(1982, 2016))
+                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = c(1986, 2010))
 
     })
 
