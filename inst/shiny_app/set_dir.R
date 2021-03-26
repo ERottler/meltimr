@@ -26,9 +26,16 @@ grdc_catc_dir <- paste0("/home/erwin/Documents/storage_research/grdc_data/stat_b
 ### Path to LamaH
 lamah_dir <- "/home/erwin/Documents/storage_research/lamah/CAMELS_AT"
 
-### Path to CAMELS time series
+### Path to CAMELS-US time series
 camels_dir_disc <- "/home/erwin/Documents/storage_research/camels_us/basin_timeseries_v1p2_metForcing_obsFlow/basin_dataset_public_v1p2"
 
-### Path to CAMELS watershed boundaries
+### Path to CAMELS-US watershed boundaries
 camels_us_catch_dir <- "/home/erwin/Documents/storage_research/camels_us/basin_set_full_res/"
+
+### Path to CAMELS-BR
+camels_br_dir <- "/home/erwin/Documents/storage_research/camels_br/"
+
+
+
+
 

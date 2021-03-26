@@ -22,12 +22,13 @@ read_camels <- function(file_path){
                                  value = with(data_camels, V5[match(as.Date(full_date), as.Date(date))])
   )
 
-  #cubic feet to cubic meter
-  data_camels_fill$value <- (data_camels_fill$value / 35.315)
-
   #in case na strings not recognized
   na_vals <- which(data_camels_fill$value == -999)
   data_camels_fill$value[na_vals] <- NA
+
+  #cubic feet to cubic meter
+  data_camels_fill$value <- (data_camels_fill$value / 35.315)
+
 
   return(data_camels_fill)
 

@@ -23,6 +23,9 @@ catch_lamah <- rgdal::readOGR(paste0(lamah_dir, "/A_basins_total_upstrm/3_shapef
 #CAMELS-US watershed boundaries
 catch_usgs <- rgdal::readOGR(paste0(camels_us_catch_dir, "/HCDN_nhru_final_671.shp"))
 
+#CAMELS-BR watershed boundaries
+catch_brazil <- rgdal::readOGR(paste0(camels_br_dir, "/14_CAMELS_BR_catchment_boundaries/camels_br_catchments.shp"))
+
 #Initial dummy catchment
 catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol = 2))
 
@@ -66,79 +69,117 @@ function(input, output, session) {
     #Leaflet map with all stations
     output$map <- renderLeaflet({
 
-      leaflet() %>%
+      m = leaflet() %>%
         addProviderTiles(providers$Stamen.TerrainBackground, group = "Terrain Background") %>%
         addProviderTiles(providers$OpenStreetMap.HOT,        group = "Open Street Map") %>%
         # addProviderTiles(providers$Stamen.TonerBackground,   group = "Toner Background") %>%
-
-        addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "grdc")],
-                         disc_meta$latitude[which(disc_meta$source == "grdc")],
-                         label = disc_meta$name[which(disc_meta$source == "grdc")],
-                         labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
-                         stroke = F, group = "GRDC", fillOpacity = 0.8, fillColor = "darkred",
-                         popup = disc_meta$name[which(disc_meta$source == "grdc")],
-                         clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
-                                                                   var childCount = cluster.getChildCount();
-                                                                   if (childCount < 100) {
-                                                                     c = 'rgba(210, 10, 10, 255);'
-                                                                   } else if (childCount < 200) {
-                                                                     c = 'rgba(210, 10, 10, 255);'
-                                                                   } else {
-                                                                     c = 'rgba(210, 10, 10, 255);'
-                                                                   }
-                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) }) ;}"
-                         )
-                         )
-        )  %>%
-        addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "lamah")],
-                         disc_meta$latitude[which(disc_meta$source == "lamah")],
-                         label = disc_meta$name[which(disc_meta$source == "lamah")],
-                         labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
-                         stroke = F, group = "LamaH", fillOpacity = 0.8, fillColor = '#3399FF',
-                         popup = disc_meta$name[which(disc_meta$source == "lamah")],
-                         clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
-                                                                   var childCount = cluster.getChildCount();
-                                                                   if (childCount < 50) {
-                                                                     c = '#3399FF;'
-                                                                   } else if (childCount < 100) {
-                                                                     c = '#3399FF;'
-                                                                   } else {
-                                                                     c = '#3399FF;'
-                                                                   }
-                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
-                         )
-                         )
-        )  %>%
-        addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "usgs")],
-                         disc_meta$latitude[which(disc_meta$source == "usgs")],
-                         label = disc_meta$name[which(disc_meta$source == "usgs")],
-                         labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
-                         stroke = F, group = "CAMELS-US", fillOpacity = 0.8, fillColor = '#FFCC33',
-                         popup = disc_meta$name[which(disc_meta$source == "usgs")],
-                         clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
-                                                                   var childCount = cluster.getChildCount();
-                                                                   if (childCount < 50) {
-                                                                     c = '#FFCC33;'
-                                                                   } else if (childCount < 100) {
-                                                                     c = '#FFCC33;'
-                                                                   } else {
-                                                                     c = '#FFCC33;'
-                                                                   }
-                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
-                         )
-                         )
-        )  %>%
         addPolygons(data = catch_sel, layerId = "watershed", group = "Watershed") %>%
 
         addLayersControl(
           baseGroups = c("Terrain Background", "Open Street Map"),
-          overlayGroups = c("GRDC", "LamaH", "CAMELS-US", "Watershed"),
+          overlayGroups = c("GRDC", "LamaH", "CAMELS-US", "CAMELS-BR", "Watershed"),
           position = "bottomleft",
           options = layersControlOptions(collapsed = F)
         ) %>%
         # hideGroup("Watershed") %>%
 
         fitBounds(lng1 = -50, lng2 = 50, lat1 = -30, lat2 = 60)
+
+        if(length(which(disc_meta$source == "grdc")) > 0){
+          m = m %>%
+              addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "grdc")],
+                               disc_meta$latitude[which(disc_meta$source == "grdc")],
+                               label = disc_meta$name[which(disc_meta$source == "grdc")],
+                               labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
+                               stroke = F, group = "GRDC", fillOpacity = 0.8, fillColor = "#993300",
+                               popup = disc_meta$name[which(disc_meta$source == "grdc")],
+                               clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
+                                                                   var childCount = cluster.getChildCount();
+                                                                   if (childCount < 100) {
+                                                                     c = '#993300;'
+                                                                   } else if (childCount < 200) {
+                                                                     c = '#993300;'
+                                                                   } else {
+                                                                     c = '#993300;'
+                                                                   }
+                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+' color: #FFFFFF\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) }) ;}"
+                                  )
+                                  )
+                               )
+        }
+
+        if(length(which(disc_meta$source == "lamah")) > 0){
+
+          m = m %>%
+              addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "lamah")],
+                               disc_meta$latitude[which(disc_meta$source == "lamah")],
+                               label = disc_meta$name[which(disc_meta$source == "lamah")],
+                               labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
+                               stroke = F, group = "LamaH", fillOpacity = 0.8, fillColor = '#006699',
+                               popup = disc_meta$name[which(disc_meta$source == "lamah")],
+                               clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
+                                                                   var childCount = cluster.getChildCount();
+                                                                   if (childCount < 50) {
+                                                                     c = '#006699;'
+                                                                   } else if (childCount < 100) {
+                                                                     c = '#006699;'
+                                                                   } else {
+                                                                     c = '#006699;'
+                                                                   }
+                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+' color: #FFFFFF\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
+                         )
+                         )
+              )
+        }
+
+        if(length(which(disc_meta$source == "usgs")) > 0){
+          m = m %>%
+              addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "usgs")],
+                               disc_meta$latitude[which(disc_meta$source == "usgs")],
+                               label = disc_meta$name[which(disc_meta$source == "usgs")],
+                               labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
+                               stroke = F, group = "CAMELS-US", fillOpacity = 0.8, fillColor = '#FFCC33',
+                               popup = disc_meta$name[which(disc_meta$source == "usgs")],
+                               clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
+                                                                   var childCount = cluster.getChildCount();
+                                                                   if (childCount < 50) {
+                                                                     c = '#FFCC33;'
+                                                                   } else if (childCount < 100) {
+                                                                     c = '#FFCC33;'
+                                                                   } else {
+                                                                     c = '#FFCC33;'
+                                                                   }
+                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
+                         )
+                         )
+              )
+          }
+
+        if(length(which(disc_meta$source == "camel_br")) > 0){
+
+          m = m %>%
+              addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "camel_br")],
+                               disc_meta$latitude[which(disc_meta$source == "camel_br")],
+                               label = disc_meta$name[which(disc_meta$source == "camel_br")],
+                               labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
+                               stroke = F, group = "CAMELS-BR", fillOpacity = 0.8, fillColor = '#333333',
+                               popup = disc_meta$name[which(disc_meta$source == "camel_br")],
+                               clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
+                                                                   var childCount = cluster.getChildCount();
+                                                                   if (childCount < 50) {
+                                                                     c = '#333333;'
+                                                                   } else if (childCount < 100) {
+                                                                     c = '#333333;'
+                                                                   } else {
+                                                                     c = '#333333;'
+                                                                   }
+                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+' color: #FFFFFF\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
+                         )
+                         )
+              )
+          }
+
+      m #retrun map
 
     })
 
@@ -216,6 +257,28 @@ function(input, output, session) {
 
     }
 
+    if(disc_meta$source[stat_sel] == "camel_br"){
+
+      #read discharge time series
+      disc_data <- read_camels_br(disc_meta$file_path[stat_sel])
+
+      # select watershed boundaries for selected gauge
+      if(length(which(catch_brazil@data$gauge_id == sta_id)) > 0){
+
+        sel_ind <- which(catch_brazil@data$gauge_id == sta_id)
+        crswgs84 <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+        catch_sel_raw <- catch_brazil[sel_ind, ]
+        catch_sel <- spTransform(catch_sel_raw, crswgs84)
+
+      }else{
+
+        catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol =2))
+
+      }
+
+
+    }
+
     #Update leaflat map and show watershed selected
     leafletProxy("map") %>%
       removeShape(layerId = "watershed") %>%
@@ -223,7 +286,7 @@ function(input, output, session) {
                   color = "#366488", opacity = 0.9, group = "Watershed") %>%
     addLayersControl(
       baseGroups = c("Terrain Background", "Open Street Map"),
-      overlayGroups = c("GRDC", "LamaH", "CAMELS-US", "Watershed"),
+      overlayGroups = c("GRDC", "LamaH", "CAMELS-US", "CAMELS-BR", "Watershed"),
       position = "bottomleft",
       options = layersControlOptions(collapsed = F)
     )
@@ -251,10 +314,10 @@ function(input, output, session) {
       rast_time_init <- c(sta_yea_cla, end_yea_cla)
 
       updateSliderInput(session, "break_year_mh1", label = "Select time frame 1:",
-                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = c(1961, 1985))
+                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = c(1981, 1995))
 
       updateSliderInput(session, "break_year_mh2", label = "Select time frame 2:",
-                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = c(1986, 2010))
+                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = c(1996, 2010))
 
     })
 

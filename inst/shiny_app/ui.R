@@ -65,11 +65,11 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
         ),
         conditionalPanel("input.ana_method == 'meanhydro' && (input.condi_adjust == true)",
                          sliderInput("break_year_mh1", label = "Select time frame 1:", animate = F,
-                                     min = 1940, max = 2000, step = 1, value = c(1961, 1985), sep = "")
+                                     min = 1940, max = 2000, step = 1, value = c(1971, 1990), sep = "")
         ),
         conditionalPanel("input.ana_method == 'meanhydro' && (input.condi_adjust == true)",
                          sliderInput("break_year_mh2", label = "Select time frame 2:", animate = F,
-                                     min = 1940, max = 2000, step = 1, value = c(1986, 2010), sep = "")
+                                     min = 1940, max = 2000, step = 1, value = c(1991, 2010), sep = "")
         ),
         conditionalPanel("input.ana_method == 'meanhydro' && (input.condi_adjust == true)",
                          sliderInput("window_mh", label = "Window width moving averages:", animate = T,

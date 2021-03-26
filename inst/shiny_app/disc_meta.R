@@ -140,7 +140,7 @@ meta_expo$latitude[dup_lat] <- meta_expo$latitude[dup_lat]  + rnorm(length(dup_l
 #save meta information as table (to be read by app at start up)
 write.table(meta_expo, file = disc_meta_path, sep = ";", row.names = F, quote = T)
 
-#camels----
+#camels_us----
 # CAMELS: Large-Sample Hydrometeorological Dataset
 # 671 basins in the United States Geological Survey’s Hydro-Climatic Data Network
 # https://ncar.github.io/hydrology/datasets/CAMELS_timeseries
@@ -210,3 +210,74 @@ meta_expo$latitude[dup_lat] <- meta_expo$latitude[dup_lat]  + rnorm(length(dup_l
 
 #save meta information as table (to be read by app at start up)
 write.table(meta_expo, file = disc_meta_path, sep = ";", row.names = F, quote = T)
+
+
+#camels_br----
+
+#CAMELS-BR: Hydrometeorological time series and landscape attributes for 897 catchments in Brazil
+#https://zenodo.org/record/3964745
+
+camels_br_gauge_meta <- read.csv(paste0(camels_br_dir,
+                                        "/01_CAMELS_BR_attributes/camels_br_location.txt"),
+                                 sep = "", header = T)
+
+file_paths_brazil <- list.files(path = paste0(camels_br_dir, "/02_CAMELS_BR_streamflow_m3s/"), pattern = "*.txt", full.names = T, recursive = T)
+file_names_brazil <- list.files(path = paste0(camels_br_dir, "/02_CAMELS_BR_streamflow_m3s/"), pattern = "*.txt", full.names = F, recursive = T)
+
+#get id from filenames
+get_id_brazil <- function(file_name){
+  as.character(substr(file_name, 1, 8))
+}
+ids_brazil_files <- sapply(file_names_brazil, get_id_brazil)
+
+#order file paths following ID
+file_paths_brazil_ord <- rep(NA, nrow(camels_br_gauge_meta))
+for(i in 1:nrow(camels_br_gauge_meta)){
+
+  file_path_sel <- grep(camels_br_gauge_meta$gauge_id[i], file_paths_brazil, value = T)
+
+  if(length(file_path_sel) > 1){
+    print(i)
+    print(length(file_path_sel))
+  }
+
+  file_paths_brazil_ord[i] <- file_path_sel
+
+}
+
+#get start/end of time series
+start_series <- NULL
+end_series <- NULL
+for(i in 1:length(file_paths_brazil_ord)){
+
+  brazil_disc_sel <- read.csv(file_paths_brazil_ord[i], sep = "", header = T)
+  sta_yea_sel <- min(brazil_disc_sel$year, na.rm = T)
+  end_yea_sel <- max(brazil_disc_sel$year, na.rm = T)
+
+  start_series <- c(start_series, sta_yea_sel)
+  end_series <- c(end_series, end_yea_sel)
+
+}
+
+#select information
+brazil_meta <- data.frame(name = as.character(camels_br_gauge_meta$gauge_name),
+                          latitude = camels_br_gauge_meta$gauge_lat,
+                          longitude = camels_br_gauge_meta$gauge_lon,
+                          start_series = start_series,
+                          end_series = end_series,
+                          file_path = file_paths_brazil_ord,
+                          id = camels_br_gauge_meta$gauge_id,
+                          country = rep("Brazil", nrow(camels_br_gauge_meta)),
+                          source = rep("camel_br", nrow(camels_br_gauge_meta)),
+                          stringsAsFactors=FALSE)
+
+#combine with grdc meta
+meta_expo <- rbind(grdc_meta, lamah_meta, usgs_meta, brazil_meta)
+
+#prevent duplicated latituds for selected via map
+dup_lat <- which(duplicated(meta_expo$latitude))
+meta_expo$latitude[dup_lat] <- meta_expo$latitude[dup_lat]  + rnorm(length(dup_lat), 0, 0.001)
+
+#save meta information as table (to be read by app at start up)
+write.table(meta_expo, file = disc_meta_path, sep = ";", row.names = F, quote = T)
+
