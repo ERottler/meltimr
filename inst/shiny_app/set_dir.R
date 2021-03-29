@@ -35,6 +35,10 @@ camels_us_catch_dir <- "/home/erwin/Documents/storage_research/camels_us/basin_s
 ### Path to CAMELS-BR
 camels_br_dir <- "/home/erwin/Documents/storage_research/camels_br/"
 
+### Path to  CAMELS-GB
+camels_gb_dir <- "/home/erwin/Documents/storage_research/camels_gb/"
+
+
 
 
 

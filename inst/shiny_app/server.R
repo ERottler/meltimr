@@ -26,6 +26,9 @@ catch_usgs <- rgdal::readOGR(paste0(camels_us_catch_dir, "/HCDN_nhru_final_671.s
 #CAMELS-BR watershed boundaries
 catch_brazil <- rgdal::readOGR(paste0(camels_br_dir, "/14_CAMELS_BR_catchment_boundaries/camels_br_catchments.shp"))
 
+#CAMELS-BR watershed boundaries
+catch_gb <- rgdal::readOGR(paste0(camels_gb_dir, "/data/CAMELS_GB_catchment_boundaries/CAMELS_GB_catchment_boundaries.shp"))
+
 #Initial dummy catchment
 catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol = 2))
 
@@ -77,7 +80,7 @@ function(input, output, session) {
 
         addLayersControl(
           baseGroups = c("Terrain Background", "Open Street Map"),
-          overlayGroups = c("GRDC", "LamaH", "CAMELS-US", "CAMELS-BR", "Watershed"),
+          overlayGroups = c("GRDC", "LamaH", "CAMELS-US", "CAMELS-BR", "CAMELS-GB","Watershed"),
           position = "bottomleft",
           options = layersControlOptions(collapsed = F)
         ) %>%
@@ -115,16 +118,16 @@ function(input, output, session) {
                                disc_meta$latitude[which(disc_meta$source == "lamah")],
                                label = disc_meta$name[which(disc_meta$source == "lamah")],
                                labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
-                               stroke = F, group = "LamaH", fillOpacity = 0.8, fillColor = '#006699',
+                               stroke = F, group = "LamaH", fillOpacity = 0.8, fillColor = '#000066',
                                popup = disc_meta$name[which(disc_meta$source == "lamah")],
                                clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
                                                                    var childCount = cluster.getChildCount();
                                                                    if (childCount < 50) {
-                                                                     c = '#006699;'
+                                                                     c = '#000066;'
                                                                    } else if (childCount < 100) {
-                                                                     c = '#006699;'
+                                                                     c = '#000066;'
                                                                    } else {
-                                                                     c = '#006699;'
+                                                                     c = '#000066;'
                                                                    }
                                                                    return new L.DivIcon({ html: '<div style=\"background-color:'+c+' color: #FFFFFF\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
                          )
@@ -179,6 +182,29 @@ function(input, output, session) {
               )
           }
 
+      if(length(which(disc_meta$source == "camels_gb")) > 0){
+
+        m = m %>%
+          addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "camels_gb")],
+                           disc_meta$latitude[which(disc_meta$source == "camels_gb")],
+                           label = disc_meta$name[which(disc_meta$source == "camels_gb")],
+                           labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
+                           stroke = F, group = "CAMELS-GB", fillOpacity = 0.8, fillColor = '#0066CC',
+                           popup = disc_meta$name[which(disc_meta$source == "camels_gb")],
+                           clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
+                                                                   var childCount = cluster.getChildCount();
+                                                                   if (childCount < 50) {
+                                                                     c = '#0066CC;'
+                                                                   } else if (childCount < 100) {
+                                                                     c = '#0066CC;'
+                                                                   } else {
+                                                                     c = '#0066CC;'
+                                                                   }
+                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+' color: #FFFFFF\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
+                           )
+                           )
+          )
+      }
       m #retrun map
 
     })
@@ -279,6 +305,27 @@ function(input, output, session) {
 
     }
 
+    if(disc_meta$source[stat_sel] == "camels_gb"){
+
+      #read discharge time series
+      disc_data <- read_camels_gb(disc_meta$file_path[stat_sel])
+
+      # select watershed boundaries for selected gauge
+      if(length(which(catch_gb@data$ID_STRING == as.character(sta_id))) > 0){
+
+        sel_ind <- which(catch_gb@data$ID_STRING == as.character(sta_id))
+        crswgs84 <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+        catch_sel_raw <- catch_gb[sel_ind, ]
+        catch_sel <- spTransform(catch_sel_raw, crswgs84)
+
+      }else{
+
+        catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol =2))
+
+      }
+
+
+    }
     #Update leaflat map and show watershed selected
     leafletProxy("map") %>%
       removeShape(layerId = "watershed") %>%
@@ -286,7 +333,7 @@ function(input, output, session) {
                   color = "#366488", opacity = 0.9, group = "Watershed") %>%
     addLayersControl(
       baseGroups = c("Terrain Background", "Open Street Map"),
-      overlayGroups = c("GRDC", "LamaH", "CAMELS-US", "CAMELS-BR", "Watershed"),
+      overlayGroups = c("GRDC", "LamaH", "CAMELS-US", "CAMELS-BR", "CAMELS-GB","Watershed"),
       position = "bottomleft",
       options = layersControlOptions(collapsed = F)
     )

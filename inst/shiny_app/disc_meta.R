@@ -281,3 +281,60 @@ meta_expo$latitude[dup_lat] <- meta_expo$latitude[dup_lat]  + rnorm(length(dup_l
 #save meta information as table (to be read by app at start up)
 write.table(meta_expo, file = disc_meta_path, sep = ";", row.names = F, quote = T)
 
+
+
+#camels_gb----
+
+#Catchment attributes and hydro-meteorological timeseries for 671 catchments across Great Britain (CAMELS-GB)
+#https://catalogue.ceh.ac.uk/documents/8344e4f3-d2ea-44f5-8afa-86d2987543a9
+
+gb_gauge_meta_1 <- read.csv(paste0(camels_gb_dir, "data/CAMELS_GB_hydrometry_attributes.csv"),
+                              sep = ",", header = T)
+gb_gauge_meta_2 <- read.csv(paste0(camels_gb_dir, "data/CAMELS_GB_topographic_attributes.csv"),
+                            sep = ",", header = T)
+
+file_paths_greatb <- list.files(path = paste0(camels_gb_dir, "/data/timeseries"), pattern = "*.csv", full.names = T, recursive = T)
+file_names_greatb <- list.files(path = paste0(camels_gb_dir, "/data/timeseries"), pattern = "*.csv", full.names = F, recursive = T)
+
+#get file names without time information
+get_id_gb <- function(file_name){
+  as.character(substr(file_name, 31, (nchar(file_name)-22) ))
+}
+ids_from_file <- sapply(file_names_greatb, get_id_gb)
+
+#order file paths following ID
+file_paths_gb_ord <- rep(NA, nrow(gb_gauge_meta_1))
+for(i in 1:nrow(gb_gauge_meta_1)){
+
+  file_path_sel <- file_paths_greatb[which(ids_from_file == gb_gauge_meta_1$gauge_id[i])]
+
+  if(length(file_path_sel) > 1){
+    print(i)
+    print(length(file_path_sel))
+  }
+
+  file_paths_gb_ord[i] <- file_path_sel
+
+}
+
+#select information
+gb_meta <- data.frame(name = as.character(gb_gauge_meta_2$gauge_name),
+                      latitude = gb_gauge_meta_2$gauge_lat,
+                      longitude = gb_gauge_meta_2$gauge_lon,
+                      start_series = gb_gauge_meta_1$flow_period_start,
+                      end_series = gb_gauge_meta_1$flow_period_end,
+                      file_path = file_paths_gb_ord,
+                      id = gb_gauge_meta_1$gauge_id,
+                      country = rep("GB", nrow(gb_gauge_meta_2)),
+                      source = rep("camels_gb", nrow(gb_gauge_meta_2)),
+                      stringsAsFactors=FALSE)
+
+#combine with grdc meta
+meta_expo <- rbind(grdc_meta, lamah_meta, usgs_meta, brazil_meta, gb_meta)
+
+#prevent duplicated latituds for selected via map
+dup_lat <- which(duplicated(meta_expo$latitude))
+meta_expo$latitude[dup_lat] <- meta_expo$latitude[dup_lat]  + rnorm(length(dup_lat), 0, 0.001)
+
+#save meta information as table (to be read by app at start up)
+write.table(meta_expo, file = disc_meta_path, sep = ";", row.names = F, quote = T)
