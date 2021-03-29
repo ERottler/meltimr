@@ -29,6 +29,11 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
         includeCSS("styles.css")
       ),
 
+      tags$style(type="text/css",
+                 ".shiny-output-error { visibility: hidden; }",
+                 ".shiny-output-error:before { visibility: hidden; }"
+      ),
+
       leafletOutput("map", width="100%", height="100%"),
 
       tags$head(tags$style(

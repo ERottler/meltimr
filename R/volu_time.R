@@ -11,74 +11,86 @@
 #' @param day_cross_mea Mean DOY for fractions 25/50/75 \% of annual runoff.
 #' @param day_cross_day Trend in DOYs for fractions 25/50/75 \% of annual runoff for the entire time frame.
 #' @export
-volu_time <- function(day_cross, sta_yea_cla, end_yea_cla, break_day, day_cross_slo, day_cross_mea, day_cross_day, stat_name){
+volu_time <- function(day_cross, sta_yea_cla, end_yea_cla, break_day, day_cross_slo,
+                      day_cross_mea, day_cross_day, stat_name){
 
   # smo_val <- 0.25
 
-  if(break_day > 0){end_yea_cla <- end_yea_cla-1}# if not 1.Jan one year cut
+  if(length(sta_yea_cla:end_yea_cla) > 3){
 
-  volu_years <- sta_yea_cla:end_yea_cla
-  ama_res_sl_1 <- as.numeric(zyp::zyp.trend.vector(day_cross[1, ], x = volu_years,  method = "zhang", conf.intervals = F)[2])
-  ama_res_sl_2 <- as.numeric(zyp::zyp.trend.vector(day_cross[2, ], x = volu_years,  method = "zhang", conf.intervals = F)[2])
-  ama_res_sl_3 <- as.numeric(zyp::zyp.trend.vector(day_cross[3, ], x = volu_years,  method = "zhang", conf.intervals = F)[2])
+    if(break_day > 0){end_yea_cla <- end_yea_cla-1}# if not 1.Jan one year cut
 
-  ama_res_in_1 <- as.numeric(zyp::zyp.trend.vector(day_cross[1, ], x = volu_years,  method = "zhang", conf.intervals = F)[11])
-  ama_res_in_2 <- as.numeric(zyp::zyp.trend.vector(day_cross[2, ], x = volu_years,  method = "zhang", conf.intervals = F)[11])
-  ama_res_in_3 <- as.numeric(zyp::zyp.trend.vector(day_cross[3, ], x = volu_years,  method = "zhang", conf.intervals = F)[11])
+    volu_years <- sta_yea_cla:end_yea_cla
+    ama_res_sl_1 <- as.numeric(zyp::zyp.trend.vector(day_cross[1, ], x = volu_years,  method = "zhang", conf.intervals = F)[2])
+    ama_res_sl_2 <- as.numeric(zyp::zyp.trend.vector(day_cross[2, ], x = volu_years,  method = "zhang", conf.intervals = F)[2])
+    ama_res_sl_3 <- as.numeric(zyp::zyp.trend.vector(day_cross[3, ], x = volu_years,  method = "zhang", conf.intervals = F)[2])
 
-  cols_min <- grDevices::colorRampPalette(c(viridis::viridis(9, direction = 1)[1:4], "cadetblue3", "white"))(100)
-  cols_max <- grDevices::colorRampPalette(c("white", "yellow2","gold2", "orange2", "orangered3", "orangered4", "red4"))(100)
-  cols_hydro <- c(cols_min, cols_max)
+    ama_res_in_1 <- as.numeric(zyp::zyp.trend.vector(day_cross[1, ], x = volu_years,  method = "zhang", conf.intervals = F)[11])
+    ama_res_in_2 <- as.numeric(zyp::zyp.trend.vector(day_cross[2, ], x = volu_years,  method = "zhang", conf.intervals = F)[11])
+    ama_res_in_3 <- as.numeric(zyp::zyp.trend.vector(day_cross[3, ], x = volu_years,  method = "zhang", conf.intervals = F)[11])
 
-  col_1 <- "darkred"
-  col_2 <- "black"
-  col_3 <- "steelblue4"
+    cols_min <- grDevices::colorRampPalette(c(viridis::viridis(9, direction = 1)[1:4], "cadetblue3", "white"))(100)
+    cols_max <- grDevices::colorRampPalette(c("white", "yellow2","gold2", "orange2", "orangered3", "orangered4", "red4"))(100)
+    cols_hydro <- c(cols_min, cols_max)
 
-  graphics::par(mar = c(2.0, 3.0, 6, 0.1))
+    col_1 <- "darkred"
+    col_2 <- "black"
+    col_3 <- "steelblue4"
 
-  graphics::plot(sta_yea_cla:end_yea_cla, day_cross[3, ], type = "n", ylim = c(min_na(day_cross[1, ]), max_na(day_cross[3, ])),
-                 axes = F, ylab = "", xlab = "")
-  graphics::lines(sta_yea_cla:end_yea_cla, day_cross[3, ], col = col_3, lwd = 1.5)
-  graphics::lines(sta_yea_cla:end_yea_cla, day_cross[2, ], col = col_2, lwd = 1.5)
-  graphics::lines(sta_yea_cla:end_yea_cla, day_cross[1, ], col = col_1, lwd = 1.5)
-  graphics::segments(x0 = sta_yea_cla, y0 = (sta_yea_cla*ama_res_sl_1+ama_res_in_1),
-                     x1 = end_yea_cla, y1 = (end_yea_cla*ama_res_sl_1+ama_res_in_1), col = col_1, lwd = 1.0)
-  graphics::segments(x0 = sta_yea_cla, y0 = (sta_yea_cla*ama_res_sl_2+ama_res_in_2),
-                     x1 = end_yea_cla, y1 = (end_yea_cla*ama_res_sl_2+ama_res_in_2), col = col_2, lwd = 1.0)
-  graphics::segments(x0 = sta_yea_cla, y0 = (sta_yea_cla*ama_res_sl_3+ama_res_in_3),
-                     x1 = end_yea_cla, y1 = (end_yea_cla*ama_res_sl_3+ama_res_in_3), col = col_3, lwd = 1.0)
-  # graphics::lines(sta_yea_cla:end_yea_cla, loess_NA_restore(day_cross[3, ], smoo_val = smo_val), col = col_3, lty = "dashed")
-  # graphics::lines(sta_yea_cla:end_yea_cla, loess_NA_restore(day_cross[2, ], smoo_val = smo_val), col = col_2, lty = "dashed")
-  # graphics::lines(sta_yea_cla:end_yea_cla, loess_NA_restore(day_cross[1, ], smoo_val = smo_val), col = col_1, lty = "dashed")
-  graphics::axis(2, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
-  graphics::axis(1, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
-  graphics::abline(v = seq(1800, 2020, 10), lty = "dashed", lwd = 0.8, col = "grey55")
-  graphics::grid(nx= 0, ny = 5, col = "grey55", lty = "dashed", lwd = 0.8)
-  graphics::box(lwd = 0.8)
-  # graphics::mtext(paste0(stat_name, " (", sta_yea_cla, "-", end_yea_cla+1, ")"), line = 4.0, side = 3, cex = 1.5, adj = 0.0)
-  graphics::mtext(paste0(stat_name), line = 4.0, side = 3, cex = 1.5, adj = 0.0)
-  graphics::mtext("Day of the year (DOY)", line = 2.0, side = 2, cex = 1.2)
-  # graphics::mtext("Year", line = 1.5, side = 1, cex = 1.2)
-  cex_dat <- 0.9
-  decs <- length(sta_yea_cla:end_yea_cla)/10
+    graphics::par(mar = c(2.0, 3.0, 6, 0.1))
 
-  graphics::mtext("Volume:", side = 3, line = 3.0, adj = 0.00, col = "black", cex = cex_dat, padj = 0)
-  graphics::mtext("Mean day:", side = 3, line = 2.0, adj = 0.00, col = "black", cex = cex_dat, padj = 0)
-  graphics::mtext("Linear trend days earlier:", side = 3, line = 1.0, adj = 0.00, col = "black", cex = cex_dat, padj = 0)
-  graphics::mtext("Days earlier total:", side = 3, line = 0.1, adj = 0.00, col = "black", cex = cex_dat, padj = 0)
+    graphics::plot(sta_yea_cla:end_yea_cla, day_cross[3, ], type = "n", ylim = c(min_na(day_cross[1, ]), max_na(day_cross[3, ])),
+                   axes = F, ylab = "", xlab = "")
+    graphics::lines(sta_yea_cla:end_yea_cla, day_cross[3, ], col = col_3, lwd = 1.5)
+    graphics::lines(sta_yea_cla:end_yea_cla, day_cross[2, ], col = col_2, lwd = 1.5)
+    graphics::lines(sta_yea_cla:end_yea_cla, day_cross[1, ], col = col_1, lwd = 1.5)
+    graphics::segments(x0 = sta_yea_cla, y0 = (sta_yea_cla*ama_res_sl_1+ama_res_in_1),
+                       x1 = end_yea_cla, y1 = (end_yea_cla*ama_res_sl_1+ama_res_in_1), col = col_1, lwd = 1.0)
+    graphics::segments(x0 = sta_yea_cla, y0 = (sta_yea_cla*ama_res_sl_2+ama_res_in_2),
+                       x1 = end_yea_cla, y1 = (end_yea_cla*ama_res_sl_2+ama_res_in_2), col = col_2, lwd = 1.0)
+    graphics::segments(x0 = sta_yea_cla, y0 = (sta_yea_cla*ama_res_sl_3+ama_res_in_3),
+                       x1 = end_yea_cla, y1 = (end_yea_cla*ama_res_sl_3+ama_res_in_3), col = col_3, lwd = 1.0)
+    # graphics::lines(sta_yea_cla:end_yea_cla, loess_NA_restore(day_cross[3, ], smoo_val = smo_val), col = col_3, lty = "dashed")
+    # graphics::lines(sta_yea_cla:end_yea_cla, loess_NA_restore(day_cross[2, ], smoo_val = smo_val), col = col_2, lty = "dashed")
+    # graphics::lines(sta_yea_cla:end_yea_cla, loess_NA_restore(day_cross[1, ], smoo_val = smo_val), col = col_1, lty = "dashed")
+    graphics::axis(2, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
+    graphics::axis(1, mgp=c(3, 0.25, 0), tck = -0.01, cex.axis = 1.1)
+    graphics::abline(v = seq(1800, 2020, 10), lty = "dashed", lwd = 0.8, col = "grey55")
+    graphics::grid(nx= 0, ny = 5, col = "grey55", lty = "dashed", lwd = 0.8)
+    graphics::box(lwd = 0.8)
+    # graphics::mtext(paste0(stat_name, " (", sta_yea_cla, "-", end_yea_cla+1, ")"), line = 4.0, side = 3, cex = 1.5, adj = 0.0)
+    graphics::mtext(paste0(stat_name), line = 4.0, side = 3, cex = 1.5, adj = 0.0)
+    graphics::mtext("Day of the year (DOY)", line = 2.0, side = 2, cex = 1.2)
+    # graphics::mtext("Year", line = 1.5, side = 1, cex = 1.2)
+    cex_dat <- 0.9
+    decs <- length(sta_yea_cla:end_yea_cla)/10
 
-  graphics::mtext("25 %", side = 3, line = 3.0, adj = 0.35, col = col_1, cex = cex_dat, padj = 0)
-  graphics::mtext("50 %", side = 3, line = 3.0, adj = 0.65, col = col_2, cex = cex_dat, padj = 0)
-  graphics::mtext("75 %", side = 3, line = 3.0, adj = 1.00, col = col_3, cex = cex_dat, padj = 0)
+    graphics::mtext("Volume:", side = 3, line = 3.0, adj = 0.00, col = "black", cex = cex_dat, padj = 0)
+    graphics::mtext("Mean day:", side = 3, line = 2.0, adj = 0.00, col = "black", cex = cex_dat, padj = 0)
+    graphics::mtext("Linear trend days earlier:", side = 3, line = 1.0, adj = 0.00, col = "black", cex = cex_dat, padj = 0)
+    graphics::mtext("Days earlier total:", side = 3, line = 0.1, adj = 0.00, col = "black", cex = cex_dat, padj = 0)
 
-  graphics::mtext(paste0(round(day_cross_slo[1], 2), " days/dec"), side = 3, line = 1.0, adj = 0.35, col = col_1, cex = cex_dat, padj = 0)
-  graphics::mtext(paste0(round(day_cross_slo[2], 2), " days/dec"), side = 3, line = 1.0, adj = 0.65, col = col_2, cex = cex_dat, padj = 0)
-  graphics::mtext(paste0(round(day_cross_slo[3], 2), " days/dec"), side = 3, line = 1.0, adj = 1.00, col = col_3, cex = cex_dat, padj = 0)
-  graphics::mtext(paste0(round(day_cross_mea[1], 2), " DOY"), side = 3, line = 2.0, adj = 0.35, col = col_1, cex = cex_dat, padj = 0)
-  graphics::mtext(paste0(round(day_cross_mea[2], 2), " DOY"), side = 3, line = 2.0, adj = 0.65, col = col_2, cex = cex_dat, padj = 0)
-  graphics::mtext(paste0(round(day_cross_mea[3], 2), " DOY"), side = 3, line = 2.0, adj = 1.00, col = col_3, cex = cex_dat, padj = 0)
-  graphics::mtext(paste0(round(day_cross_slo[1]* decs, 2), " days"), side = 3, line = 0.1, adj = 0.35, col = col_1, cex = cex_dat, padj = 0)
-  graphics::mtext(paste0(round(day_cross_slo[2]* decs, 2), " days"), side = 3, line = 0.1, adj = 0.65, col = col_2, cex = cex_dat, padj = 0)
-  graphics::mtext(paste0(round(day_cross_slo[3]* decs, 2), " days"), side = 3, line = 0.1, adj = 1.00, col = col_3, cex = cex_dat, padj = 0)
+    graphics::mtext("25 %", side = 3, line = 3.0, adj = 0.35, col = col_1, cex = cex_dat, padj = 0)
+    graphics::mtext("50 %", side = 3, line = 3.0, adj = 0.65, col = col_2, cex = cex_dat, padj = 0)
+    graphics::mtext("75 %", side = 3, line = 3.0, adj = 1.00, col = col_3, cex = cex_dat, padj = 0)
+
+    graphics::mtext(paste0(round(ama_res_sl_1*-10, 2), " days/dec"), side = 3, line = 1.0, adj = 0.35, col = col_1, cex = cex_dat, padj = 0)
+    graphics::mtext(paste0(round(ama_res_sl_2*-10, 2), " days/dec"), side = 3, line = 1.0, adj = 0.65, col = col_2, cex = cex_dat, padj = 0)
+    graphics::mtext(paste0(round(ama_res_sl_3*-10, 2), " days/dec"), side = 3, line = 1.0, adj = 1.00, col = col_3, cex = cex_dat, padj = 0)
+    graphics::mtext(paste0(round(day_cross_mea[1], 2), " DOY"), side = 3, line = 2.0, adj = 0.35, col = col_1, cex = cex_dat, padj = 0)
+    graphics::mtext(paste0(round(day_cross_mea[2], 2), " DOY"), side = 3, line = 2.0, adj = 0.65, col = col_2, cex = cex_dat, padj = 0)
+    graphics::mtext(paste0(round(day_cross_mea[3], 2), " DOY"), side = 3, line = 2.0, adj = 1.00, col = col_3, cex = cex_dat, padj = 0)
+    graphics::mtext(paste0(round(ama_res_sl_1*-10* decs, 2), " days"), side = 3, line = 0.1, adj = 0.35, col = col_1, cex = cex_dat, padj = 0)
+    graphics::mtext(paste0(round(ama_res_sl_2*-10* decs, 2), " days"), side = 3, line = 0.1, adj = 0.65, col = col_2, cex = cex_dat, padj = 0)
+    graphics::mtext(paste0(round(ama_res_sl_3*-10* decs, 2), " days"), side = 3, line = 0.1, adj = 1.00, col = col_3, cex = cex_dat, padj = 0)
+
+  }else{
+
+    plot(1:10, 1:10, type = "n", axes = F, ylab = "", xlab = "")
+    mtext("Time series too short to analyse.", line = -1, cex = 1.5)
+    mtext("Please select a different time window or station.", line = -3, cex = 1.5)
+
+  }
+
 
 }

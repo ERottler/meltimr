@@ -35,7 +35,7 @@ function(input, output, session) {
 
   query_modal <- modalDialog(
     title = "Welcome to the Hydro Explorer!",
-    "Analyze daily resolution discharge time series with regard to runoff timing and runoff seasonality. Switch between tabs to read a short summary and get more information on available analytical tools, discharge data sets and source code.",
+    "Analyze daily resolution discharge recordings with regard to runoff timing and runoff seasonality. Switch between tabs to read a short summary and get more information on available analytical tools, discharge data sets and source code.",
     easyClose = F,
     footer = tagList(
       actionButton("start_window", "Explore")
@@ -311,13 +311,14 @@ function(input, output, session) {
 
       end_yea_cla <- as.numeric(format(disc_data$date[nrow(disc_data)], "%Y"))
 
-      rast_time_init <- c(sta_yea_cla, end_yea_cla)
+      mean_time_init_1 <- c(sta_yea_cla, sta_yea_cla+round(length(sta_yea_cla:end_yea_cla)/2))
+      mean_time_init_2 <- c(sta_yea_cla + round(length(sta_yea_cla:end_yea_cla)/2), end_yea_cla)
 
       updateSliderInput(session, "break_year_mh1", label = "Select time frame 1:",
-                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = c(1981, 1995))
+                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = mean_time_init_1)
 
       updateSliderInput(session, "break_year_mh2", label = "Select time frame 2:",
-                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = c(1996, 2010))
+                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = mean_time_init_2)
 
     })
 
@@ -328,13 +329,14 @@ function(input, output, session) {
 
       end_yea_cla <- as.numeric(format(disc_data$date[nrow(disc_data)], "%Y"))
 
-      rast_time_init <- c(sta_yea_cla, end_yea_cla)
+      perc_time_init_1 <- c(sta_yea_cla, sta_yea_cla+round(length(sta_yea_cla:end_yea_cla)/2))
+      perc_time_init_2 <- c(sta_yea_cla + round(length(sta_yea_cla:end_yea_cla)/2), end_yea_cla)
 
       updateSliderInput(session, "break_year_ph1", label = "Select time frame 1:",
-                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = c(1927, 1971))
+                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = perc_time_init_1)
 
       updateSliderInput(session, "break_year_ph2", label = "Select time frame 2:",
-                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = c(1972, 2016))
+                        min = sta_yea_cla, max = end_yea_cla, step = 1, value = perc_time_init_2)
     })
 
     #Annual Max graph: Reset parameter at selection of new station
@@ -451,51 +453,61 @@ function(input, output, session) {
         sta_yea_cla <- input$vol_frame[1]
         end_yea_cla <- input$vol_frame[2]
 
-        #Order data by day (including break day to set start hydrologica year)
-        data_day <- ord_day(data_in = disc_data$value,
-                            date = disc_data$date,
-                            start_y = sta_yea_cla,
-                            end_y = end_yea_cla,
-                            break_day = my_break_day,
-                            do_ma = F,
-                            window_width = 30
-        )
+        #do calculation only if time frame more than two years
+        if(length(sta_yea_cla:end_yea_cla) > 2){
 
-        #only years with complete recordings
-        for(i in 1:nrow(data_day)){
+          #Order data by day (including break day to set start hydrologica year)
+          data_day <- ord_day(data_in = disc_data$value,
+                              date = disc_data$date,
+                              start_y = sta_yea_cla,
+                              end_y = end_yea_cla,
+                              break_day = my_break_day,
+                              do_ma = F,
+                              window_width = 30
+          )
 
-          data_day[i, ] <- na_check(data_day[i, ])
+          #only years with complete recordings
+          for(i in 1:nrow(data_day)){
 
-        }
+            data_day[i, ] <- na_check(data_day[i, ])
 
-        #Cumulative sum discharges per year
-        data_cumsum <- apply(data_day, 1, cumsum)
+          }
 
-        #Scale cumsums by deviding by last element array
-        data_cumsum_scale <- apply(data_cumsum, 2, cumsum_scale)
+          #Cumulative sum discharges per year
+          data_cumsum <- apply(data_day, 1, cumsum)
 
-        #DOY percentage discharge through
+          #Scale cumsums by deviding by last element array
+          data_cumsum_scale <- apply(data_cumsum, 2, cumsum_scale)
 
-        percents <- c(0.25, 0.50, 0.75)
-        day_cross <- matrix(nrow = length(percents), ncol = ncol(data_cumsum_scale))
+          #DOY percentage discharge through
 
-        for(p in 1:length(percents)){
+          percents <- c(0.25, 0.50, 0.75)
+          day_cross <- matrix(nrow = length(percents), ncol = ncol(data_cumsum_scale))
 
-          for(i in 1:ncol(data_cumsum_scale)){
+          for(p in 1:length(percents)){
 
-            if(length(which(is.na(data_cumsum_scale[, i]))) > 0){
-              day_cross[p, i] <- NA
-            }else{
-              day_cross[p, i] <- min(which(data_cumsum_scale[, i] > percents[p]))
+            for(i in 1:ncol(data_cumsum_scale)){
+
+              if(length(which(is.na(data_cumsum_scale[, i]))) > 0){
+                day_cross[p, i] <- NA
+              }else{
+                day_cross[p, i] <- min(which(data_cumsum_scale[, i] > percents[p]))
+              }
             }
           }
-        }
 
-        #Slope and mean of crossing days
-        decs <- length(sta_yea_cla:end_yea_cla)/10
-        day_cross_slo <- apply(day_cross, 1, sens_slo) * 10 * -1 # [day/dec]
-        day_cross_day <- apply(day_cross, 1, sens_slo) * 10 * -1 *decs # [days]
-        day_cross_mea <- apply(day_cross, 1, mea_na)
+          #Slope and mean of crossing days
+          decs <- length(sta_yea_cla:end_yea_cla)/10
+          day_cross_slo <- apply(day_cross, 1, sens_slo) * 10 * -1 # [day/dec]
+          day_cross_day <- apply(day_cross, 1, sens_slo) * 10 * -1 *decs # [days]
+          day_cross_mea <- apply(day_cross, 1, mea_na)
+
+        }else{
+          day_cross <- NA
+          day_cross_slo <- NA
+          day_cross_mea <- NA
+          day_cross_day <- NA
+        }
 
         volu_time(day_cross = day_cross,
                   sta_yea_cla = sta_yea_cla,
