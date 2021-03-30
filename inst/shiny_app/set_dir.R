@@ -38,7 +38,11 @@ camels_br_dir <- "/home/erwin/Documents/storage_research/camels_br/"
 ### Path to  CAMELS-GB
 camels_gb_dir <- "/home/erwin/Documents/storage_research/camels_gb/"
 
+### Path to  CAMELS-CL
+camels_cl_dir <- "/home/erwin/Documents/storage_research/camels_cl/"
 
+### Path to  CAMELS-AUS
+camels_aus_dir <- "/home/erwin/Documents/storage_research/camels_aus/"
 
 
 

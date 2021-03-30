@@ -13,21 +13,12 @@ source(paste0(getwd(), "/set_dir.R"))
 #read discharge meta data
 disc_meta <- read.table(file = disc_meta_path, sep = ";", header = T, stringsAsFactors = F)
 
+#read data for app
+load(paste0(app_dir, "data_explorer.RData"))
+
 #list GRDC watersheds available
 catch_paths_grdc <- list.files(path = grdc_catc_dir, pattern = "*\\.shp$", full.names = T)
 catch_names_grdc <- list.files(path = grdc_catc_dir, pattern = "*\\.shp$", full.names = F)
-
-#LamaH watershed boundaries
-catch_lamah <- rgdal::readOGR(paste0(lamah_dir, "/A_basins_total_upstrm/3_shapefiles/Upstrm_area_total.shp"))
-
-#CAMELS-US watershed boundaries
-catch_usgs <- rgdal::readOGR(paste0(camels_us_catch_dir, "/HCDN_nhru_final_671.shp"))
-
-#CAMELS-BR watershed boundaries
-catch_brazil <- rgdal::readOGR(paste0(camels_br_dir, "/14_CAMELS_BR_catchment_boundaries/camels_br_catchments.shp"))
-
-#CAMELS-BR watershed boundaries
-catch_gb <- rgdal::readOGR(paste0(camels_gb_dir, "/data/CAMELS_GB_catchment_boundaries/CAMELS_GB_catchment_boundaries.shp"))
 
 #Initial dummy catchment
 catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol = 2))
@@ -38,7 +29,7 @@ function(input, output, session) {
 
   query_modal <- modalDialog(
     title = "Welcome to the Hydro Explorer!",
-    "Analyze daily resolution discharge recordings with regard to runoff timing and runoff seasonality. Switch between tabs to read a short summary and get more information on available analytical tools, discharge data sets and source code.",
+    "Analyze daily resolution discharge recordings with regard to runoff timing and runoff seasonality. Switch between tabs to read a short summary and get more information on available analytical tools, data sets and source code.",
     easyClose = F,
     footer = tagList(
       actionButton("start_window", "Explore")
@@ -80,7 +71,7 @@ function(input, output, session) {
 
         addLayersControl(
           baseGroups = c("Terrain Background", "Open Street Map"),
-          overlayGroups = c("GRDC", "LamaH", "CAMELS-US", "CAMELS-BR", "CAMELS-GB","Watershed"),
+          overlayGroups = c("GRDC", "LamaH", "CAMELS-US", "CAMELS-BR", "CAMELS-GB", "CAMELS-CL", "CAMELS-AUS","Watershed"),
           position = "bottomleft",
           options = layersControlOptions(collapsed = F)
         ) %>%
@@ -118,31 +109,8 @@ function(input, output, session) {
                                disc_meta$latitude[which(disc_meta$source == "lamah")],
                                label = disc_meta$name[which(disc_meta$source == "lamah")],
                                labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
-                               stroke = F, group = "LamaH", fillOpacity = 0.8, fillColor = '#000066',
+                               stroke = F, group = "LamaH", fillOpacity = 0.8, fillColor = '#FFCC33',
                                popup = disc_meta$name[which(disc_meta$source == "lamah")],
-                               clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
-                                                                   var childCount = cluster.getChildCount();
-                                                                   if (childCount < 50) {
-                                                                     c = '#000066;'
-                                                                   } else if (childCount < 100) {
-                                                                     c = '#000066;'
-                                                                   } else {
-                                                                     c = '#000066;'
-                                                                   }
-                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+' color: #FFFFFF\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
-                         )
-                         )
-              )
-        }
-
-        if(length(which(disc_meta$source == "usgs")) > 0){
-          m = m %>%
-              addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "usgs")],
-                               disc_meta$latitude[which(disc_meta$source == "usgs")],
-                               label = disc_meta$name[which(disc_meta$source == "usgs")],
-                               labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
-                               stroke = F, group = "CAMELS-US", fillOpacity = 0.8, fillColor = '#FFCC33',
-                               popup = disc_meta$name[which(disc_meta$source == "usgs")],
                                clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
                                                                    var childCount = cluster.getChildCount();
                                                                    if (childCount < 50) {
@@ -156,17 +124,40 @@ function(input, output, session) {
                          )
                          )
               )
+        }
+
+        if(length(which(disc_meta$source == "usgs")) > 0){
+          m = m %>%
+              addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "usgs")],
+                               disc_meta$latitude[which(disc_meta$source == "usgs")],
+                               label = disc_meta$name[which(disc_meta$source == "usgs")],
+                               labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
+                               stroke = F, group = "CAMELS-US", fillOpacity = 0.8, fillColor = '#000066',
+                               popup = disc_meta$name[which(disc_meta$source == "usgs")],
+                               clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
+                                                                   var childCount = cluster.getChildCount();
+                                                                   if (childCount < 50) {
+                                                                     c = '#000066;'
+                                                                   } else if (childCount < 100) {
+                                                                     c = '#000066;'
+                                                                   } else {
+                                                                     c = '#000066;'
+                                                                   }
+                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+' color: #FFFFFF\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
+                         )
+                         )
+              )
           }
 
-        if(length(which(disc_meta$source == "camel_br")) > 0){
+        if(length(which(disc_meta$source == "camels_br")) > 0){
 
           m = m %>%
-              addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "camel_br")],
-                               disc_meta$latitude[which(disc_meta$source == "camel_br")],
-                               label = disc_meta$name[which(disc_meta$source == "camel_br")],
+              addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "camels_br")],
+                               disc_meta$latitude[which(disc_meta$source == "camels_br")],
+                               label = disc_meta$name[which(disc_meta$source == "camels_br")],
                                labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
                                stroke = F, group = "CAMELS-BR", fillOpacity = 0.8, fillColor = '#333333',
-                               popup = disc_meta$name[which(disc_meta$source == "camel_br")],
+                               popup = disc_meta$name[which(disc_meta$source == "camels_br")],
                                clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
                                                                    var childCount = cluster.getChildCount();
                                                                    if (childCount < 50) {
@@ -182,7 +173,7 @@ function(input, output, session) {
               )
           }
 
-      if(length(which(disc_meta$source == "camels_gb")) > 0){
+        if(length(which(disc_meta$source == "camels_gb")) > 0){
 
         m = m %>%
           addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "camels_gb")],
@@ -205,7 +196,57 @@ function(input, output, session) {
                            )
           )
       }
-      m #retrun map
+
+        if(length(which(disc_meta$source == "camels_cl")) > 0){
+
+        m = m %>%
+          addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "camels_cl")],
+                           disc_meta$latitude[which(disc_meta$source == "camels_cl")],
+                           label = disc_meta$name[which(disc_meta$source == "camels_cl")],
+                           labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
+                           stroke = F, group = "CAMELS-CL", fillOpacity = 0.8, fillColor = '#FF9933',
+                           popup = disc_meta$name[which(disc_meta$source == "camels_cl")],
+                           clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
+                                                                   var childCount = cluster.getChildCount();
+                                                                   if (childCount < 50) {
+                                                                     c = '#FF9933;'
+                                                                   } else if (childCount < 100) {
+                                                                     c = '#FF9933;'
+                                                                   } else {
+                                                                     c = '#FF9933;'
+                                                                   }
+                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+' color: #FFFFFF\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
+                           )
+                           )
+          )
+      }
+
+      if(length(which(disc_meta$source == "camels_aus")) > 0){
+
+        m = m %>%
+          addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "camels_aus")],
+                           disc_meta$latitude[which(disc_meta$source == "camels_aus")],
+                           label = disc_meta$name[which(disc_meta$source == "camels_aus")],
+                           labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
+                           stroke = F, group = "CAMELS-AUS", fillOpacity = 0.8, fillColor = '#0066CC',
+                           popup = disc_meta$name[which(disc_meta$source == "camels_aus")],
+                           clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
+                                                                   var childCount = cluster.getChildCount();
+                                                                   if (childCount < 50) {
+                                                                     c = '#0066CC;'
+                                                                   } else if (childCount < 100) {
+                                                                     c = '#0066CC;'
+                                                                   } else {
+                                                                     c = '#0066CC;'
+                                                                   }
+                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+' color: #FFFFFF\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
+                           )
+                           )
+          )
+      }
+
+      #retrun map
+      m
 
     })
 
@@ -283,7 +324,7 @@ function(input, output, session) {
 
     }
 
-    if(disc_meta$source[stat_sel] == "camel_br"){
+    if(disc_meta$source[stat_sel] == "camels_br"){
 
       #read discharge time series
       disc_data <- read_camels_br(disc_meta$file_path[stat_sel])
@@ -326,6 +367,70 @@ function(input, output, session) {
 
 
     }
+
+    if(disc_meta$source[stat_sel] == "camels_cl"){
+
+      #read discharge time series
+      col_sel <- which(colnames(disc_data_cl) == grep(sta_id, colnames(disc_data_cl), value = T))
+      disc_cl_val <- disc_data_cl[, col_sel]
+      #first non-NA value
+      val_first <- min_na(which(is.na(disc_cl_val) == F))
+      val_last <- max_na(which(is.na(disc_cl_val) == F))
+      disc_cl_val <- disc_cl_val[val_first:val_last]
+      disc_cl_date <- as.Date(disc_data_cl$gauge_id[val_first:val_last], "%Y-%m-%d")
+
+      disc_data <- data.frame(date  = disc_cl_date,
+                              value = disc_cl_val)
+
+      # select watershed boundaries for selected gauge
+      if(length(which(catch_cl@data$gauge_id == as.character(sta_id))) > 0){
+
+        sel_ind <- which(catch_cl@data$gauge_id == as.character(sta_id))
+        crswgs84 <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+        catch_sel_raw <- catch_cl[sel_ind, ]
+        catch_sel <- spTransform(catch_sel_raw, crswgs84)
+
+      }else{
+
+        catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol =2))
+
+      }
+
+
+    }
+
+    if(disc_meta$source[stat_sel] == "camels_aus"){
+
+      #read discharge time series
+      col_sel <- which(colnames(disc_data_aus) == grep(sta_id, colnames(disc_data_aus), value = T))
+      disc_aus_val <- disc_data_aus[, col_sel]
+      #first non-NA value
+      val_first <- min_na(which(is.na(disc_aus_val) == F))
+      val_last <- max_na(which(is.na(disc_aus_val) == F))
+      disc_aus_val <- disc_aus_val[val_first:val_last]
+      disc_aus_date <- as.Date(paste(disc_data_aus$year[val_first:val_last],
+                                      disc_data_aus$month[val_first:val_last],
+                                      disc_data_aus$day[val_first:val_last]), "%Y %m %d")
+
+      disc_data <- data.frame(date  = disc_aus_date,
+                              value = disc_aus_val)
+
+      # select watershed boundaries for selected gauge
+      if(length(which(catch_aus@data$CatchID == as.character(sta_id))) > 0){
+
+        sel_ind <- which(catch_aus@data$CatchID == as.character(sta_id))
+        crswgs84 <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+        catch_sel_raw <- catch_aus[sel_ind, ]
+        catch_sel <- spTransform(catch_sel_raw, crswgs84)
+
+      }else{
+
+        catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol =2))
+
+      }
+
+
+    }
     #Update leaflat map and show watershed selected
     leafletProxy("map") %>%
       removeShape(layerId = "watershed") %>%
@@ -333,7 +438,7 @@ function(input, output, session) {
                   color = "#366488", opacity = 0.9, group = "Watershed") %>%
     addLayersControl(
       baseGroups = c("Terrain Background", "Open Street Map"),
-      overlayGroups = c("GRDC", "LamaH", "CAMELS-US", "CAMELS-BR", "CAMELS-GB","Watershed"),
+      overlayGroups = c("GRDC", "LamaH", "CAMELS-US", "CAMELS-BR", "CAMELS-GB", "CAMELS-CL", "CAMELS-AUS","Watershed"),
       position = "bottomleft",
       options = layersControlOptions(collapsed = F)
     )
