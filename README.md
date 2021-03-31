@@ -10,35 +10,15 @@ Key component of the shiny web app is an interactive leaflet map. On click, obse
 
 # Data
 
-In the framework of this study, we focus on discharge data from the global runoff dataset provided by the Global Runoff Data Centre 56068 Koblenz, Germany (GRDC). This unique collection of discharge time series from all over the world represents a key dataset for hydrological research. For further information, please visit:
+Initially, the focus was on discharge data from the global runoff dataset provided by the Global Runoff Data Centre 56068 Koblenz, Germany (GRDC). This unique collection of discharge time series (including watershed boundaries for most of the gauges) from all over the world represents a key dataset for hydrological research and can be downloaded at the [GRDC Data Portal](https://portal.grdc.bafg.de/).
 
-https://www.bafg.de/GRDC/EN/Home/homepage_node.html
+During the framwork of the development towards Hydro Exploere v2.0, daily resolution streamflow recordings provided within other large-sample data sets for hydrology were implemented. These include streamflow observations from [CAMELS-US](https://doi.org/10.5194/hess-21-5293-2017), [CAMELS-BR](https://doi.org/10.5194/essd-12-2075-2020), [CAMELS-GB](https://doi.org/10.5194/essd-12-2459-2020), [CAMELS-CL](https://doi.org/10.5194/hess-22-5817-2018), [CAMELS-AUS](https://doi.org/10.5194/essd-2020-228) amd [LamaH](https://doi.org/10.5194/essd-2021-72).
 
-Watershed boundaries were derived by Bernhard Lehner based on the HydroSHEDS drainage network. For more information and access to the corresponding technical report within the GRDC Report Series, please visit:
+# Architecture
 
-https://www.bafg.de/GRDC/EN/02_srvcs/22_gslrs/222_WSB/watershedBoundaries_node.html
+The web app was implemented based on the R package [Shiny](https://shiny.rstudio.com/). The core of the Hydro Explorer consists of the typical two-file structure of a Shiny web app. One R-file defines the layout and the appearance of the web app (ui.R) and another one contains all computational instructions (server.R). The Hydro Explorer is part of the R package 'meltimr'. All functions the Hydro Explorer needs are incorporated in this R package. We chose this set-up to enable easy sharing and installation of the programme code. Existing tools can be easily modified and new analytical approaches added. All analytical tools also can be used outside the web app environment.
 
-# Test functionality
-
-To test the app on your local machine, take the following steps:
-
-1) Make sure up-to-date versions of [R](https://www.r-project.org/) and [RStudio](https://rstudio.com/) are installed.
-
-2) Install this R package: ```devtools::install_github("ERottler/meltimr")``` Other R packages needed in order to run the Hydro Explorer are listed in the DESCRIPTION of the package and get installed automatically. 
-
-3) Download this git repository, extract files and open the R-project by clicking on 'meltimr.Rproj'
-
-4) Navigate to the shiny app folder *inst/shiny_app* and add the full app directory path in *inst/shiny_app/set_dir.R*
-
-5) Run the the script *inst/shiny_app/grdc_meta.R*. This script reads meta information from GRDC-files and saves them in a table, which provides all informationen needed in the Hydro Explorer.
-
-6) Run the following command: ```shiny::runApp(paste0(getwd(), "/inst/shiny_app/"))```
-
-The app should start showing two artificial gauging stations.
-
-# Run app with your own GRDC data
-
-The test run uses two artificial GRDC dummy data files located in *inst/shiny_app/data*. Shoud you have GRDC files at hand already, either copy them into this folder or change the GRDC folder path in *inst/shiny_app/set_dir.R*. Should you need (more) data, send a request to the [Global Runoff Data Centre 56068 Koblenz, Germany (GRDC)](https://www.bafg.de/GRDC/EN/01_GRDC/grdc_node.html). In order for the app to run, the meta information stored in the headers of the individual GRDC files needs to be provided as table (see *inst/shinyapp/grdc_meta.csv*). This data table can be created by running the script *inst/shinyapp/grdc_meta.R*. Should you want to display watershed boundaries of your gauging stations on click, add them as shapefiles (station ID as name, e.g. 1234567.shp) into the folder containing watershed boundaries defined in *inst/shinyapp/set_dir.R*. 
+As a first step to get the web app running, a table containing all meta information about all discharge time series from all data sources needs to be compiled (disc_meta.R). All necessary file paths are define in (set_dir.R). All data that is read it at start-up of the web app is saved in data_load.R)
 
 # Modify and add analytical tools/data sources
 

@@ -230,6 +230,10 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
 
            hr(),
 
+           p("The Hydro Explorer enables the investigation of daily resolution streamflow recordings. In the following, an overview on data sets used within the web app. The visualisation and analysis of meteorological time series such as precipitaiton, snow water equivalent or evapotranspiration is not (yet) possible."),
+
+           hr(),
+
            h4("GRDC"),
            p("In the framework of this study, we focus on discharge data from the global runoff dataset provided by the",
              tags$a(href="https://www.bafg.de/GRDC/EN/Home/homepage_node.html", "Global Runoff Data Center",
@@ -242,23 +246,107 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
                     style="color:CadetBlue;
                          font-weight: bold;
                          font-style: italic"),
-             "were derived by Bernhard Lehner based on the HydroSHEDS drainage network. For more information access to the corresponding technical report within the GRDC Report Series."),
+             "were derived by Bernhard Lehner based on the HydroSHEDS drainage network. The GRDC data displayed was obtained March 2021."),
+
+           hr(),
+
+           h4("CAMELS-US"),
+           p(tags$a(href="https://ral.ucar.edu/solutions/products/camels", "CAMELS-US",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic"),
+             "is a data set of attributes for 671 catchments in the contiguous United States (CONUS). The data set also includes hydrometeorological time series provided by",
+             tags$a(href="https://hess.copernicus.org/articles/19/209/2015/", "Newman et al. 2015",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic"),
+             "Detailed informatin on the entire data set can be found in ",
+             tags$a(href="https://doi.org/10.5194/hess-21-5293-2017", "Addor et al. 2017",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic"),
+             "."
+           ),
+
+           hr(),
+
+           h4("CAMELS-CL"),
+           p(tags$a(href="https://doi.pangaea.de/10.1594/PANGAEA.894885", "CAMELS-CL",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic"),
+             "is a  catchment data set for large sample studies in Chile. The data set includes 516 catchments. Apart from measured streamflow the data set includes information on precipitation, temperature, potential evapotranspiration and snow water equivalent. For more information on CAMELS-CL visit the",
+             tags$a(href="http://camels.cr2.cl", "CAMELS-CL viewer",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic"),
+             " or read the related research article by",
+             tags$a(href="https://doi.org/10.5194/hess-22-5817-2018", "Alvarez-Garreton et al. 2018",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic"),
+             "."
+           ),
+
+           hr(),
+
+           h4("CAMELS-BR"),
+           p(tags$a(href="https://doi.org/10.5281/zenodo.3709337", "CAMELS-BR",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic"),
+             "provides daily observed streamflow for 3679 gauges and meteorological time series and catchment attributes for 897 selected catchments in Brazil. Detailed information are provided in",
+             tags$a(href="https://doi.org/10.5194/hess-22-5817-2018", "Chagas et al. 2020",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic"),
+             "."
+           ),
+
+           hr(),
+
+           h4("CAMELS-GB"),
+           p(tags$a(href="https://doi.org/10.5285/8344e4f3-d2ea-44f5-8afa-86d2987543a9", "CAMELS-GB",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic"),
+             "is the first large-sample catchment hydrology dataset for Great Britian. The datasets provides river flows, catchment attributes and catchment boundaries from the UK National River Flow Archive together with a suite of new meteorological time series and catchment attributes for 671 catchments. A detailed description of the dataset can be found in",
+             tags$a(href="https://doi.org/10.5194/essd-12-2459-2020", "Coxon et al. 2020",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic"),
+             "."
+           ),
+
+           hr(),
+
+           h4("CAMELS-AUS"),
+           p(tags$a(href="https://doi.pangaea.de/10.1594/PANGAEA.921850", "CAMELS-AUS",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic"),
+             "is the Australian edition of the Catchment Attributes and Meteorology for Large-sample Studies (CAMELS) series of datasets. The data set comprises 222 unregulated catchments combining hydrometeorological timeseries (streamflow and 18 climatic variables) with 134 attributes related to geology, soil, topography, land cover, anthropogenic influence, and hydroclimatology. A detailed description of the data set can be found in",
+             tags$a(href="https://doi.org/10.5194/essd-2020-228", "Keirnan et al. 2021",
+                    style="color:CadetBlue;
+                         font-weight: bold;
+                         font-style: italic"),
+             "."
+           ),
 
            hr(),
 
            h4("LamaH"),
-           p("The Hydro Explorer also enables the investigation of discharge time series from",
-             tags$a(href="https://doi.org/10.5281/zenodo.4525244", "LamaH | Large-Sample Data for Hydrology and Environmental Sciences for Central Europe",
+           p(tags$a(href="https://doi.org/10.5281/zenodo.4525244", "LamaH",
                     style="color:CadetBlue;
                          font-weight: bold;
                          font-style: italic"),
-             "This is a new dataset for large-sample studies and comparative hydrology in Central Europe. The data set also contains catchment attributes (topography, climatology, hydrology, land cover, vegetation, soil and geological properties) as well as meteorological time series. For further information, please have a look at the corresponding",
-             tags$a(href="https://doi.org/10.5194/essd-2021-72", "research article",
+             "(Large-Sample Data for Hydrology and Environmental Sciences for Central Europe) is a new dataset for large-sample studies and comparative hydrology in Central Europe. The data set also contains catchment attributes (topography, climatology, hydrology, land cover, vegetation, soil and geological properties) as well as meteorological time series. For further information, please have a look at the corresponding research article by",
+             tags$a(href="https://doi.org/10.5194/essd-2021-72", "Klinger et al. 2021",
                     style="color:CadetBlue;
                          font-weight: bold;
-                         font-style: italic")
-             ),
-
+                         font-style: italic"),
+             "."
+           ),
 
            hr(),
 
@@ -267,7 +355,9 @@ navbarPage("Hydro Explorer", id="nav", theme = shinytheme("sandstone"),
            tags$a(href= "https://github.com/ERottler/meltimr", "github.com/ERottler/meltimr",
                   style="color:CadetBlue;
                          font-weight: bold;
-                         font-style: italic")
+                         font-style: italic"),
+
+           hr()
   ),
 
   tabPanel("Contact",
