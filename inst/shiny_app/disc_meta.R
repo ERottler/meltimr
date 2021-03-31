@@ -5,7 +5,7 @@
 
 ###
 
-library(readr, raster)
+pacman::p_load(readr, raster, sp)
 
 #get folder paths defined in set_dir.R
 source(paste0(getwd(), "/inst/shiny_app/set_dir.R"))
@@ -45,7 +45,7 @@ for(i in 1:length(file_paths_grdc)){
   sta_lati_raw <- substr(row_lati, 17, nchar(row_lati))
   sta_lati <- trimws(sta_lati_raw)
   #Start/End time series
-  row_seri <- meta_rows[24]
+  row_seri <- meta_rows[25]
   sta_seri <- substr(row_seri, 26, nchar(row_seri)-13)
   end_seri <- substr(row_seri, 36, nchar(row_seri)-3)
   #gauge ID from file name
@@ -112,11 +112,11 @@ lamah_meta_full$obsend[which(lamah_meta_full$obsend == 0)] <- 2021
 #latitude and longitude to WGS84
 crswgs84 <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
 gauges_shp <- rgdal::readOGR(paste0(lamah_dir, "/D_gauges/3_shapefiles/Gauges.shp"))
-gauges <- SpatialPointsDataFrame(data.frame(lon = lamah_meta_full$lon,
-                                            lat = lamah_meta_full$lat),
-                                    data = data.frame(data =rep(-1, length(lamah_meta_full$lon))),
-                                    proj4string =  raster::crs(gauges_shp))
-gauges    <- spTransform(gauges, crswgs84)
+gauges <- sp::SpatialPointsDataFrame(data.frame(lon = lamah_meta_full$lon,
+                                                lat = lamah_meta_full$lat),
+                                                data = data.frame(data =rep(-1, length(lamah_meta_full$lon))),
+                                                proj4string =  raster::crs(gauges_shp))
+gauges    <- sp::spTransform(gauges, crswgs84)
 
 #select information
 lamah_meta <- data.frame(name = as.character(lamah_meta_full$name),
@@ -141,19 +141,20 @@ meta_expo$latitude[dup_lat] <- meta_expo$latitude[dup_lat]  + rnorm(length(dup_l
 write.table(meta_expo, file = disc_meta_path, sep = ";", row.names = F, quote = T)
 
 #camels_us----
+
 # CAMELS: Large-Sample Hydrometeorological Dataset
 # 671 basins in the United States Geological Survey’s Hydro-Climatic Data Network
 # https://ncar.github.io/hydrology/datasets/CAMELS_timeseries
 
-usgs_gauge_meta <- read.csv(paste0(camels_dir_disc, "/basin_metadata/gauge_information.txt"),
-                            sep = "\t", skip = 1, header = F)
+usgs_gauge_meta <- read.csv(paste0(camels_us_dir, "/basin_metadata/gauge_information.txt"),
+                            sep = "\t", skip = 1, header = F, stringsAsFactors = F)
 
 #add read in 0 lost when at the beginning from station ID
 usgs_gauge_meta$V2 <- as.character(usgs_gauge_meta$V2)
 usgs_gauge_meta$V2[which(nchar(usgs_gauge_meta$V2) < 8)] <- paste0("0", usgs_gauge_meta$V2[which(nchar(usgs_gauge_meta$V2) < 8)])
 
-file_paths_usgs <- list.files(path = paste0(camels_dir_disc, "/usgs_streamflow"), pattern = "*.txt", full.names = T, recursive = T)
-file_names_usgs <- list.files(path = paste0(camels_dir_disc, "/usgs_streamflow"), pattern = "*.txt", full.names = F, recursive = T)
+file_paths_usgs <- list.files(path = paste0(camels_us_dir, "/usgs_streamflow"), pattern = "*.txt", full.names = T, recursive = T)
+file_names_usgs <- list.files(path = paste0(camels_us_dir, "/usgs_streamflow"), pattern = "*.txt", full.names = F, recursive = T)
 
 #get id from filenames
 get_id_usgs <- function(file_name){
@@ -196,7 +197,7 @@ usgs_meta <- data.frame(name = as.character(usgs_gauge_meta[, 3]),
                         start_series = start_series,
                         end_series = end_series,
                         file_path = file_paths_usgs_ord,
-                        id = usgs_gauge_meta[, 2],
+                        id = as.numeric(usgs_gauge_meta[, 2]),#numeric to avoid 0 at beginning
                         country = rep("USA", nrow(usgs_gauge_meta)),
                         source = rep("usgs", nrow(usgs_gauge_meta)),
                         stringsAsFactors=FALSE)
@@ -217,11 +218,11 @@ write.table(meta_expo, file = disc_meta_path, sep = ";", row.names = F, quote = 
 #CAMELS-BR: Hydrometeorological time series and landscape attributes for 897 catchments in Brazil
 #https://zenodo.org/record/3964745
 
-camels_br_gauge_meta <- read.csv(paste0(camels_br_dir,"01_CAMELS_BR_attributes/camels_br_location.txt"),
+camels_br_gauge_meta <- read.csv(paste0(camels_br_dir,"/01_CAMELS_BR_attributes/camels_br_location.txt"),
                                  sep = "", header = T)
 
-file_paths_brazil <- list.files(path = paste0(camels_br_dir, "02_CAMELS_BR_streamflow_m3s"), pattern = "*.txt", full.names = T, recursive = T)
-file_names_brazil <- list.files(path = paste0(camels_br_dir, "02_CAMELS_BR_streamflow_m3s"), pattern = "*.txt", full.names = F, recursive = T)
+file_paths_brazil <- list.files(path = paste0(camels_br_dir, "/02_CAMELS_BR_streamflow_m3s"), pattern = "*.txt", full.names = T, recursive = T)
+file_names_brazil <- list.files(path = paste0(camels_br_dir, "/02_CAMELS_BR_streamflow_m3s"), pattern = "*.txt", full.names = F, recursive = T)
 
 #get id from filenames
 get_id_brazil <- function(file_name){
@@ -287,9 +288,9 @@ write.table(meta_expo, file = disc_meta_path, sep = ";", row.names = F, quote = 
 #Catchment attributes and hydro-meteorological timeseries for 671 catchments across Great Britain (CAMELS-GB)
 #https://catalogue.ceh.ac.uk/documents/8344e4f3-d2ea-44f5-8afa-86d2987543a9
 
-gb_gauge_meta_1 <- read.csv(paste0(camels_gb_dir, "data/CAMELS_GB_hydrometry_attributes.csv"),
+gb_gauge_meta_1 <- read.csv(paste0(camels_gb_dir, "/data/CAMELS_GB_hydrometry_attributes.csv"),
                               sep = ",", header = T)
-gb_gauge_meta_2 <- read.csv(paste0(camels_gb_dir, "data/CAMELS_GB_topographic_attributes.csv"),
+gb_gauge_meta_2 <- read.csv(paste0(camels_gb_dir, "/data/CAMELS_GB_topographic_attributes.csv"),
                             sep = ",", header = T)
 
 file_paths_greatb <- list.files(path = paste0(camels_gb_dir, "/data/timeseries"), pattern = "*.csv", full.names = T, recursive = T)
@@ -347,13 +348,16 @@ write.table(meta_expo, file = disc_meta_path, sep = ";", row.names = F, quote = 
 
 #camels_cl----
 
-cl_gauge_meta <- read.table(paste0(camels_cl_dir, "1_CAMELScl_attributes.txt"), sep = "\t", header = F, quote = "",
+#The CAMELS-CL dataset: catchment attributes and meteorology for large sample studies – Chile dataset
+#https://doi.org/10.5194/hess-22-5817-2018
+
+cl_gauge_meta <- read.table(paste0(camels_cl_dir, "/1_CAMELScl_attributes.txt"), sep = "\t", header = F, quote = "",
                           stringsAsFactors = F)
 cl_rownames <- cl_gauge_meta[, 1]
 cl_gauge_meta <- cl_gauge_meta[, -1]
 
 #all time series in one file
-file_path_cl <- paste0(camels_cl_dir, "2_CAMELScl_streamflow_m3s.txt")
+file_path_cl <- paste0(camels_cl_dir, "/2_CAMELScl_streamflow_m3s.txt")
 
 #remove quotes from names
 rem_quote <- function(char_in){
@@ -364,7 +368,7 @@ lat_cl <- as.numeric(sapply(cl_gauge_meta[3,], rem_quote))
 lon_cl <- as.numeric(sapply(cl_gauge_meta[4,], rem_quote))
 name_cl <- as.character(sapply(cl_gauge_meta[2,], rem_quote))
 name_cl <- gsub("\"", " ", name_cl)
-id_cl <- as.character(sapply(cl_gauge_meta[1,], rem_quote))
+id_cl <-as.character(as.numeric(sapply(cl_gauge_meta[1,], rem_quote)))
 
 start_series_raw <- as.character(sapply(cl_gauge_meta[5,], rem_quote))
 end_series_raw <- as.character(sapply(cl_gauge_meta[6,], rem_quote))
@@ -395,15 +399,18 @@ write.table(meta_expo, file = disc_meta_path, sep = ";", row.names = F, quote = 
 
 #camels_aus----
 
-aus_gauge_meta <- read.csv(paste0(camels_aus_dir, "01_id_name_metadata/id_name_metadata.csv"),
+#CAMELS-AUS: Hydrometeorological time series and landscape attributes for 222 catchments in Australia
+#https://doi.org/10.5194/essd-2020-228
+
+aus_gauge_meta <- read.csv(paste0(camels_aus_dir, "/01_id_name_metadata/id_name_metadata.csv"),
                            sep = ",", header = T, stringsAsFactors = F)
-aus_strea_meta <- read.csv(paste0(camels_aus_dir, "03_streamflow/streamflow_GaugingStats.csv"),
+aus_strea_meta <- read.csv(paste0(camels_aus_dir, "/03_streamflow/streamflow_GaugingStats.csv"),
                            sep = ",", header = T, stringsAsFactors = F)
-aus_coord_meta <- read.csv(paste0(camels_aus_dir, "02_location_boundary_area/location_boundary_area.csv"),
+aus_coord_meta <- read.csv(paste0(camels_aus_dir, "/02_location_boundary_area/location_boundary_area.csv"),
                            sep = ",", header = T, stringsAsFactors = F)
 
 #all time series in one file
-file_path_aus <- paste0(camels_cl_dir, "3_streamflow/streamflow_MLd_inclInfilled.csv")
+file_path_aus <- paste0(camels_aus_dir, "3_streamflow/streamflow_MLd_inclInfilled.csv")
 
 start_series <- format(as.Date(as.character(aus_strea_meta$start_date), "%Y%m%d"), "%Y")
 end_series <- format(as.Date(as.character(aus_strea_meta$end_date), "%Y%m%d"), "%Y")

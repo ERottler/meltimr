@@ -16,9 +16,9 @@ disc_meta <- read.table(file = disc_meta_path, sep = ";", header = T, stringsAsF
 #read data for app
 load(paste0(app_dir, "data_explorer.RData"))
 
-#list GRDC watersheds available
-catch_paths_grdc <- list.files(path = grdc_catc_dir, pattern = "*\\.shp$", full.names = T)
-catch_names_grdc <- list.files(path = grdc_catc_dir, pattern = "*\\.shp$", full.names = F)
+# #list GRDC watersheds available
+# catch_paths_grdc <- list.files(path = grdc_catc_dir, pattern = "*\\.shp$", full.names = T)
+# catch_names_grdc <- list.files(path = grdc_catc_dir, pattern = "*\\.shp$", full.names = F)
 
 #Initial dummy catchment
 catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol = 2))
@@ -221,23 +221,23 @@ function(input, output, session) {
           )
       }
 
-      if(length(which(disc_meta$source == "camels_aus")) > 0){
+        if(length(which(disc_meta$source == "camels_aus")) > 0){
 
         m = m %>%
           addCircleMarkers(disc_meta$longitude[which(disc_meta$source == "camels_aus")],
                            disc_meta$latitude[which(disc_meta$source == "camels_aus")],
                            label = disc_meta$name[which(disc_meta$source == "camels_aus")],
                            labelOptions = labelOptions(noHide = F, textOnly = F, direction = "top"),
-                           stroke = F, group = "CAMELS-AUS", fillOpacity = 0.8, fillColor = '#0066CC',
+                           stroke = F, group = "CAMELS-AUS", fillOpacity = 0.8, fillColor = '#009999',
                            popup = disc_meta$name[which(disc_meta$source == "camels_aus")],
                            clusterOptions = markerClusterOptions(iconCreateFunction=JS("function (cluster) {
                                                                    var childCount = cluster.getChildCount();
                                                                    if (childCount < 50) {
-                                                                     c = '#0066CC;'
+                                                                     c = '#009999;'
                                                                    } else if (childCount < 100) {
-                                                                     c = '#0066CC;'
+                                                                     c = '#009999;'
                                                                    } else {
-                                                                     c = '#0066CC;'
+                                                                     c = '#009999;'
                                                                    }
                                                                    return new L.DivIcon({ html: '<div style=\"background-color:'+c+' color: #FFFFFF\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(50, 50) });}"
                            )
@@ -281,19 +281,32 @@ function(input, output, session) {
       disc_data <- read_grdc(disc_meta$file_path[stat_sel])
 
       #read watershed boundaries for selected gauge
-      catch_path <- grep(sta_id, catch_paths_grdc, value = T)
+      # select watershed boundaries for selected gauge
+      if(length(which(grdc_catch@data$grdc_no == sta_id)) > 0){
 
-      if(length(catch_path) !=1){catch_path <- "xxx"}
-
-      if(file.exists(catch_path)){
-
-        catch_sel <- rgdal::readOGR(catch_path)
+        sel_ind <- which(grdc_catch@data$grdc_no == sta_id)
+        crswgs84 <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+        catch_sel_raw <- grdc_catch[sel_ind, ]
+        catch_sel <- spTransform(catch_sel_raw, crswgs84)
 
       }else{
 
         catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol =2))
 
-        }
+      }
+      # catch_path <- grep(sta_id, catch_paths_grdc, value = T)
+      #
+      # if(length(catch_path) !=1){catch_path <- "xxx"}
+      #
+      # if(file.exists(catch_path)){
+      #
+      #   catch_sel <- rgdal::readOGR(catch_path)
+      #
+      # }else{
+      #
+      #   catch_sel <- sp::Polygon(matrix(rnorm(10, 0, 0.01), ncol =2))
+      #
+      #   }
     }
 
     if(disc_meta$source[stat_sel] == "lamah"){
@@ -351,6 +364,14 @@ function(input, output, session) {
       #read discharge time series
       disc_data <- read_camels_gb(disc_meta$file_path[stat_sel])
 
+      val_first <- min_na(which(is.na(disc_data$value) == F))
+      val_last <- max_na(which(is.na(disc_data$value) == F))
+      disc_gb_val <- disc_data$value[val_first:val_last]
+      disc_gb_date <- disc_data$date[val_first:val_last]
+
+      disc_data <- data.frame(date  = disc_gb_date,
+                              value = disc_gb_val)
+
       # select watershed boundaries for selected gauge
       if(length(which(catch_gb@data$ID_STRING == as.character(sta_id))) > 0){
 
@@ -373,7 +394,8 @@ function(input, output, session) {
       #read discharge time series
       col_sel <- which(colnames(disc_data_cl) == grep(sta_id, colnames(disc_data_cl), value = T))
       disc_cl_val <- disc_data_cl[, col_sel]
-      #first non-NA value
+      #first/last non-NA value
+
       val_first <- min_na(which(is.na(disc_cl_val) == F))
       val_last <- max_na(which(is.na(disc_cl_val) == F))
       disc_cl_val <- disc_cl_val[val_first:val_last]
@@ -412,6 +434,9 @@ function(input, output, session) {
                                       disc_data_aus$month[val_first:val_last],
                                       disc_data_aus$day[val_first:val_last]), "%Y %m %d")
 
+      #unit in dataset is ML per day (megaliter per day)
+      #convert to m3 per s
+      disc_aus_val <- disc_aus_val * 1000 / (60*60*24)
       disc_data <- data.frame(date  = disc_aus_date,
                               value = disc_aus_val)
 
