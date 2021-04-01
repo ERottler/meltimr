@@ -10,15 +10,15 @@ Key component of the shiny web app is an interactive leaflet map. On click, obse
 
 # Data
 
-Initially, the focus was on discharge data from the global runoff dataset provided by the Global Runoff Data Centre 56068 Koblenz, Germany (GRDC). This unique collection of discharge time series (including watershed boundaries for most of the gauges) from all over the world represents a key dataset for hydrological research and can be downloaded at the [GRDC Data Portal](https://portal.grdc.bafg.de/).
+Initially, the focus was on discharge data from the global runoff dataset provided by the Global Runoff Data Centre 56068 Koblenz, Germany (GRDC). This unique collection of discharge time series (including watershed boundaries for most of the gauges) from all over the world represents a key dataset for hydrological research and can be downloaded via the [GRDC Data Portal](https://portal.grdc.bafg.de/).
 
-During the framwork of the development towards Hydro Exploere v2.0, daily resolution streamflow recordings provided within other large-sample data sets for hydrology were implemented. These include streamflow observations from [CAMELS-US](https://doi.org/10.5194/hess-21-5293-2017), [CAMELS-BR](https://doi.org/10.5194/essd-12-2075-2020), [CAMELS-GB](https://doi.org/10.5194/essd-12-2459-2020), [CAMELS-CL](https://doi.org/10.5194/hess-22-5817-2018), [CAMELS-AUS](https://doi.org/10.5194/essd-2020-228) amd [LamaH](https://doi.org/10.5194/essd-2021-72).
+As part of the development towards Hydro Explorer v2.0, daily resolution streamflow recordings provided within other large-sample data sets for hydrology were implemented. These include streamflow observations from [CAMELS-US](https://doi.org/10.5194/hess-21-5293-2017), [CAMELS-BR](https://doi.org/10.5194/essd-12-2075-2020), [CAMELS-GB](https://doi.org/10.5194/essd-12-2459-2020), [CAMELS-CL](https://doi.org/10.5194/hess-22-5817-2018), [CAMELS-AUS](https://doi.org/10.5194/essd-2020-228) amd [LamaH](https://doi.org/10.5194/essd-2021-72).
 
 # Architecture
 
 The web app was implemented based on the R package [Shiny](https://shiny.rstudio.com/). The core of the Hydro Explorer consists of the typical two-file structure of a Shiny web app. One R-file defines the layout and the appearance of the web app (ui.R) and another one contains all computational instructions (server.R). The Hydro Explorer is part of the R package 'meltimr'. All functions the Hydro Explorer needs are incorporated in this R package. We chose this set-up to enable easy sharing and installation of the programme code. Existing tools can be easily modified and new analytical approaches added. All analytical tools also can be used outside the web app environment.
 
-As a first step to get the web app running, a table containing all meta information about all discharge time series from all data sources needs to be compiled (disc_meta.R). All necessary file paths are define in (set_dir.R). All data that is read it at start-up of the web app is saved in data_load.R)
+As a first step to get the web app running, a table containing all meta information about all discharge time series from all data sources needs to be compiled (disc_meta.R). All necessary file paths are define in (set_dir.R). All data that is read in at start-up of the web app is saved in data_load.R.
 
 # Modify and add analytical tools/data sources
 
