@@ -29,7 +29,7 @@ lamah_dir <- "/media/rottler/data2/hydro_expl/lamah/2_LamaH_daily/CAMELS_AT"
 
 ### Path to CAMELS-US time series
 camels_us_dir <- "/media/rottler/data2/hydro_expl/camels_us/basin_timeseries_v1p2_metForcing_obsFlow/basin_dataset_public_v1p2"
-# camels_us_dir <- "/home/erwin/Documents/storage_research/camels_us/basin_timeseries_v1p2_metForcing_obsFlow/basin_dataset_public_v1p2"
+# camels_us_dir  <- "/home/erwin/Documents/storage_research/camels_us/basin_timeseries_v1p2_metForcing_obsFlow/basin_dataset_public_v1p2"
 
 ### Path to CAMELS-US watershed boundaries
 camels_us_catch_dir <- "/media/rottler/data2/hydro_expl/camels_us/basin_set_full_res"
