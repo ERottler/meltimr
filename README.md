@@ -6,6 +6,8 @@ Climatic changes and anthropogenic modifications of the river basin or river net
 
 The web app can be viewed at: http://natriskchange.ad.umwelt.uni-potsdam.de:3838/HydroExplorer/
 
+<img src="inst/shiny_app/www/screenshot_1.png" width=100%> 
+
 Key component of the shiny web app is an interactive leaflet map. On click, observations of the selected gauging station are displayed in the draggable viewer panel. Via a dropdown menu, different analytical tools can be selected. A short description of available tools and interactive options can be found in the tab 'TOOLS'. The dropdown menu for selecting analytical tools also contains the option to filter stations displayed on the map. Selections can be made according to data coverage and location. Using the layer control on the bottom left of the map, different basemaps can be selected and watershed boundaries displayed. Figures can be downloaded clicking the download button below the graph displayed. A rearch article including a detailed description of the interactive web app and available tools can be found at: https://doi.org/10.1002/rra.3772
 
 # Data

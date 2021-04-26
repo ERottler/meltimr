@@ -6,7 +6,7 @@
 ###
 
 ### Path to shiny app
-app_dir <- "/home/rottler/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app/"
+app_dir <- "/home/erwin/Nextcloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app/"
 # app_dir <- "/home/erwin/ownCloud/RhineFlow/rhine_snow/R/meltimr/inst/shiny_app/"
 # app_dir <- "/srv/shiny-server/melTim/"
 
